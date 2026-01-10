@@ -158,7 +158,6 @@ interface SGPASectionProps {
 export function SGPASection({ courses, onShowCGPA }: SGPASectionProps) {
   const [showResult, setShowResult] = useState(false);
 
-  // ✅ Allow even ONE course
   const validCourses = courses.filter(
     (c) => c.finalGradePoint !== null && c.name.trim() !== ""
   );
@@ -191,7 +190,6 @@ export function SGPASection({ courses, onShowCGPA }: SGPASectionProps) {
       </CardHeader>
 
       <CardContent className="space-y-6">
-        {/* BEFORE CALCULATION */}
         {!showResult ? (
           <div className="text-center py-4">
             <p className="text-muted-foreground mb-4">
@@ -212,9 +210,8 @@ export function SGPASection({ courses, onShowCGPA }: SGPASectionProps) {
             </Button>
           </div>
         ) : (
-          /* AFTER CALCULATION */
           <div className="space-y-6 animate-scale-in">
-            {/* Course Summary */}
+            {/* Course Table */}
             <div className="bg-card rounded-lg border overflow-hidden">
               <table className="w-full">
                 <thead>
@@ -234,11 +231,9 @@ export function SGPASection({ courses, onShowCGPA }: SGPASectionProps) {
                   </tr>
                 </thead>
                 <tbody>
-                  {validCourses.map((course, i) => (
-                    <tr key={course.id} className="border-b last:border-b-0">
-                      <td className="p-3 text-sm">
-                        {course.name || `Course ${i + 1}`}
-                      </td>
+                  {validCourses.map((course) => (
+                    <tr key={course.id}>
+                      <td className="p-3">{course.name}</td>
                       <td className="p-3 text-center">{course.credits}</td>
                       <td className="p-3 text-center">
                         <GradeBadge
@@ -247,8 +242,7 @@ export function SGPASection({ courses, onShowCGPA }: SGPASectionProps) {
                           size="sm"
                         />
                       </td>
-                      <td className="p-3 text-center font-mono">
-                        {course.credits} × {course.finalGradePoint} ={" "}
+                      <td className="p-3 text-center">
                         {(course.credits * course.finalGradePoint!).toFixed(0)}
                       </td>
                     </tr>
@@ -257,60 +251,25 @@ export function SGPASection({ courses, onShowCGPA }: SGPASectionProps) {
               </table>
             </div>
 
-            {/* SGPA Formula */}
-            <Card className="bg-muted/30 border-dashed">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm flex items-center gap-2 text-accent">
-                  <Award className="w-4 h-4" />
-                  SGPA Formula
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3 text-sm">
-                <div className="font-mono bg-card p-3 rounded border space-y-1">
-                  <div className="text-muted-foreground">
-                    SGPA = Σ(Credits × Grade Point) ÷ Σ(Total Credits)
-                  </div>
-                  <div className="text-muted-foreground">
-                    SGPA = {result!.totalGradePoints.toFixed(0)} ÷{" "}
-                    {result!.totalCredits}
-                  </div>
-                  <div className="text-foreground font-semibold text-lg">
-                    SGPA ={" "}
-                    <span className="text-accent">
-                      {result!.sgpa.toFixed(2)}
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
             {/* SGPA RESULT */}
             <div className="flex flex-col items-center gap-4 p-6 bg-card rounded-lg border">
-              <div className="text-center">
-                <div className="text-6xl font-bold text-accent">
-                  {result!.sgpa.toFixed(2)}
-                </div>
-                <div className="text-muted-foreground mt-2">
-                  Your SGPA for this semester
-                </div>
+              <div className="text-6xl font-bold text-accent">
+                {result!.sgpa.toFixed(2)}
+              </div>
+              <div className="text-muted-foreground">
+                Your SGPA for this semester
               </div>
             </div>
 
-            {/* ✅ ACTION BUTTONS (ALWAYS VISIBLE, EVEN FOR 1 COURSE) */}
-            <div className="w-full flex flex-row items-center justify-center gap-6 pt-6">
-              <Button
-                variant="outline"
-                onClick={onShowCGPA}
-                size="lg"
-                className="min-w-[260px]"
-              >
+            {/* ACTION BUTTONS */}
+            <div className="w-full flex justify-center gap-6 pt-6">
+              <Button variant="outline" onClick={onShowCGPA} size="lg">
                 <TrendingUp className="w-4 h-4 mr-2" />
-                Calculate New CGPA (Optional)
+                Calculate New CGPA
               </Button>
 
               <Button
                 size="lg"
-                className="min-w-[260px]"
                 onClick={() => {
                   const courseData = validCourses.map((c) => ({
                     name: c.name,
@@ -325,7 +284,7 @@ export function SGPASection({ courses, onShowCGPA }: SGPASectionProps) {
                   });
                 }}
               >
-                Download Score Card (PDF)
+                Download Score Card
               </Button>
             </div>
           </div>
@@ -334,3 +293,4 @@ export function SGPASection({ courses, onShowCGPA }: SGPASectionProps) {
     </Card>
   );
 }
+
