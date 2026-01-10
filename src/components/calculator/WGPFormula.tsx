@@ -66,6 +66,14 @@ export function WGPFormula({
     labContribution !== null
       ? theoryContribution + labContribution
       : null;
+    // 👇 ONLY FOR DISPLAY (no logic change)
+  const rawWGP = assessments.reduce(
+    (sum, a) => sum + a.gradePoint! * a.weight,
+    0
+  );
+
+  const ceiledWGP = Math.min(10, Math.ceil(rawWGP));
+
 
   return (
     <Card className="bg-muted/30 border-dashed">
@@ -95,9 +103,19 @@ export function WGPFormula({
             {(assessments[2].gradePoint! * 0.25).toFixed(2)}
           </div>
 
-          <div className="text-foreground font-semibold">
-            WGP = <span className="text-primary">{wgp.toFixed(2)}</span>
+          <div className="text-muted-foreground">
+            WGP = {rawWGP.toFixed(2)}
           </div>
+          
+          <div className="text-muted-foreground">
+            WGP = ceil({rawWGP.toFixed(2)})
+          </div>
+          
+          <div className="text-foreground font-semibold">
+            WGP = <span className="text-primary">{ceiledWGP.toFixed(2)}</span>
+          </div>
+
+
         </div>
 
         {/* ---------------- LAB + THEORY CALCULATION ---------------- */}
