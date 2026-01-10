@@ -52,11 +52,20 @@ export function createNewCourse(): Course {
 }
 
 export function calculateWGP(assessments: Assessment[]): number | null {
-  const allFilled = assessments.every(a => a.gradePoint !== null && a.gradePoint >= 0);
+  const allFilled = assessments.every(
+    a => a.gradePoint !== null && a.gradePoint >= 0
+  );
   if (!allFilled) return null;
-  
-  return assessments.reduce((sum, a) => sum + (a.gradePoint! * a.weight), 0);
+
+  const rawWGP = assessments.reduce(
+    (sum, a) => sum + (a.gradePoint! * a.weight),
+    0
+  );
+
+  // ✅ ONLY CHANGE: CEIL THE WGP
+  return Math.min(10, Math.ceil(rawWGP));
 }
+
 
 export function getGradeFromWGP(wgp: number): { letter: string; point: number; color: string } {
   if (wgp > 9.0) return { letter: 'O', point: 10, color: 'grade-o' };
