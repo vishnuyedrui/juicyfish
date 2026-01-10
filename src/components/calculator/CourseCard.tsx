@@ -453,6 +453,7 @@ import {
   calculateWGP,
   getGradeFromWGP,
   calculateFinalGradePointWithLab,
+  ceilWGP,
 } from "@/types/calculator";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -481,8 +482,9 @@ export function CourseCard({
   onRemove,
   canRemove,
 }: CourseCardProps) {
-  // ✅ CLAD detection (case-insensitive)
   const isCLAD = course.name.trim().toLowerCase() === "clad";
+
+  /* ===================== ASSESSMENT UPDATE ===================== */
 
   const updateAssessment = (assessmentIndex: number, value: string) => {
     const numValue =
@@ -492,40 +494,59 @@ export function CourseCard({
       i === assessmentIndex ? { ...a, gradePoint: numValue } : a
     );
 
-    const wgp = calculateWGP(newAssessments);
+    const ceiledWGP = calculateWGP(newAssessments);
 
-    let finalGradePoint = null;
-    let letterGrade = null;
-
-    if (wgp !== null) {
-      let effectiveGP = wgp;
-
-      if (course.hasLab && course.labMarks !== null) {
-        effectiveGP = calculateFinalGradePointWithLab(wgp, course.labMarks);
-      }
-
-      const grade = getGradeFromWGP(effectiveGP);
-      finalGradePoint = effectiveGP;
-      letterGrade = grade.letter;
+    if (ceiledWGP === null) {
+      onUpdate({
+        ...course,
+        assessments: newAssessments,
+        wgp: null,
+        finalGradePoint: null,
+        letterGrade: null,
+      });
+      return;
     }
+
+    // 🔥 If lab exists, final GP comes from lab logic
+    const finalGP =
+      course.hasLab && course.labMarks !== null
+        ? calculateFinalGradePointWithLab(ceiledWGP, course.labMarks)
+        : ceiledWGP;
+
+    const grade = getGradeFromWGP(finalGP);
 
     onUpdate({
       ...course,
       assessments: newAssessments,
-      wgp,
-      finalGradePoint,
-      letterGrade,
+      wgp: ceiledWGP,                // ✅ integer
+      finalGradePoint: finalGP,      // ✅ integer
+      letterGrade: grade.letter,
     });
   };
 
+  /* ===================== LAB TOGGLE ===================== */
+
   const handleLabToggle = (checked: boolean) => {
+    if (!checked) {
+      onUpdate({
+        ...course,
+        hasLab: false,
+        labMarks: null,
+        finalGradePoint: course.wgp,
+        letterGrade:
+          course.wgp !== null ? getGradeFromWGP(course.wgp).letter : null,
+      });
+      return;
+    }
+
     onUpdate({
       ...course,
-      hasLab: checked,
-      labMarks: checked ? course.labMarks ?? null : null,
-      finalGradePoint: checked ? course.finalGradePoint : course.wgp,
+      hasLab: true,
+      labMarks: null,
     });
   };
+
+  /* ===================== LAB MARKS ===================== */
 
   const handleLabMarksChange = (value: string) => {
     const labMarks =
@@ -558,7 +579,7 @@ export function CourseCard({
       className={cn(
         "animate-fade-in border-2 transition-all duration-300 hover:shadow-lg",
         gradientColors[index % gradientColors.length],
-        course.wgp !== null || course.finalGradePoint !== null
+        course.finalGradePoint !== null
           ? "border-accent/30"
           : "border-transparent"
       )}
@@ -587,7 +608,6 @@ export function CourseCard({
       <CardContent className="space-y-6">
         {/* Course Info */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {/* Course Name */}
           <div className="space-y-2">
             <Label>Course Name</Label>
             <Input
@@ -598,14 +618,12 @@ export function CourseCard({
               className="bg-card"
             />
 
-            {/* CLAD note */}
             {isCLAD && (
               <p className="text-xs text-muted-foreground">
-                CLAD course: Enter final grade point directly. Credits = 1.
+                CLAD course: Final grade point is rounded up. Credits = 1.
               </p>
             )}
 
-            {/* Lab option (NOT for CLAD) */}
             {!isCLAD && (
               <div className="flex items-center gap-2 mt-1">
                 <input
@@ -620,7 +638,6 @@ export function CourseCard({
             )}
           </div>
 
-          {/* Credits */}
           <div className="space-y-2">
             <Label>Credits</Label>
             <Input
@@ -630,17 +647,14 @@ export function CourseCard({
               value={isCLAD ? 1 : course.credits}
               disabled={isCLAD}
               onChange={(e) =>
-                onUpdate({
-                  ...course,
-                  credits: parseInt(e.target.value),
-                })
+                onUpdate({ ...course, credits: parseInt(e.target.value) })
               }
               className="bg-card"
             />
           </div>
         </div>
 
-        {/* CLAD: Direct Grade Point Input */}
+        {/* CLAD Input */}
         {isCLAD && (
           <div className="space-y-2">
             <Label>Final Grade Point (0–10)</Label>
@@ -648,16 +662,18 @@ export function CourseCard({
               type="number"
               min={0}
               max={10}
-              step={0.1}
+              step={1}
               value={course.finalGradePoint ?? ""}
               onChange={(e) => {
-                const gp =
+                const raw =
                   e.target.value === ""
                     ? null
                     : Math.min(10, Math.max(0, parseFloat(e.target.value)));
 
-                if (gp !== null) {
+                if (raw !== null) {
+                  const gp = ceilWGP(raw);
                   const grade = getGradeFromWGP(gp);
+
                   onUpdate({
                     ...course,
                     credits: 1,
@@ -672,7 +688,7 @@ export function CourseCard({
           </div>
         )}
 
-        {/* Assessments (hidden for CLAD) */}
+        {/* Assessments */}
         {!isCLAD && (
           <div className="space-y-3">
             <h4 className="font-medium text-sm text-muted-foreground">
@@ -739,8 +755,8 @@ export function CourseCard({
           </div>
         )}
 
-        {/* Results */}
-        {(course.wgp !== null || course.finalGradePoint !== null) && (
+        {/* Result */}
+        {course.finalGradePoint !== null && course.letterGrade && (
           <div className="animate-scale-in space-y-4">
             {!isCLAD && course.wgp !== null && (
               <WGPFormula
@@ -752,20 +768,18 @@ export function CourseCard({
               />
             )}
 
-            {course.finalGradePoint !== null && course.letterGrade && (
-              <div className="flex items-center justify-center gap-4 p-4 bg-card rounded-lg border">
-                <GradeBadge
-                  letter={course.letterGrade}
-                  point={course.finalGradePoint}
-                />
-                <div className="text-sm text-muted-foreground">
-                  Final Grade Point:{" "}
-                  <span className="font-semibold text-foreground">
-                    {course.finalGradePoint}
-                  </span>
-                </div>
+            <div className="flex items-center justify-center gap-4 p-4 bg-card rounded-lg border">
+              <GradeBadge
+                letter={course.letterGrade}
+                point={course.finalGradePoint}
+              />
+              <div className="text-sm text-muted-foreground">
+                Final Grade Point:{" "}
+                <span className="font-semibold text-foreground">
+                  {course.finalGradePoint}
+                </span>
               </div>
-            )}
+            </div>
           </div>
         )}
       </CardContent>
