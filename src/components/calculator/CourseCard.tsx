@@ -97,7 +97,7 @@ export function CourseCard({ course, index, onUpdate, onRemove, canRemove }: Cou
               min={1}
               max={10}
               value={course.credits}
-              onChange={(e) => onUpdate({ ...course, credits: parseInt(e.target.value) || 1 })}
+              onChange={(e) => onUpdate({ ...course, credits: parseInt(e.target.value)})}
               className="bg-card"
             />
           </div>
