@@ -51,14 +51,14 @@ import { Info } from "lucide-react";
 
 export function GradeChart() {
   const gradeColorMap: Record<string, string> = {
-    'grade-o': 'bg-grade-o',
-    'grade-a-plus': 'bg-grade-a-plus',
-    'grade-a': 'bg-grade-a',
-    'grade-b-plus': 'bg-grade-b-plus',
-    'grade-b': 'bg-grade-b',
-    'grade-c': 'bg-grade-c',
-    'grade-p': 'bg-grade-p',
-    'grade-f': 'bg-grade-f',
+    "grade-o": "bg-grade-o",
+    "grade-a-plus": "bg-grade-a-plus",
+    "grade-a": "bg-grade-a",
+    "grade-b-plus": "bg-grade-b-plus",
+    "grade-b": "bg-grade-b",
+    "grade-c": "bg-grade-c",
+    "grade-p": "bg-grade-p",
+    "grade-f": "bg-grade-f",
   };
 
   return (
@@ -78,7 +78,9 @@ export function GradeChart() {
               key={grade.letter}
               className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted text-xs"
             >
-              <div className={`w-3 h-3 rounded-full ${gradeColorMap[grade.color]}`} />
+              <div
+                className={`w-3 h-3 rounded-full ${gradeColorMap[grade.color]}`}
+              />
               <span className="font-semibold">{grade.letter}</span>
               <span className="text-muted-foreground">
                 {grade.letter === "F"
@@ -91,10 +93,10 @@ export function GradeChart() {
           ))}
         </div>
 
-        {/* Image BELOW the chart */}
+        {/* ✅ IMAGE BELOW GRADE CONVERSION CHART */}
         <div className="flex flex-col items-center pt-4">
           <img
-            src="/58f79853-ae7d-4df4-8b5e-bcb0bcc0ef69.png"
+            src="/grade-conversion.png"
             alt="Grade points and symbols in relative grading"
             className="max-w-full w-[600px] rounded-lg border shadow-md"
           />
