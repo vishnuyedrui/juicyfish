@@ -94,3 +94,17 @@ export function calculateCGPA(
   
   return { cgpa, totalCredits, totalGradePoints };
 }
+
+export function calculateFinalGradePointWithLab(
+  wgp: number,
+  labMarks: number
+): number {
+  const safeWGP = Math.min(10, Math.max(0, wgp));
+  const safeLabMarks = Math.min(100, Math.max(0, labMarks));
+
+  const theoryContribution = (safeWGP / 10) * 100 * 0.70;
+  const labContribution = safeLabMarks * 0.30;
+
+  const finalPercentage = theoryContribution + labContribution;
+  return parseFloat((finalPercentage / 10).toFixed(2));
+}
