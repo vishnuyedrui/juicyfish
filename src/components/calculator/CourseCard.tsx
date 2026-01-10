@@ -463,6 +463,18 @@ import { cn } from "@/lib/utils";
 import { GradeBadge } from "./GradeBadge";
 import { WGPFormula } from "./WGPFormula";
 
+const GRADE_OPTIONS = [
+  { label: "O", value: 10 },
+  { label: "A+", value: 9 },
+  { label: "A", value: 8 },
+  { label: "B+", value: 7 },
+  { label: "B", value: 6 },
+  { label: "C", value: 5 },
+  { label: "P", value: 4 },
+  { label: "I", value: 0 },
+];
+
+
 interface CourseCardProps {
   course: Course & {
     hasLab?: boolean;
@@ -706,7 +718,7 @@ export function CourseCard({
                         </div>
                       </td>
                       <td className="p-3">
-                        <Input
+                        {/* <Input
                           type="number"
                           min={0}
                           max={10}
@@ -716,7 +728,32 @@ export function CourseCard({
                             updateAssessment(i, e.target.value)
                           }
                           className="w-full text-center bg-background"
-                        />
+                        /> */}
+                        <select
+                          className="w-full rounded-md border bg-background px-2 py-1 text-center"
+                          value={
+                            assessment.gradePoint !== null
+                              ? GRADE_OPTIONS.find(g => g.value === assessment.gradePoint)?.label
+                              : ""
+                          }
+                          onChange={(e) => {
+                            const selected = GRADE_OPTIONS.find(
+                              g => g.label === e.target.value
+                            );
+                            updateAssessment(
+                              i,
+                              selected ? selected.value.toString() : ""
+                            );
+                          }}
+                        >
+                          <option value="">Select</option>
+                          {GRADE_OPTIONS.map((g) => (
+                            <option key={g.label} value={g.label}>
+                              {g.label}
+                            </option>
+                          ))}
+                        </select>
+
                       </td>
                     </tr>
                   ))}
@@ -730,14 +767,40 @@ export function CourseCard({
         {!isCLAD && course.hasLab && (
           <div className="space-y-2">
             <Label>Lab Marks (out of 100)</Label>
-            <Input
-              type="number"
-              min={0}
-              max={100}
-              value={course.labMarks ?? ""}
-              onChange={(e) => handleLabMarksChange(e.target.value)}
-              className="bg-card"
-            />
+            <select
+              className="w-full rounded-md border bg-card px-2 py-1"
+              value={
+                course.finalGradePoint !== null
+                  ? GRADE_OPTIONS.find(g => g.value === course.finalGradePoint)?.label
+                  : ""
+              }
+              onChange={(e) => {
+                const selected = GRADE_OPTIONS.find(
+                  g => g.label === e.target.value
+                );
+            
+                if (selected) {
+                  const gp = selected.value;
+                  const grade = getGradeFromWGP(gp);
+            
+                  onUpdate({
+                    ...course,
+                    credits: 1,
+                    wgp: gp,
+                    finalGradePoint: gp,
+                    letterGrade: grade.letter,
+                  });
+                }
+              }}
+            >
+              <option value="">Select Grade</option>
+              {GRADE_OPTIONS.map((g) => (
+                <option key={g.label} value={g.label}>
+                  {g.label}
+                </option>
+              ))}
+            </select>
+
           </div>
         )}
 
