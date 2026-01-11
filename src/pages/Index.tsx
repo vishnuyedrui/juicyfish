@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { Link } from "react-router-dom";
 import { Course, createNewCourse, calculateSGPA } from "@/types/calculator";
 import { CourseCard } from "@/components/calculator/CourseCard";
 import { StepIndicator } from "@/components/calculator/StepIndicator";
@@ -6,7 +7,7 @@ import { SGPASection } from "@/components/calculator/SGPASection";
 import { CGPASection } from "@/components/calculator/CGPASection";
 import { GradeChart } from "@/components/calculator/GradeChart";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, GraduationCap, Sparkles } from "lucide-react";
+import { PlusCircle, GraduationCap, Sparkles, CalendarCheck } from "lucide-react";
 
 const Index = () => {
   const [courses, setCourses] = useState<Course[]>([createNewCourse()]);
@@ -64,14 +65,22 @@ const Index = () => {
       {/* Header - Mobile Responsive */}
       <header className="bg-card border-b sticky top-0 z-10">
         <div className="container max-w-4xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary flex items-center justify-center flex-shrink-0">
-              <GraduationCap className="w-5 h-5 sm:w-7 sm:h-7 text-primary-foreground" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary flex items-center justify-center flex-shrink-0">
+                <GraduationCap className="w-5 h-5 sm:w-7 sm:h-7 text-primary-foreground" />
+              </div>
+              <div className="min-w-0">
+                <h1 className="text-lg sm:text-xl font-bold truncate">Academic Grade Calculator</h1>
+                <p className="text-xs sm:text-sm text-muted-foreground truncate">Step-by-step WGP, SGPA & CGPA</p>
+              </div>
             </div>
-            <div className="min-w-0">
-              <h1 className="text-lg sm:text-xl font-bold truncate">Academic Grade Calculator</h1>
-              <p className="text-xs sm:text-sm text-muted-foreground truncate">Step-by-step WGP, SGPA & CGPA</p>
-            </div>
+            <Link to="/attendance">
+              <Button variant="outline" size="sm" className="gap-2">
+                <CalendarCheck className="w-4 h-4" />
+                <span className="hidden sm:inline">Attendance</span>
+              </Button>
+            </Link>
           </div>
         </div>
       </header>
