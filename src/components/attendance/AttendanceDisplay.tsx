@@ -8,7 +8,9 @@ interface AttendanceDisplayProps {
 }
 
 export const AttendanceDisplay = ({ subjects }: AttendanceDisplayProps) => {
-  const validSubjects = subjects.filter(s => s.name.trim() !== '' && s.totalClasses > 0);
+  const validSubjects = subjects.filter(
+    s => s.name.trim() !== ''
+  );
   const overall = calculateOverallAttendance(validSubjects);
 
   if (validSubjects.length === 0) {
@@ -104,6 +106,14 @@ export const AttendanceDisplay = ({ subjects }: AttendanceDisplayProps) => {
                     </span>
                   )}
                 </div>
+                <span className="text-xs text-muted-foreground mt-1 block">
+                  Miss 1 class →{" "}
+                  {calculateAttendancePercentage(
+                    subject.attendedClasses,
+                    subject.totalClasses + 1
+                  ).toFixed(1)}
+                  %
+                </span>
               </div>
             );
           })}
