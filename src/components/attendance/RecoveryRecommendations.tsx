@@ -1,6 +1,7 @@
 import { Subject, RecoveryInfo, calculateAttendancePercentage, calculateClassesNeededFor75 } from "@/types/attendance";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Target, TrendingUp } from "lucide-react";
+import { useEffect } from "react";
 
 interface RecoveryRecommendationsProps {
   subjects: Subject[];
@@ -23,9 +24,11 @@ export const RecoveryRecommendations = ({ subjects, onRecoveryInfoChange }: Reco
   }));
 
   // Update parent with recovery info
-  if (recoveryInfos.length > 0) {
-    onRecoveryInfoChange(recoveryInfos);
-  }
+  useEffect(() => {
+    if (recoveryInfos.length > 0) {
+      onRecoveryInfoChange(recoveryInfos);
+    }
+  }, [recoveryInfos, onRecoveryInfoChange]);
 
   if (subjectsBelow75.length === 0) {
     return null;
