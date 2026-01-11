@@ -12,6 +12,8 @@ export interface Course {
   wgp: number | null;
   letterGrade: string | null;
   finalGradePoint: number | null;
+  hasLab?: boolean;
+  labMarks?: number | null;
 }
 
 export interface GradeMapping {

@@ -63,27 +63,26 @@ export function GradeChart() {
 
   return (
     <Card className="bg-card/50">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-sm flex items-center gap-2 text-muted-foreground">
-          <Info className="w-4 h-4" />
+      <CardHeader className="pb-2 px-3 sm:px-6">
+        <CardTitle className="text-xs sm:text-sm flex items-center gap-2 text-muted-foreground">
+          <Info className="w-3 h-3 sm:w-4 sm:h-4" />
           Grade Conversion Chart
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="space-y-4">
-        {/* Grade Conversion Chart [7.8  -> ‘A’ grade with a grade point of 8 (Refer to the following table)]
-*/}
-        <div className="flex flex-wrap gap-2">
+      <CardContent className="space-y-3 sm:space-y-4 px-3 sm:px-6">
+        {/* Grade Conversion Chart */}
+        <div className="flex flex-wrap gap-1.5 sm:gap-2">
           {GRADE_MAPPINGS.map((grade) => (
             <div
               key={grade.letter}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted text-xs"
+              className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-muted text-[10px] sm:text-xs"
             >
               <div
-                className={`w-3 h-3 rounded-full ${gradeColorMap[grade.color]}`}
+                className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full ${gradeColorMap[grade.color]}`}
               />
               <span className="font-semibold">{grade.letter}</span>
-              <span className="text-muted-foreground">
+              <span className="text-muted-foreground hidden sm:inline">
                 {grade.letter === "F"
                   ? "< 4.00"
                   : grade.letter === "P"
@@ -94,14 +93,14 @@ export function GradeChart() {
           ))}
         </div>
 
-        {/* ✅ IMAGE BELOW GRADE CONVERSION CHART */}
-        <div className="flex flex-col items-center pt-4">
+        {/* Image Below Grade Conversion Chart */}
+        <div className="flex flex-col items-center pt-2 sm:pt-4">
           <img
             src="/grade-conversion.png"
             alt="Grade points and symbols in relative grading"
-            className="max-w-full w-[600px] rounded-lg border shadow-md"
+            className="max-w-full w-full sm:w-[600px] rounded-lg border shadow-md"
           />
-          <p className="text-xs text-muted-foreground mt-2 text-center">
+          <p className="text-[10px] sm:text-xs text-muted-foreground mt-2 text-center">
             Grade points and symbols in relative grading
           </p>
         </div>

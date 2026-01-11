@@ -476,10 +476,7 @@ const GRADE_OPTIONS = [
 
 
 interface CourseCardProps {
-  course: Course & {
-    hasLab?: boolean;
-    labMarks?: number | null;
-  };
+  course: Course;
   index: number;
   onUpdate: (course: Course) => void;
   onRemove: () => void;

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Course, createNewCourse, calculateSGPA } from "@/types/calculator";
 import { CourseCard } from "@/components/calculator/CourseCard";
 import { StepIndicator } from "@/components/calculator/StepIndicator";
@@ -12,6 +12,12 @@ const Index = () => {
   const [courses, setCourses] = useState<Course[]>([createNewCourse()]);
   const [showCGPA, setShowCGPA] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
+  const [cgpaData, setCgpaData] = useState<{
+    cgpa: number;
+    previousCGPA: number;
+    previousCredits: number;
+    newTotalCredits: number;
+  } | null>(null);
 
   const updateCourse = (index: number, updatedCourse: Course) => {
     const newCourses = [...courses];
@@ -49,18 +55,22 @@ const Index = () => {
     setCurrentStep(4);
   };
 
+  const handleCGPACalculated = useCallback((data: typeof cgpaData) => {
+    setCgpaData(data);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background pb-12">
-      {/* Header */}
+      {/* Header - Mobile Responsive */}
       <header className="bg-card border-b sticky top-0 z-10">
-        <div className="container max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center">
-              <GraduationCap className="w-7 h-7 text-primary-foreground" />
+        <div className="container max-w-4xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary flex items-center justify-center flex-shrink-0">
+              <GraduationCap className="w-5 h-5 sm:w-7 sm:h-7 text-primary-foreground" />
             </div>
-            <div>
-              <h1 className="text-xl font-bold">Academic Grade Calculator</h1>
-              <p className="text-sm text-muted-foreground">Step-by-step WGP, SGPA & CGPA</p>
+            <div className="min-w-0">
+              <h1 className="text-lg sm:text-xl font-bold truncate">Academic Grade Calculator</h1>
+              <p className="text-xs sm:text-sm text-muted-foreground truncate">Step-by-step WGP, SGPA & CGPA</p>
             </div>
           </div>
         </div>
@@ -69,18 +79,18 @@ const Index = () => {
       {/* Step Indicator */}
       <StepIndicator currentStep={currentStep} completedSteps={completedSteps} />
 
-      <main className="container max-w-4xl mx-auto px-4 space-y-8">
+      <main className="container max-w-4xl mx-auto px-3 sm:px-4 space-y-6 sm:space-y-8">
         {/* Grade Chart Reference */}
         <GradeChart />
 
         {/* Step 1 & 2: Course Cards */}
-        <section className="space-y-4">
+        <section className="space-y-3 sm:space-y-4">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-primary" />
-            <h2 className="text-lg font-semibold">Step 1 & 2: Courses & Grades</h2>
+            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+            <h2 className="text-base sm:text-lg font-semibold">Step 1 & 2: Courses & Grades</h2>
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {courses.map((course, index) => (
               <CourseCard
                 key={course.id}
@@ -100,20 +110,29 @@ const Index = () => {
         </section>
 
         {/* Step 3: SGPA */}
-        <section className="space-y-4">
-          <SGPASection courses={courses} onShowCGPA={handleShowCGPA} />
+        <section className="space-y-3 sm:space-y-4">
+          <SGPASection 
+            courses={courses} 
+            onShowCGPA={handleShowCGPA} 
+            cgpaData={cgpaData || undefined}
+          />
         </section>
 
         {/* Step 4: CGPA (Optional) */}
         {showCGPA && sgpaResult && (
-          <section className="space-y-4">
-            <CGPASection currentSGPA={sgpaResult.sgpa} currentCredits={sgpaResult.totalCredits} />
+          <section className="space-y-3 sm:space-y-4">
+            <CGPASection 
+              currentSGPA={sgpaResult.sgpa} 
+              currentCredits={sgpaResult.totalCredits}
+              courses={courses}
+              onCGPACalculated={handleCGPACalculated}
+            />
           </section>
         )}
       </main>
 
       {/* Footer */}
-      <footer className="mt-12 text-center text-sm text-muted-foreground">
+      <footer className="mt-8 sm:mt-12 text-center text-xs sm:text-sm text-muted-foreground px-4">
         <p>Built with ❤️ for students @ TEAMDINO teamdino.in</p>
       </footer>
     </div>
