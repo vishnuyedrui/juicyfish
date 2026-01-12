@@ -1,47 +1,67 @@
-import { useState, useEffect } from "react";
-import { Subject, TimetableEntry, WhatIfResult, RecoveryInfo, DAYS, PERIODS_PER_DAY, createNewSubject } from "@/types/attendance";
-import { SubjectSetup } from "@/components/attendance/SubjectSetup";
-import { TimetableSetup } from "@/components/attendance/TimetableSetup";
-import { AttendanceDisplay } from "@/components/attendance/AttendanceDisplay";
-import { WhatIfScenarios } from "@/components/attendance/WhatIfScenarios";
-import { RecoveryRecommendations } from "@/components/attendance/RecoveryRecommendations";
-import { exportAttendanceToPDF } from "@/utils/attendancePdfExport";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CalendarCheck, Download, GraduationCap, Calculator } from "lucide-react";
-import { Link } from "react-router-dom";
-
-const createEmptyTimetable = (): TimetableEntry[] => {
-  return DAYS.map(day => ({
-    day,
-    periods: Array(PERIODS_PER_DAY).fill(''),
-  }));
-};
+import { useEffect } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { useAttendanceData } from '@/hooks/useAttendanceData';
+import { SubjectManager } from '@/components/attendance/SubjectManager';
+import { TimeSlotManager } from '@/components/attendance/TimeSlotManager';
+import { TimetableGrid } from '@/components/attendance/TimetableGrid';
+import { HolidayManager } from '@/components/attendance/HolidayManager';
+import { TodayClasses } from '@/components/attendance/TodayClasses';
+import { AttendanceStats } from '@/components/attendance/AttendanceStats';
+import { WhatIfSimulator } from '@/components/attendance/WhatIfSimulator';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { CalendarCheck, GraduationCap, LogOut, Loader2 } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Attendance = () => {
-  const [subjects, setSubjects] = useState<Subject[]>([createNewSubject()]);
-  const [timetable, setTimetable] = useState<TimetableEntry[]>(createEmptyTimetable());
-  const [whatIfResults, setWhatIfResults] = useState<WhatIfResult[]>([]);
-  const [scenarioDescription, setScenarioDescription] = useState('');
-  const [recoveryInfos, setRecoveryInfos] = useState<RecoveryInfo[]>([]);
-  const [showResults, setShowResults] = useState(false);
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+  const {
+    subjects,
+    timeSlots,
+    timetable,
+    holidays,
+    loading,
+    addSubject,
+    updateSubject,
+    deleteSubject,
+    initializeDefaultTimeSlots,
+    addTimeSlot,
+    deleteTimeSlot,
+    setTimetableEntry,
+    addHoliday,
+    deleteHoliday,
+    isHoliday,
+    getHolidayReason,
+    markAttendance,
+    getTodayClasses,
+    calculateSubjectStats,
+    calculateOverallStats,
+    calculateClassesNeededFor75,
+    DAY_NAMES,
+  } = useAttendanceData();
 
-  const handleWhatIfResultsChange = (results: WhatIfResult[], description: string) => {
-    setWhatIfResults(results);
-    setScenarioDescription(description);
+  const today = new Date();
+  const todayClasses = getTodayClasses(today);
+  const isTodayHoliday = isHoliday(today);
+  const holidayReason = getHolidayReason(today);
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/auth');
   };
 
-  const handleDownloadPDF = () => {
-    exportAttendanceToPDF({
-      subjects,
-      whatIfResults: whatIfResults.length > 0 ? whatIfResults : undefined,
-      recoveryInfos: recoveryInfos.length > 0 ? recoveryInfos : undefined,
-      scenarioDescription: scenarioDescription || undefined,
-    });
+  const handleMarkAttendance = async (subjectId: string, timeSlotId: string, status: 'present' | 'absent') => {
+    await markAttendance(subjectId, timeSlotId, today, status);
   };
 
-  const validSubjects = subjects.filter(s => s.name.trim() !== '' && s.totalClasses > 0);
-  const canCalculate = validSubjects.length > 0;
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background pb-12">
@@ -54,92 +74,95 @@ const Attendance = () => {
                 <CalendarCheck className="w-5 h-5 sm:w-7 sm:h-7 text-white" />
               </div>
               <div className="min-w-0">
-                <h1 className="text-lg sm:text-xl font-bold truncate">Attendance Calculator</h1>
-                <p className="text-xs sm:text-sm text-muted-foreground truncate">Smart predictions & tracking</p>
+                <h1 className="text-lg sm:text-xl font-bold truncate">Smart Attendance</h1>
+                <p className="text-xs sm:text-sm text-muted-foreground truncate">{user?.email}</p>
               </div>
             </div>
-            <Button
-              onClick={() => setShowResults(true)}
-              disabled={!canCalculate}
-              className="gap-2"
-              size="sm"
-            >
-              <Calculator className="w-4 h-4" />
-              <span className="hidden sm:inline">Calculate</span>
-            </Button>
+            <div className="flex gap-2">
+              <Link to="/">
+                <Button variant="outline" size="sm" className="gap-2">
+                  <GraduationCap className="w-4 h-4" />
+                  <span className="hidden sm:inline">Grades</span>
+                </Button>
+              </Link>
+              <Button variant="ghost" size="sm" onClick={handleSignOut}>
+                <LogOut className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </header>
 
-      {/* Navigation */}
-      <div className="container max-w-4xl mx-auto px-3 sm:px-4 py-3">
-        <Link to="/">
-          <Button variant="outline" size="sm" className="gap-2">
-            <GraduationCap className="w-4 h-4" />
-            Grade Calculator
-          </Button>
-        </Link>
-      </div>
+      <main className="container max-w-4xl mx-auto px-3 sm:px-4 py-4 space-y-6">
+        {/* Today's Classes */}
+        <TodayClasses
+          date={today}
+          classes={todayClasses}
+          isHoliday={isTodayHoliday}
+          holidayReason={holidayReason}
+          onMarkAttendance={handleMarkAttendance}
+        />
 
-      <main className="container max-w-4xl mx-auto px-3 sm:px-4 space-y-6">
-        {!showResults ? (
-          /* Setup View */
-          <Tabs defaultValue="subjects" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-4">
-              <TabsTrigger value="subjects">Subjects</TabsTrigger>
-              <TabsTrigger value="timetable">Timetable</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="subjects">
-              <SubjectSetup 
-                subjects={subjects} 
-                onSubjectsChange={setSubjects} 
-              />
-            </TabsContent>
-            
-            <TabsContent value="timetable">
-              <TimetableSetup 
-                subjects={subjects}
-                timetable={timetable}
-                onTimetableChange={setTimetable}
-              />
-            </TabsContent>
-          </Tabs>
-        ) : (
-          /* Results View */
-          <>
-            <div className="flex items-center justify-between">
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => setShowResults(false)}
-              >
-                ← Edit Setup
-              </Button>
-              <Button 
-                onClick={handleDownloadPDF}
-                size="sm"
-                className="gap-2"
-              >
-                <Download className="w-4 h-4" />
-                Download PDF
-              </Button>
-            </div>
+        {/* Attendance Stats */}
+        <AttendanceStats
+          subjects={subjects}
+          calculateSubjectStats={calculateSubjectStats}
+          calculateOverallStats={calculateOverallStats}
+          calculateClassesNeededFor75={calculateClassesNeededFor75}
+        />
 
-            <AttendanceDisplay subjects={subjects} />
-            
-            <RecoveryRecommendations 
+        {/* What-If Simulator */}
+        <WhatIfSimulator
+          subjects={subjects}
+          calculateSubjectStats={calculateSubjectStats}
+          calculateOverallStats={calculateOverallStats}
+        />
+
+        {/* Setup Tabs */}
+        <Tabs defaultValue="subjects" className="w-full">
+          <TabsList className="grid w-full grid-cols-4 mb-4">
+            <TabsTrigger value="subjects" className="text-xs sm:text-sm">Subjects</TabsTrigger>
+            <TabsTrigger value="slots" className="text-xs sm:text-sm">Time Slots</TabsTrigger>
+            <TabsTrigger value="timetable" className="text-xs sm:text-sm">Timetable</TabsTrigger>
+            <TabsTrigger value="holidays" className="text-xs sm:text-sm">Holidays</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="subjects">
+            <SubjectManager
               subjects={subjects}
-              onRecoveryInfoChange={setRecoveryInfos}
+              onAddSubject={addSubject}
+              onUpdateSubject={updateSubject}
+              onDeleteSubject={deleteSubject}
             />
-            
-            <WhatIfScenarios 
+          </TabsContent>
+          
+          <TabsContent value="slots">
+            <TimeSlotManager
+              timeSlots={timeSlots}
+              onAddTimeSlot={addTimeSlot}
+              onDeleteTimeSlot={deleteTimeSlot}
+              onInitializeDefaults={initializeDefaultTimeSlots}
+            />
+          </TabsContent>
+          
+          <TabsContent value="timetable">
+            <TimetableGrid
               subjects={subjects}
+              timeSlots={timeSlots}
               timetable={timetable}
-              onResultsChange={handleWhatIfResultsChange}
+              onSetEntry={setTimetableEntry}
+              dayNames={DAY_NAMES}
             />
-          </>
-        )}
+          </TabsContent>
+          
+          <TabsContent value="holidays">
+            <HolidayManager
+              holidays={holidays}
+              onAddHoliday={addHoliday}
+              onDeleteHoliday={deleteHoliday}
+            />
+          </TabsContent>
+        </Tabs>
       </main>
 
       {/* Footer */}
