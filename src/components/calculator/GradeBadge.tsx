@@ -14,7 +14,10 @@ const gradeColors: Record<string, string> = {
   'B': 'bg-grade-b',
   'C': 'bg-grade-c',
   'P': 'bg-grade-p',
+  'I': 'bg-grade-p', // I grade uses same color as P (grade point 4)
   'F': 'bg-grade-f',
+  'Ab/R': 'bg-grade-f',
+  'L/AB': 'bg-grade-f',
 };
 
 export function GradeBadge({ letter, point, size = "md" }: GradeBadgeProps) {

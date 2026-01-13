@@ -61,6 +61,13 @@ export function GradeChart() {
     "grade-f": "bg-grade-f",
   };
 
+  // Additional grades that are not in GRADE_MAPPINGS
+  const additionalGrades = [
+    { letter: 'I', description: 'Incomplete (GP: 4 if both sessionals ≥ 25)', color: 'bg-grade-p' },
+    { letter: 'Ab/R', description: 'Absent/Repeat (GP: 0)', color: 'bg-grade-f' },
+    { letter: 'L/AB', description: 'LE Absent (GP: 0, Final: F)', color: 'bg-grade-f' },
+  ];
+
   return (
     <Card className="bg-card/50">
       <CardHeader className="pb-2 px-3 sm:px-6">
@@ -88,6 +95,24 @@ export function GradeChart() {
                   : grade.letter === "P"
                   ? "= 4.00"
                   : `> ${grade.min.toFixed(2)}`}
+              </span>
+            </div>
+          ))}
+        </div>
+        
+        {/* Additional Special Grades */}
+        <div className="flex flex-wrap gap-1.5 sm:gap-2">
+          {additionalGrades.map((grade) => (
+            <div
+              key={grade.letter}
+              className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-muted text-[10px] sm:text-xs"
+            >
+              <div
+                className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full ${grade.color}`}
+              />
+              <span className="font-semibold">{grade.letter}</span>
+              <span className="text-muted-foreground hidden sm:inline">
+                {grade.description}
               </span>
             </div>
           ))}

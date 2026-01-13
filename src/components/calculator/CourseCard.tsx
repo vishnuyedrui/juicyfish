@@ -448,11 +448,15 @@
 
 
 
+import { useState } from "react";
 import {
   Course,
+  Assessment,
   calculateWGP,
   getGradeFromWGP,
   calculateFinalGradePointWithLab,
+  checkForIGrade,
+  checkForFGrade,
 } from "@/types/calculator";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -463,7 +467,8 @@ import { cn } from "@/lib/utils";
 import { GradeBadge } from "./GradeBadge";
 import { WGPFormula } from "./WGPFormula";
 
-const GRADE_OPTIONS = [
+// Grade options for Sessional 1 and Sessional 2
+const SESSIONAL_GRADE_OPTIONS = [
   { label: "O", value: 10 },
   { label: "A+", value: 9 },
   { label: "A", value: 8 },
@@ -471,7 +476,32 @@ const GRADE_OPTIONS = [
   { label: "B", value: 6 },
   { label: "C", value: 5 },
   { label: "P", value: 4 },
-  { label: "I", value: 0 },
+  { label: "I", value: -1 }, // Special: requires marks input
+  { label: "Ab/R", value: 0 },
+];
+
+// Grade options for Learning Engagement
+const LE_GRADE_OPTIONS = [
+  { label: "O", value: 10 },
+  { label: "A+", value: 9 },
+  { label: "A", value: 8 },
+  { label: "B+", value: 7 },
+  { label: "B", value: 6 },
+  { label: "C", value: 5 },
+  { label: "P", value: 4 },
+  { label: "L/AB", value: 0 },
+];
+
+// CLAD grade options
+const CLAD_GRADE_OPTIONS = [
+  { label: "O", value: 10 },
+  { label: "A+", value: 9 },
+  { label: "A", value: 8 },
+  { label: "B+", value: 7 },
+  { label: "B", value: 6 },
+  { label: "C", value: 5 },
+  { label: "P", value: 4 },
+  { label: "I", value: 4 },
 ];
 
 
@@ -493,17 +523,51 @@ export function CourseCard({
   // ✅ CLAD detection (case-insensitive)
   const isCLAD = course.name.trim().toLowerCase() === "clad";
 
-  const updateAssessment = (assessmentIndex: number, value: string) => {
-    const numValue =
-      value === "" ? null : Math.min(10, Math.max(0, parseFloat(value)));
+  // Helper to get grade options based on assessment type
+  const getGradeOptions = (assessmentName: string) => {
+    if (assessmentName === 'Learning Engagement') {
+      return LE_GRADE_OPTIONS;
+    }
+    return SESSIONAL_GRADE_OPTIONS;
+  };
 
-    const newAssessments = course.assessments.map((a, i) =>
-      i === assessmentIndex ? { ...a, gradePoint: numValue } : a
-    );
-
+  // Helper to recalculate and update course based on assessments
+  const recalculateCourse = (newAssessments: Assessment[]) => {
+    // Check for special grade conditions
+    const fGradeCheck = checkForFGrade(newAssessments);
+    const iGradeCheck = checkForIGrade(newAssessments);
+    
+    // If F grade condition is met, set F grade
+    if (fGradeCheck.isF) {
+      onUpdate({
+        ...course,
+        assessments: newAssessments,
+        wgp: 0,
+        finalGradePoint: 0,
+        letterGrade: 'F',
+      });
+      return;
+    }
+    
+    // If I grade condition is met (both sessionals have I with marks >= 25)
+    if (iGradeCheck) {
+      const effectiveGP = course.hasLab && course.labMarks !== null
+        ? calculateFinalGradePointWithLab(4, course.labMarks)
+        : 4;
+      
+      onUpdate({
+        ...course,
+        assessments: newAssessments,
+        wgp: 4,
+        finalGradePoint: effectiveGP,
+        letterGrade: 'I',
+      });
+      return;
+    }
+    
+    // Normal calculation
     const rawWGP = calculateWGP(newAssessments);
     const wgp = rawWGP !== null ? Math.min(10, Math.ceil(rawWGP)) : null;
-
 
     let finalGradePoint = null;
     let letterGrade = null;
@@ -527,6 +591,49 @@ export function CourseCard({
       finalGradePoint,
       letterGrade,
     });
+  };
+
+  const updateAssessmentGrade = (assessmentIndex: number, gradeLabel: string) => {
+    const gradeOptions = getGradeOptions(course.assessments[assessmentIndex].name);
+    const selected = gradeOptions.find(g => g.label === gradeLabel);
+    
+    if (!selected) {
+      // Clear the assessment
+      const newAssessments = course.assessments.map((a, i) =>
+        i === assessmentIndex ? { ...a, gradePoint: null, gradeLabel: null, marks: null } : a
+      );
+      recalculateCourse(newAssessments);
+      return;
+    }
+    
+    // If "I" grade is selected for sessionals, set gradePoint to null until marks are entered
+    if (gradeLabel === 'I') {
+      const newAssessments = course.assessments.map((a, i) =>
+        i === assessmentIndex ? { ...a, gradePoint: null, gradeLabel: 'I', marks: null } : a
+      );
+      recalculateCourse(newAssessments);
+      return;
+    }
+    
+    // For other grades, set the grade point directly
+    const newAssessments = course.assessments.map((a, i) =>
+      i === assessmentIndex ? { ...a, gradePoint: selected.value, gradeLabel: gradeLabel, marks: null } : a
+    );
+    recalculateCourse(newAssessments);
+  };
+
+  const updateAssessmentMarks = (assessmentIndex: number, marksValue: string) => {
+    const marks = marksValue === "" ? null : Math.min(100, Math.max(0, parseFloat(marksValue)));
+    
+    const newAssessments = course.assessments.map((a, i) => {
+      if (i !== assessmentIndex) return a;
+      
+      // For "I" grade, we store marks but gradePoint calculation depends on the marks
+      // The grade point for "I" is 4 if both sessionals have marks >= 25, otherwise we need to check later
+      return { ...a, marks };
+    });
+    
+    recalculateCourse(newAssessments);
   };
 
   const handleLabToggle = (checked: boolean) => {
@@ -660,7 +767,7 @@ export function CourseCard({
               className="w-full rounded-md border bg-card px-2 py-2 text-center"
               value={course.letterGrade ?? ""}
               onChange={(e) => {
-                const selected = GRADE_OPTIONS.find(
+                const selected = CLAD_GRADE_OPTIONS.find(
                   g => g.label === e.target.value
                 );
         
@@ -679,7 +786,7 @@ export function CourseCard({
               }}
             >
               <option value="">Select Grade</option>
-              {GRADE_OPTIONS.map((g) => (
+              {CLAD_GRADE_OPTIONS.map((g) => (
                 <option key={g.label} value={g.label}>
                   {g.label}
                 </option>
@@ -705,64 +812,82 @@ export function CourseCard({
                     <th className="text-center p-3 text-sm font-medium w-24">
                       Weight
                     </th>
-                    <th className="text-center p-3 text-sm font-medium w-32">
-                      Grade (0–10)
+                    <th className="text-center p-3 text-sm font-medium w-40">
+                      Grade
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {course.assessments.map((assessment, i) => (
-                    <tr key={assessment.name} className="border-b">
-                      <td className="p-3 text-sm">{assessment.name}</td>
-                      <td className="p-3 text-center">
-                        <div className="inline-flex items-center gap-1 text-sm text-muted-foreground bg-muted px-2 py-1 rounded">
-                          <Lock className="w-3 h-3" />
-                          {(assessment.weight * 100).toFixed(0)}%
-                        </div>
-                      </td>
-                      <td className="p-3">
-                        {/* <Input
-                          type="number"
-                          min={0}
-                          max={10}
-                          step={0.1}
-                          value={assessment.gradePoint ?? ""}
-                          onChange={(e) =>
-                            updateAssessment(i, e.target.value)
-                          }
-                          className="w-full text-center bg-background"
-                        /> */}
-                        <select
-                          className="w-full rounded-md border bg-background px-2 py-1 text-center"
-                          value={
-                            assessment.gradePoint !== null
-                              ? GRADE_OPTIONS.find(g => g.value === assessment.gradePoint)?.label
-                              : ""
-                          }
-                          onChange={(e) => {
-                            const selected = GRADE_OPTIONS.find(
-                              g => g.label === e.target.value
-                            );
-                            updateAssessment(
-                              i,
-                              selected ? selected.value.toString() : ""
-                            );
-                          }}
-                        >
-                          <option value="">Select</option>
-                          {GRADE_OPTIONS.map((g) => (
-                            <option key={g.label} value={g.label}>
-                              {g.label}
-                            </option>
-                          ))}
-                        </select>
-
-                      </td>
-                    </tr>
-                  ))}
+                  {course.assessments.map((assessment, i) => {
+                    const gradeOptions = getGradeOptions(assessment.name);
+                    const isIGrade = assessment.gradeLabel === 'I';
+                    const isSessional = assessment.name === 'Sessional 1' || assessment.name === 'Sessional 2';
+                    
+                    return (
+                      <tr key={assessment.name} className="border-b">
+                        <td className="p-3 text-sm">{assessment.name}</td>
+                        <td className="p-3 text-center">
+                          <div className="inline-flex items-center gap-1 text-sm text-muted-foreground bg-muted px-2 py-1 rounded">
+                            <Lock className="w-3 h-3" />
+                            {(assessment.weight * 100).toFixed(0)}%
+                          </div>
+                        </td>
+                        <td className="p-3">
+                          <div className="space-y-2">
+                            <select
+                              className="w-full rounded-md border bg-background px-2 py-1 text-center"
+                              value={assessment.gradeLabel ?? ""}
+                              onChange={(e) => updateAssessmentGrade(i, e.target.value)}
+                            >
+                              <option value="">Select</option>
+                              {gradeOptions.map((g) => (
+                                <option key={g.label} value={g.label}>
+                                  {g.label}
+                                </option>
+                              ))}
+                            </select>
+                            
+                            {/* Show marks input for "I" grade on sessionals */}
+                            {isIGrade && isSessional && (
+                              <Input
+                                type="number"
+                                min={0}
+                                max={100}
+                                placeholder="Enter marks (0-100)"
+                                value={assessment.marks ?? ""}
+                                onChange={(e) => updateAssessmentMarks(i, e.target.value)}
+                                className="w-full text-center bg-background text-sm"
+                              />
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
+            
+            {/* Show warning messages for special conditions */}
+            {course.letterGrade === 'F' && (
+              <div className="text-sm text-destructive bg-destructive/10 p-2 rounded">
+                {checkForFGrade(course.assessments).reason === 'Total marks < 25' && (
+                  <span>⚠️ Total marks are less than 25 - Grade: F</span>
+                )}
+                {checkForFGrade(course.assessments).reason === 'Learning Engagement is L/AB' && (
+                  <span>⚠️ Learning Engagement is L/AB - Grade: F</span>
+                )}
+                {checkForFGrade(course.assessments).reason === 'Ab/R grade present' && (
+                  <span>⚠️ Ab/R grade present - Grade: F</span>
+                )}
+              </div>
+            )}
+            
+            {course.letterGrade === 'I' && (
+              <div className="text-sm text-primary bg-primary/10 p-2 rounded">
+                ✅ Both sessional marks ≥ 25 - Grade: I (Grade Point: 4)
+              </div>
+            )}
           </div>
         )}
 

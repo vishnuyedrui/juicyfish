@@ -2,6 +2,10 @@ export interface Assessment {
   name: string;
   weight: number;
   gradePoint: number | null;
+  // For "I" grade, store the actual marks entered
+  marks?: number | null;
+  // Store the selected grade label (e.g., "I", "L/AB", "Ab/R")
+  gradeLabel?: string | null;
 }
 
 export interface Course {
@@ -36,9 +40,9 @@ export const GRADE_MAPPINGS: GradeMapping[] = [
 ];
 
 export const DEFAULT_ASSESSMENTS: Assessment[] = [
-  { name: 'Sessional 1', weight: 0.30, gradePoint: null },
-  { name: 'Sessional 2', weight: 0.45, gradePoint: null },
-  { name: 'Learning Engagement', weight: 0.25, gradePoint: null },
+  { name: 'Sessional 1', weight: 0.30, gradePoint: null, marks: null, gradeLabel: null },
+  { name: 'Sessional 2', weight: 0.45, gradePoint: null, marks: null, gradeLabel: null },
+  { name: 'Learning Engagement', weight: 0.25, gradePoint: null, marks: null, gradeLabel: null },
 ];
 
 export function createNewCourse(): Course {
@@ -46,11 +50,65 @@ export function createNewCourse(): Course {
     id: crypto.randomUUID(),
     name: '',
     credits: 3,
-    assessments: DEFAULT_ASSESSMENTS.map(a => ({ ...a })),
+    assessments: DEFAULT_ASSESSMENTS.map(a => ({ ...a, marks: null, gradeLabel: null })),
     wgp: null,
     letterGrade: null,
     finalGradePoint: null,
   };
+}
+
+// Check if the course should get "I" grade (both sessionals have marks >= 25)
+export function checkForIGrade(assessments: Assessment[]): boolean {
+  const sessional1 = assessments.find(a => a.name === 'Sessional 1');
+  const sessional2 = assessments.find(a => a.name === 'Sessional 2');
+  
+  if (!sessional1 || !sessional2) return false;
+  
+  // Both must have "I" grade selected and marks >= 25
+  const s1HasI = sessional1.gradeLabel === 'I' && sessional1.marks !== null && sessional1.marks >= 25;
+  const s2HasI = sessional2.gradeLabel === 'I' && sessional2.marks !== null && sessional2.marks >= 25;
+  
+  return s1HasI && s2HasI;
+}
+
+// Check if the course should get "F" grade due to special conditions
+export function checkForFGrade(assessments: Assessment[]): { isF: boolean; reason: string } {
+  const sessional1 = assessments.find(a => a.name === 'Sessional 1');
+  const sessional2 = assessments.find(a => a.name === 'Sessional 2');
+  const le = assessments.find(a => a.name === 'Learning Engagement');
+  
+  // Calculate total marks (from sessionals that have marks)
+  let totalMarks = 0;
+  if (sessional1?.marks !== null && sessional1?.marks !== undefined) {
+    totalMarks += sessional1.marks;
+  }
+  if (sessional2?.marks !== null && sessional2?.marks !== undefined) {
+    totalMarks += sessional2.marks;
+  }
+  
+  // If either sessional has "I" grade with marks, check total
+  const hasIGradeWithMarks = 
+    (sessional1?.gradeLabel === 'I' && sessional1?.marks !== null) ||
+    (sessional2?.gradeLabel === 'I' && sessional2?.marks !== null);
+  
+  if (hasIGradeWithMarks && totalMarks < 25) {
+    return { isF: true, reason: 'Total marks < 25' };
+  }
+  
+  // Check if LE is L/AB - if total >= 25 and LE is L/AB, then F
+  if (le?.gradeLabel === 'L/AB') {
+    if (totalMarks >= 25 || !hasIGradeWithMarks) {
+      return { isF: true, reason: 'Learning Engagement is L/AB' };
+    }
+  }
+  
+  // Check if any assessment has Ab/R or L/AB (these are always 0 GP)
+  const hasAbR = assessments.some(a => a.gradeLabel === 'Ab/R');
+  if (hasAbR) {
+    return { isF: true, reason: 'Ab/R grade present' };
+  }
+  
+  return { isF: false, reason: '' };
 }
 
 export function calculateWGP(assessments: Assessment[]): number | null {
