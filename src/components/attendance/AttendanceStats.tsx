@@ -63,7 +63,7 @@ export const AttendanceStats = ({
               'text-2xl font-bold',
               overallStats.percentage >= 75 ? 'text-green-600' : 'text-red-600'
             )}>
-              {overallStats.percentage.toFixed(1)}%
+              {overallStats.percentage.toFixed(2)}%
             </span>
           </div>
           <Progress 
@@ -105,7 +105,7 @@ export const AttendanceStats = ({
                     'font-bold',
                     stats.percentage >= 75 ? 'text-green-600' : 'text-red-600'
                   )}>
-                    {stats.total > 0 ? `${stats.percentage.toFixed(1)}%` : 'N/A'}
+                    {stats.total > 0 ? `${stats.percentage.toFixed(2)}%` : 'N/A'}
                   </span>
                 </div>
                 {stats.total > 0 && (

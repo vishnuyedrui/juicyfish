@@ -194,7 +194,7 @@ export const SubjectManager = ({
                         )}
                         {stats.total > 0 && (
                           <span className={`text-xs px-2 py-0.5 rounded ${getAttendanceColor(stats.percentage)}`}>
-                            {stats.attended}/{stats.total} ({stats.percentage.toFixed(1)}%)
+                            {stats.attended}/{stats.total} ({stats.percentage.toFixed(2)}%)
                           </span>
                         )}
                       </div>
