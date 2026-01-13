@@ -103,8 +103,8 @@ export const useAttendanceData = () => {
   }, [fetchData]);
 
   // Subject operations
-  const addSubject = async (name: string, isLab: boolean = false) => {
-    if (!user) return;
+  const addSubject = async (name: string, isLab: boolean = false, totalClasses: number = 0, attendedClasses: number = 0) => {
+    if (!user) return null;
     const { data, error } = await supabase
       .from('subjects')
       .insert({ user_id: user.id, name, is_lab: isLab })
@@ -115,7 +115,49 @@ export const useAttendanceData = () => {
       toast.error('Failed to add subject');
       return null;
     }
+    
+    // If initial attendance data is provided, create attendance records
+    if (totalClasses > 0) {
+      const today = new Date();
+      const records = [];
+      
+      // Create 'present' records for attended classes
+      for (let i = 0; i < attendedClasses; i++) {
+        records.push({
+          user_id: user.id,
+          subject_id: data.id,
+          time_slot_id: timeSlots[0]?.id || 'placeholder',
+          date: format(new Date(today.getTime() - (totalClasses - i) * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'),
+          status: 'present',
+        });
+      }
+      
+      // Create 'absent' records for missed classes
+      const absentClasses = totalClasses - attendedClasses;
+      for (let i = 0; i < absentClasses; i++) {
+        records.push({
+          user_id: user.id,
+          subject_id: data.id,
+          time_slot_id: timeSlots[0]?.id || 'placeholder',
+          date: format(new Date(today.getTime() - (absentClasses - i) * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'),
+          status: 'absent',
+        });
+      }
+      
+      if (records.length > 0 && timeSlots.length > 0) {
+        const { data: recordsData, error: recordsError } = await supabase
+          .from('attendance_records')
+          .insert(records)
+          .select();
+        
+        if (!recordsError && recordsData) {
+          setAttendanceRecords([...attendanceRecords, ...recordsData as DbAttendanceRecord[]]);
+        }
+      }
+    }
+    
     setSubjects([...subjects, data]);
+    toast.success('Subject added');
     return data;
   };
 

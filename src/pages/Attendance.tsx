@@ -133,6 +133,7 @@ const Attendance = () => {
               onAddSubject={addSubject}
               onUpdateSubject={updateSubject}
               onDeleteSubject={deleteSubject}
+              getSubjectStats={calculateSubjectStats}
             />
           </TabsContent>
           
