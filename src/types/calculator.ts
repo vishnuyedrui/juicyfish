@@ -57,61 +57,110 @@ export function createNewCourse(): Course {
   };
 }
 
-// Check if the course should get "I" grade (both sessionals have marks >= 25)
-export function checkForIGrade(assessments: Assessment[]): boolean {
-  const sessional1 = assessments.find(a => a.name === 'Sessional 1');
-  const sessional2 = assessments.find(a => a.name === 'Sessional 2');
-  
-  if (!sessional1 || !sessional2) return false;
-  
-  // Both must have "I" grade selected and marks >= 25
-  const s1HasI = sessional1.gradeLabel === 'I' && sessional1.marks !== null && sessional1.marks >= 25;
-  const s2HasI = sessional2.gradeLabel === 'I' && sessional2.marks !== null && sessional2.marks >= 25;
-  
-  return s1HasI && s2HasI;
+// Grades that require marks input: P, I, Ab/R
+export const MARKS_REQUIRED_GRADES = ['P', 'I', 'Ab/R'];
+
+// Check if a sessional requires marks input
+export function requiresMarksInput(gradeLabel: string | null): boolean {
+  return gradeLabel !== null && MARKS_REQUIRED_GRADES.includes(gradeLabel);
 }
 
-// Check if the course should get "F" grade due to special conditions
-export function checkForFGrade(assessments: Assessment[]): { isF: boolean; reason: string } {
+// Check if either sessional has a grade that requires marks
+export function sessionalsNeedMarks(assessments: Assessment[]): boolean {
   const sessional1 = assessments.find(a => a.name === 'Sessional 1');
   const sessional2 = assessments.find(a => a.name === 'Sessional 2');
-  const le = assessments.find(a => a.name === 'Learning Engagement');
   
-  // Calculate total marks (from sessionals that have marks)
-  let totalMarks = 0;
+  return (
+    requiresMarksInput(sessional1?.gradeLabel ?? null) ||
+    requiresMarksInput(sessional2?.gradeLabel ?? null)
+  );
+}
+
+// Check if both sessionals have marks entered (when marks are required)
+export function bothSessionalsHaveMarks(assessments: Assessment[]): boolean {
+  const sessional1 = assessments.find(a => a.name === 'Sessional 1');
+  const sessional2 = assessments.find(a => a.name === 'Sessional 2');
+  
+  // If either requires marks input, both must have marks
+  const s1NeedsMarks = requiresMarksInput(sessional1?.gradeLabel ?? null);
+  const s2NeedsMarks = requiresMarksInput(sessional2?.gradeLabel ?? null);
+  
+  if (s1NeedsMarks || s2NeedsMarks) {
+    return (sessional1?.marks !== null && sessional1?.marks !== undefined) &&
+           (sessional2?.marks !== null && sessional2?.marks !== undefined);
+  }
+  
+  return true; // No marks required
+}
+
+// Calculate total sessional marks
+export function calculateTotalSessionalMarks(assessments: Assessment[]): number {
+  const sessional1 = assessments.find(a => a.name === 'Sessional 1');
+  const sessional2 = assessments.find(a => a.name === 'Sessional 2');
+  
+  let total = 0;
   if (sessional1?.marks !== null && sessional1?.marks !== undefined) {
-    totalMarks += sessional1.marks;
+    total += sessional1.marks;
   }
   if (sessional2?.marks !== null && sessional2?.marks !== undefined) {
-    totalMarks += sessional2.marks;
+    total += sessional2.marks;
   }
   
-  // If either sessional has "I" grade with marks, check total
-  const hasIGradeWithMarks = 
-    (sessional1?.gradeLabel === 'I' && sessional1?.marks !== null) ||
-    (sessional2?.gradeLabel === 'I' && sessional2?.marks !== null);
+  return total;
+}
+
+// CRITICAL GRADING LOGIC - Marks-based final grade determination
+export function determineFinalGrade(assessments: Assessment[]): { 
+  letterGrade: string | null; 
+  gradePoint: number | null;
+  reason: string;
+  isSpecialCase: boolean;
+} {
+  const le = assessments.find(a => a.name === 'Learning Engagement');
   
-  if (hasIGradeWithMarks && totalMarks < 25) {
-    return { isF: true, reason: 'Total marks < 25' };
-  }
-  
-  // Check if LE is L/AB - if total >= 25 and LE is L/AB, then F
+  // Rule 7: If LE = L/AB → Final Grade = F immediately
   if (le?.gradeLabel === 'L/AB') {
-    if (totalMarks >= 25 || !hasIGradeWithMarks) {
-      return { isF: true, reason: 'Learning Engagement is L/AB' };
+    return { letterGrade: 'F', gradePoint: 0, reason: 'Learning Engagement is L/AB', isSpecialCase: true };
+  }
+  
+  // Check if sessionals need marks input
+  if (sessionalsNeedMarks(assessments)) {
+    // Rule 1: Both sessionals must have marks if either has P, I, or Ab/R
+    if (!bothSessionalsHaveMarks(assessments)) {
+      // Waiting for marks input
+      return { letterGrade: null, gradePoint: null, reason: 'Enter marks for both sessionals', isSpecialCase: false };
     }
+    
+    // Rule 2: Calculate total sessional marks
+    const totalMarks = calculateTotalSessionalMarks(assessments);
+    
+    // Rule 4: If totalSessionalMarks < 25 → Final Grade = F
+    if (totalMarks < 25) {
+      return { letterGrade: 'F', gradePoint: 0, reason: 'Total sessional marks < 25', isSpecialCase: true };
+    }
+    
+    // Rule 3: If totalSessionalMarks >= 25 → I grade with GP = 4
+    return { letterGrade: 'I', gradePoint: 4, reason: 'Total sessional marks ≥ 25', isSpecialCase: true };
   }
   
-  // Check if any assessment has Ab/R or L/AB (these are always 0 GP)
-  const hasAbR = assessments.some(a => a.gradeLabel === 'Ab/R');
-  if (hasAbR) {
-    return { isF: true, reason: 'Ab/R grade present' };
-  }
-  
-  return { isF: false, reason: '' };
+  // No special case - use normal WGP calculation
+  return { letterGrade: null, gradePoint: null, reason: '', isSpecialCase: false };
+}
+
+// DEPRECATED - Keep for backward compatibility but use determineFinalGrade instead
+export function checkForIGrade(assessments: Assessment[]): boolean {
+  const result = determineFinalGrade(assessments);
+  return result.letterGrade === 'I';
+}
+
+// DEPRECATED - Keep for backward compatibility but use determineFinalGrade instead  
+export function checkForFGrade(assessments: Assessment[]): { isF: boolean; reason: string } {
+  const result = determineFinalGrade(assessments);
+  return { isF: result.letterGrade === 'F', reason: result.reason };
 }
 
 export function calculateWGP(assessments: Assessment[]): number | null {
+  // Rule 6: WGP calculation must never break - all grade points must be valid
   const allFilled = assessments.every(
     a => a.gradePoint !== null && a.gradePoint >= 0
   );
@@ -122,8 +171,40 @@ export function calculateWGP(assessments: Assessment[]): number | null {
     0
   );
 
-  // ✅ ONLY CHANGE: CEIL THE WGP
+  // CEIL THE WGP
   return Math.min(10, Math.ceil(rawWGP));
+}
+
+// Calculate WGP with special grade handling - ensures valid grade points for calculation
+export function calculateWGPWithSpecialGrades(assessments: Assessment[]): { wgp: number; effectiveAssessments: Assessment[] } | null {
+  // For special cases, we need to ensure all assessments have valid grade points
+  const effectiveAssessments = assessments.map(a => {
+    // If gradePoint is already set and valid, use it
+    if (a.gradePoint !== null && a.gradePoint >= 0) {
+      return a;
+    }
+    
+    // For marks-based grades (P, I, Ab/R), use 4 as the grade point for WGP calculation
+    // This is the "I" grade point value
+    if (requiresMarksInput(a.gradeLabel ?? null)) {
+      return { ...a, gradePoint: 4 };
+    }
+    
+    return a;
+  });
+  
+  const allFilled = effectiveAssessments.every(
+    a => a.gradePoint !== null && a.gradePoint >= 0
+  );
+  
+  if (!allFilled) return null;
+  
+  const rawWGP = effectiveAssessments.reduce(
+    (sum, a) => sum + (a.gradePoint! * a.weight),
+    0
+  );
+  
+  return { wgp: Math.min(10, Math.ceil(rawWGP)), effectiveAssessments };
 }
 
 
