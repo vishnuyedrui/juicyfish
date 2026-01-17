@@ -67,6 +67,14 @@ export default {
           p: "hsl(var(--grade-p))",
           f: "hsl(var(--grade-f))",
         },
+        landing: {
+          dark: "hsl(var(--landing-dark))",
+          card: "hsl(var(--landing-card))",
+          accent: "hsl(var(--landing-accent))",
+          "accent-light": "hsl(var(--landing-accent-light))",
+          text: "hsl(var(--landing-text))",
+          muted: "hsl(var(--landing-muted))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
