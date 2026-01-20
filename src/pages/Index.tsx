@@ -7,8 +7,7 @@ import { SGPASection } from "@/components/calculator/SGPASection";
 import { CGPASection } from "@/components/calculator/CGPASection";
 import { GradeChart } from "@/components/calculator/GradeChart";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, GraduationCap, Sparkles, CalendarCheck } from "lucide-react";
-
+import { PlusCircle, GraduationCap, Sparkles, LogIn } from "lucide-react";
 const Index = () => {
   const [courses, setCourses] = useState<Course[]>([createNewCourse()]);
   const [showCGPA, setShowCGPA] = useState(false);
@@ -75,10 +74,10 @@ const Index = () => {
                 <p className="text-xs sm:text-sm text-muted-foreground truncate">Step-by-step WGP, SGPA & CGPA</p>
               </div>
             </div>
-            <Link to="/attendance">
+            <Link to="/auth">
               <Button variant="outline" size="sm" className="gap-2">
-                <CalendarCheck className="w-4 h-4" />
-                <span className="hidden sm:inline">Attendance</span>
+                <LogIn className="w-4 h-4" />
+                <span className="hidden sm:inline">Sign In</span>
               </Button>
             </Link>
           </div>

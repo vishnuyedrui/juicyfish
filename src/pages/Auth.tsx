@@ -1,14 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CalendarCheck, Loader2, GraduationCap } from 'lucide-react';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
+
+interface Semester {
+  id: string;
+  number: number;
+  name: string;
+}
+
+interface Branch {
+  id: string;
+  code: string;
+  name: string;
+}
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -23,6 +37,25 @@ const Auth = () => {
   const [signUpEmail, setSignUpEmail] = useState('');
   const [signUpPassword, setSignUpPassword] = useState('');
   const [signUpFullName, setSignUpFullName] = useState('');
+  const [selectedSemester, setSelectedSemester] = useState('');
+  const [selectedBranch, setSelectedBranch] = useState('');
+
+  // Data for dropdowns
+  const [semesters, setSemesters] = useState<Semester[]>([]);
+  const [branches, setBranches] = useState<Branch[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const [semestersRes, branchesRes] = await Promise.all([
+        supabase.from('semesters').select('*').order('number'),
+        supabase.from('branches').select('*').order('name')
+      ]);
+      
+      if (semestersRes.data) setSemesters(semestersRes.data);
+      if (branchesRes.data) setBranches(branchesRes.data);
+    };
+    fetchData();
+  }, []);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +67,7 @@ const Auth = () => {
       toast.error(error.message);
     } else {
       toast.success('Welcome back!');
-      navigate('/attendance');
+      navigate('/dashboard');
     }
     
     setIsLoading(false);
@@ -42,16 +75,44 @@ const Auth = () => {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!selectedSemester || !selectedBranch) {
+      toast.error('Please select your semester and branch');
+      return;
+    }
+    
     setIsLoading(true);
 
     const { error } = await signUp(signUpEmail, signUpPassword, signUpFullName);
     
     if (error) {
       toast.error(error.message);
-    } else {
-      toast.success('Account created successfully!');
-      navigate('/attendance');
+      setIsLoading(false);
+      return;
     }
+
+    // Wait for user to be created and get the session
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (user) {
+      // Update the profile with semester and branch
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({
+          semester_id: selectedSemester,
+          branch_id: selectedBranch,
+          full_name: signUpFullName,
+          email: signUpEmail
+        })
+        .eq('user_id', user.id);
+
+      if (profileError) {
+        console.error('Error updating profile:', profileError);
+      }
+    }
+
+    toast.success('Account created successfully!');
+    navigate('/dashboard');
     
     setIsLoading(false);
   };
@@ -87,7 +148,7 @@ const Auth = () => {
           <CardHeader className="text-center">
             <CardTitle className="text-2xl">Welcome</CardTitle>
             <CardDescription>
-              Sign in to access your attendance dashboard
+              Sign in to access your dashboard
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -144,6 +205,7 @@ const Auth = () => {
                       placeholder="John Doe"
                       value={signUpFullName}
                       onChange={(e) => setSignUpFullName(e.target.value)}
+                      required
                     />
                   </div>
                   <div className="space-y-2">
@@ -168,6 +230,36 @@ const Auth = () => {
                       required
                       minLength={6}
                     />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-semester">Semester</Label>
+                    <Select value={selectedSemester} onValueChange={setSelectedSemester}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your semester" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {semesters.map((sem) => (
+                          <SelectItem key={sem.id} value={sem.id}>
+                            {sem.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-branch">Branch</Label>
+                    <Select value={selectedBranch} onValueChange={setSelectedBranch}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your branch" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {branches.map((branch) => (
+                          <SelectItem key={branch.id} value={branch.id}>
+                            {branch.name} ({branch.code})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                   <Button type="submit" className="w-full" disabled={isLoading}>
                     {isLoading ? (
