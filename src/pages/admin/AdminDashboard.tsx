@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useAdmin } from '@/hooks/useAdmin';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Shield, BookOpen, FolderPlus, Users, LogOut, Loader2 } from 'lucide-react';
+import { Shield, BookOpen, FolderPlus, Users, LogOut, Loader2, Megaphone } from 'lucide-react';
 
 const AdminDashboard = () => {
   const { user, signOut } = useAuth();
@@ -94,6 +94,26 @@ const AdminDashboard = () => {
               <CardContent>
                 <Button variant="secondary" className="w-full">
                   Go to Resources
+                </Button>
+              </CardContent>
+            </Card>
+          </Link>
+
+          {/* Manage Announcements */}
+          <Link to="/admin/announcements">
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+              <CardHeader>
+                <div className="w-12 h-12 rounded-xl bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mb-2">
+                  <Megaphone className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+                </div>
+                <CardTitle>Announcements</CardTitle>
+                <CardDescription>
+                  Post WhatsApp groups, meeting links, and important notices
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button variant="secondary" className="w-full">
+                  Go to Announcements
                 </Button>
               </CardContent>
             </Card>

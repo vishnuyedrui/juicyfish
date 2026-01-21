@@ -16,6 +16,7 @@ import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import CourseManager from "./pages/admin/CourseManager";
 import ResourceManager from "./pages/admin/ResourceManager";
+import AnnouncementManager from "./pages/admin/AnnouncementManager";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -115,6 +116,11 @@ const App = () => (
             <Route path="/admin/resources" element={
               <AdminRoute>
                 <ResourceManager />
+              </AdminRoute>
+            } />
+            <Route path="/admin/announcements" element={
+              <AdminRoute>
+                <AnnouncementManager />
               </AdminRoute>
             } />
             

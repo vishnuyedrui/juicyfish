@@ -60,9 +60,29 @@ const CourseManager = () => {
 
       if (error) throw error;
 
+      // Auto-create default sections for the new course
+      const defaultSections = [
+        { title: 'Syllabus', section_type: 'syllabus', chapter_number: 0, sort_order: 1 },
+        { title: 'Chapter 1', section_type: 'chapter', chapter_number: 1, sort_order: 2 },
+        { title: 'Chapter 2', section_type: 'chapter', chapter_number: 2, sort_order: 3 },
+        { title: 'Chapter 3', section_type: 'chapter', chapter_number: 3, sort_order: 4 },
+        { title: 'Chapter 4', section_type: 'chapter', chapter_number: 4, sort_order: 5 },
+        { title: 'Chapter 5', section_type: 'chapter', chapter_number: 5, sort_order: 6 },
+        { title: 'Additional Resources', section_type: 'additional_resources', chapter_number: 0, sort_order: 7 },
+        { title: 'PYQs', section_type: 'pyq', chapter_number: 0, sort_order: 8 },
+      ];
+
+      const { error: sectionsError } = await supabase
+        .from('chapters')
+        .insert(defaultSections.map((s) => ({ ...s, course_id: data.id })));
+
+      if (sectionsError) {
+        console.error('Error creating sections:', sectionsError);
+      }
+
       setCourses([...courses, data]);
       setNewCourse({ name: '', code: '' });
-      toast({ title: 'Success', description: 'Course added successfully' });
+      toast({ title: 'Success', description: 'Course added with default sections (Syllabus, Ch 1-5, Additional Resources, PYQs)' });
     } catch (error: any) {
       toast({
         title: 'Error',

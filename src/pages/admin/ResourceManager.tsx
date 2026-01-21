@@ -247,18 +247,20 @@ const ResourceManager = () => {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>Chapter (Optional)</Label>
+              <Label>Section</Label>
               <Select value={selectedChapter || "all"} onValueChange={(v) => setSelectedChapter(v === "all" ? "" : v)} disabled={chapters.length === 0}>
                 <SelectTrigger>
-                  <SelectValue placeholder={chapters.length === 0 ? 'No chapters' : 'All chapters'} />
+                  <SelectValue placeholder={chapters.length === 0 ? 'No sections' : 'All sections'} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Chapters</SelectItem>
-                  {chapters.map((chapter) => (
-                    <SelectItem key={chapter.id} value={chapter.id}>
-                      Ch. {chapter.chapter_number}: {chapter.title}
-                    </SelectItem>
-                  ))}
+                  <SelectItem value="all">All Sections</SelectItem>
+                  {[...chapters]
+                    .sort((a, b) => ((a as any).sort_order ?? a.chapter_number) - ((b as any).sort_order ?? b.chapter_number))
+                    .map((chapter) => (
+                      <SelectItem key={chapter.id} value={chapter.id}>
+                        {chapter.title}
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
             </div>

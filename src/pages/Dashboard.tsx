@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserProfile, useCourses, useSemesters, useBranches } from '@/hooks/useResources';
+import { useAnnouncements } from '@/hooks/useAnnouncements';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { GraduationCap, BookOpen, CalendarCheck, User, LogOut, Loader2 } from 'lucide-react';
+import { GraduationCap, BookOpen, CalendarCheck, User, LogOut, Loader2, Megaphone, MessageCircle, Video, Send, Link as LinkIcon, ExternalLink } from 'lucide-react';
 
 const Dashboard = () => {
   const { user, signOut, loading: authLoading } = useAuth();
@@ -13,8 +14,22 @@ const Dashboard = () => {
   const { semesters } = useSemesters();
   const { branches } = useBranches();
   const { courses } = useCourses(profile?.semester_id || undefined, profile?.branch_id || undefined);
+  const { announcements } = useAnnouncements(profile?.semester_id, profile?.branch_id);
 
   const [semesterName, setSemesterName] = useState('');
+
+  const getAnnouncementIcon = (linkType: string) => {
+    switch (linkType) {
+      case 'whatsapp':
+        return MessageCircle;
+      case 'meeting':
+        return Video;
+      case 'telegram':
+        return Send;
+      default:
+        return LinkIcon;
+    }
+  };
   const [branchName, setBranchName] = useState('');
 
   useEffect(() => {
@@ -80,6 +95,44 @@ const Dashboard = () => {
       </header>
 
       <main className="container max-w-6xl mx-auto px-4 py-8">
+        {/* Announcements Section */}
+        {announcements.length > 0 && (
+          <Card className="mb-8 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/20 dark:to-amber-950/20 border-orange-200 dark:border-orange-800">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Megaphone className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                Announcements
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {announcements.map((ann) => {
+                  const Icon = getAnnouncementIcon(ann.link_type);
+                  return (
+                    <div key={ann.id} className="flex items-center justify-between gap-4 p-3 bg-background/80 rounded-lg">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <Icon className="w-5 h-5 text-orange-600 dark:text-orange-400 flex-shrink-0" />
+                        <div className="min-w-0">
+                          <p className="font-medium truncate">{ann.title}</p>
+                          {ann.description && (
+                            <p className="text-sm text-muted-foreground truncate">{ann.description}</p>
+                          )}
+                        </div>
+                      </div>
+                      <a href={ann.link_url} target="_blank" rel="noopener noreferrer">
+                        <Button size="sm" className="gap-2 bg-orange-600 hover:bg-orange-700 text-white">
+                          {ann.link_label}
+                          <ExternalLink className="w-3 h-3" />
+                        </Button>
+                      </a>
+                    </div>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Quick Links */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <Link to="/courses">
