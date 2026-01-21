@@ -14,6 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
+      announcements: {
+        Row: {
+          branch_id: string | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          link_label: string
+          link_type: string | null
+          link_url: string
+          semester_id: string | null
+          title: string
+        }
+        Insert: {
+          branch_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          link_label: string
+          link_type?: string | null
+          link_url: string
+          semester_id?: string | null
+          title: string
+        }
+        Update: {
+          branch_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          link_label?: string
+          link_type?: string | null
+          link_url?: string
+          semester_id?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "announcements_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "announcements_semester_id_fkey"
+            columns: ["semester_id"]
+            isOneToOne: false
+            referencedRelation: "semesters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       attendance_records: {
         Row: {
           created_at: string
@@ -86,6 +143,8 @@ export type Database = {
           course_id: string
           created_at: string
           id: string
+          section_type: string | null
+          sort_order: number | null
           title: string
         }
         Insert: {
@@ -93,6 +152,8 @@ export type Database = {
           course_id: string
           created_at?: string
           id?: string
+          section_type?: string | null
+          sort_order?: number | null
           title: string
         }
         Update: {
@@ -100,6 +161,8 @@ export type Database = {
           course_id?: string
           created_at?: string
           id?: string
+          section_type?: string | null
+          sort_order?: number | null
           title?: string
         }
         Relationships: [

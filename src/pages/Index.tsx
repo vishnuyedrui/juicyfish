@@ -7,7 +7,7 @@ import { SGPASection } from "@/components/calculator/SGPASection";
 import { CGPASection } from "@/components/calculator/CGPASection";
 import { GradeChart } from "@/components/calculator/GradeChart";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, GraduationCap, Sparkles, LogIn } from "lucide-react";
+import { PlusCircle, GraduationCap, Sparkles, LogIn, Shield } from "lucide-react";
 const Index = () => {
   const [courses, setCourses] = useState<Course[]>([createNewCourse()]);
   const [showCGPA, setShowCGPA] = useState(false);
@@ -74,12 +74,20 @@ const Index = () => {
                 <p className="text-xs sm:text-sm text-muted-foreground truncate">Step-by-step WGP, SGPA & CGPA</p>
               </div>
             </div>
-            <Link to="/auth">
-              <Button variant="outline" size="sm" className="gap-2">
-                <LogIn className="w-4 h-4" />
-                <span className="hidden sm:inline">Sign In</span>
-              </Button>
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link to="/admin/login">
+                <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground">
+                  <Shield className="w-4 h-4" />
+                  <span className="hidden sm:inline">Admin</span>
+                </Button>
+              </Link>
+              <Link to="/auth">
+                <Button variant="outline" size="sm" className="gap-2">
+                  <LogIn className="w-4 h-4" />
+                  <span className="hidden sm:inline">Sign In</span>
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </header>
