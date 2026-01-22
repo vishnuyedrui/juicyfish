@@ -179,32 +179,32 @@ const ResourceManager = () => {
   return (
     <div className="min-h-screen bg-background">
       <header className="bg-card border-b sticky top-0 z-10">
-        <div className="container max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
-          <div className="flex items-center gap-3 sm:gap-4">
-            <Button variant="ghost" size="icon" onClick={() => navigate('/admin')} className="flex-shrink-0">
+        <div className="container max-w-6xl mx-auto px-4 py-4">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon" onClick={() => navigate('/admin')}>
               <ArrowLeft className="w-5 h-5" />
             </Button>
-            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0">
-                <FolderPlus className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 dark:text-green-400" />
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                <FolderPlus className="w-5 h-5 text-green-600 dark:text-green-400" />
               </div>
-              <h1 className="text-lg sm:text-xl font-bold truncate">Resource Manager</h1>
+              <h1 className="text-xl font-bold">Resource Manager</h1>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="container max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-8 space-y-4 sm:space-y-8">
+      <main className="container max-w-6xl mx-auto px-4 py-8 space-y-8">
         {/* Filter Section */}
         <Card>
-          <CardHeader className="pb-3 sm:pb-6">
-            <CardTitle className="text-lg sm:text-xl">Select Course</CardTitle>
+          <CardHeader>
+            <CardTitle>Select Course</CardTitle>
           </CardHeader>
-          <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <CardContent className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="space-y-2">
-              <Label className="text-sm">Semester</Label>
+              <Label>Semester</Label>
               <Select value={selectedSemester} onValueChange={setSelectedSemester}>
-                <SelectTrigger className="h-10">
+                <SelectTrigger>
                   <SelectValue placeholder="Select semester" />
                 </SelectTrigger>
                 <SelectContent>
@@ -217,9 +217,9 @@ const ResourceManager = () => {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label className="text-sm">Branch</Label>
+              <Label>Branch</Label>
               <Select value={selectedBranch} onValueChange={setSelectedBranch}>
-                <SelectTrigger className="h-10">
+                <SelectTrigger>
                   <SelectValue placeholder="Select branch" />
                 </SelectTrigger>
                 <SelectContent>
@@ -232,14 +232,10 @@ const ResourceManager = () => {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label className="text-sm">Course</Label>
-              <Select 
-                value={selectedCourse} 
-                onValueChange={setSelectedCourse} 
-                disabled={!selectedSemester || !selectedBranch || courses.length === 0}
-              >
-                <SelectTrigger className="h-10">
-                  <SelectValue placeholder={!selectedSemester || !selectedBranch ? 'Select semester & branch first' : courses.length === 0 ? 'No courses' : 'Select course'} />
+              <Label>Course</Label>
+              <Select value={selectedCourse} onValueChange={setSelectedCourse} disabled={courses.length === 0}>
+                <SelectTrigger>
+                  <SelectValue placeholder={courses.length === 0 ? 'No courses' : 'Select course'} />
                 </SelectTrigger>
                 <SelectContent>
                   {courses.map((course) => (
@@ -251,22 +247,20 @@ const ResourceManager = () => {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label className="text-sm">Section</Label>
-              <Select 
-                value={selectedChapter || "all"} 
-                onValueChange={(v) => setSelectedChapter(v === "all" ? "" : v)} 
-                disabled={!selectedCourse || chapters.length === 0}
-              >
-                <SelectTrigger className="h-10">
-                  <SelectValue placeholder={!selectedCourse ? 'Select course first' : chapters.length === 0 ? 'No sections' : 'All sections'} />
+              <Label>Section</Label>
+              <Select value={selectedChapter || "all"} onValueChange={(v) => setSelectedChapter(v === "all" ? "" : v)} disabled={chapters.length === 0}>
+                <SelectTrigger>
+                  <SelectValue placeholder={chapters.length === 0 ? 'No sections' : 'All sections'} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Sections</SelectItem>
-                  {chapters.map((chapter) => (
-                    <SelectItem key={chapter.id} value={chapter.id}>
-                      {chapter.title}
-                    </SelectItem>
-                  ))}
+                  {[...chapters]
+                    .sort((a, b) => ((a as any).sort_order ?? a.chapter_number) - ((b as any).sort_order ?? b.chapter_number))
+                    .map((chapter) => (
+                      <SelectItem key={chapter.id} value={chapter.id}>
+                        {chapter.title}
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
             </div>

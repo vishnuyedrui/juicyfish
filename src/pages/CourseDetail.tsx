@@ -140,114 +140,115 @@ const CourseDetail = () => {
   return (
     <div className="min-h-screen bg-background">
       <header className="bg-card border-b sticky top-0 z-10">
-        <div className="container max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
-          <div className="flex items-center gap-3 sm:gap-4">
-            <Button variant="ghost" size="icon" onClick={() => navigate('/courses')} className="flex-shrink-0">
+        <div className="container max-w-6xl mx-auto px-4 py-4">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon" onClick={() => navigate('/courses')}>
               <ArrowLeft className="w-5 h-5" />
             </Button>
-            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                <BookOpen className="w-5 h-5 text-primary" />
               </div>
-              <div className="min-w-0">
-                <h1 className="text-base sm:text-xl font-bold truncate">{course.name}</h1>
-                <p className="text-xs sm:text-sm text-muted-foreground">{course.code}</p>
+              <div>
+                <h1 className="text-xl font-bold">{course.name}</h1>
+                <p className="text-sm text-muted-foreground">{course.code}</p>
               </div>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="container max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
+      <main className="container max-w-6xl mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-2 mb-4 sm:mb-6">
-            <TabsTrigger value="chapters" className="text-sm">Sections</TabsTrigger>
-            <TabsTrigger value="resources" className="text-sm">All Resources</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 mb-6">
+            <TabsTrigger value="chapters">Sections</TabsTrigger>
+            <TabsTrigger value="resources">All Resources</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="chapters" className="space-y-4 sm:space-y-6">
+          <TabsContent value="chapters" className="space-y-6">
             {sortedChapters.length === 0 ? (
               <Card>
-                <CardContent className="py-8 sm:py-12 text-center">
-                  <BookOpen className="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-muted-foreground mb-4" />
-                  <p className="text-sm sm:text-base text-muted-foreground">No sections available yet.</p>
+                <CardContent className="py-12 text-center">
+                  <BookOpen className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                  <p className="text-muted-foreground">No sections available yet.</p>
                 </CardContent>
               </Card>
             ) : (
-              <Accordion type="single" collapsible className="space-y-3 sm:space-y-4">
+              <Accordion type="single" collapsible className="space-y-4">
                 {sortedChapters.map((chapter) => {
                   const chapterResources = getResourcesByChapter(chapter.id);
                   const SectionIcon = getSectionIcon(chapter as Chapter);
                   const sectionType = (chapter as any).section_type || 'chapter';
                   
-                    return (
-                      <AccordionItem key={chapter.id} value={chapter.id} className="border rounded-lg px-3 sm:px-4">
-                        <AccordionTrigger className="hover:no-underline py-3 sm:py-4">
-                          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-                            <span className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                              sectionType === 'syllabus' ? 'bg-green-100 dark:bg-green-900/30' :
-                              sectionType === 'pyq' ? 'bg-orange-100 dark:bg-orange-900/30' :
-                              sectionType === 'additional_resources' ? 'bg-purple-100 dark:bg-purple-900/30' :
-                              'bg-primary/10'
-                            }`}>
-                              {sectionType === 'chapter' ? (
-                                <span className="text-xs sm:text-sm font-medium text-primary">{chapter.chapter_number}</span>
-                              ) : (
-                                <SectionIcon className={`w-3 h-3 sm:w-4 sm:h-4 ${SECTION_TYPE_INFO[sectionType]?.color || 'text-primary'}`} />
-                              )}
-                            </span>
-                            <span className="font-medium text-sm sm:text-base truncate">{chapter.title}</span>
-                            <span className="text-xs sm:text-sm text-muted-foreground flex-shrink-0">
-                              ({chapterResources.length})
-                            </span>
-                          </div>
-                        </AccordionTrigger>
-                        <AccordionContent className="pt-2 sm:pt-4 pb-4 sm:pb-6">
+                  return (
+                    <AccordionItem key={chapter.id} value={chapter.id} className="border rounded-lg px-4">
+                      <AccordionTrigger className="hover:no-underline">
+                        <div className="flex items-center gap-3">
+                          <span className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                            sectionType === 'syllabus' ? 'bg-green-100 dark:bg-green-900/30' :
+                            sectionType === 'pyq' ? 'bg-orange-100 dark:bg-orange-900/30' :
+                            sectionType === 'additional_resources' ? 'bg-purple-100 dark:bg-purple-900/30' :
+                            'bg-primary/10'
+                          }`}>
+                            {sectionType === 'chapter' ? (
+                              <span className="text-sm font-medium text-primary">{chapter.chapter_number}</span>
+                            ) : (
+                              <SectionIcon className={`w-4 h-4 ${SECTION_TYPE_INFO[sectionType]?.color || 'text-primary'}`} />
+                            )}
+                          </span>
+                          <span className="font-medium">{chapter.title}</span>
+                          <span className="text-sm text-muted-foreground">
+                            ({chapterResources.length} resources)
+                          </span>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="pt-4 pb-6">
                         {chapterResources.length === 0 ? (
-                            <p className="text-xs sm:text-sm text-muted-foreground text-center py-4">
-                              No resources available for this section.
-                            </p>
-                          ) : (
-                            <div className="grid gap-2 sm:gap-3">
-                              {chapterResources.map((resource) => {
-                                const typeInfo = RESOURCE_TYPE_INFO[resource.resource_type as keyof typeof RESOURCE_TYPE_INFO];
-                                const Icon = typeInfo?.icon || File;
-                                
-                                return (
-                                  <div
-                                    key={resource.id}
-                                    className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg border hover:bg-muted/50 transition-colors group cursor-pointer"
-                                    onClick={() => handleViewResource(resource)}
-                                  >
-                                    <Icon className={`w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 ${typeInfo?.color || 'text-muted-foreground'}`} />
-                                    <div className="flex-1 min-w-0">
-                                      <p className="font-medium text-sm truncate">{resource.title}</p>
-                                      {resource.description && (
-                                        <p className="text-xs text-muted-foreground truncate hidden sm:block">{resource.description}</p>
-                                      )}
-                                    </div>
-                                    <Button variant="ghost" size="sm" className="gap-1 flex-shrink-0 h-8 px-2 sm:px-3">
-                                      {resource.resource_type === 'youtube_video' ? (
-                                        <>
-                                          <Play className="w-3 h-3 sm:w-4 sm:h-4" />
-                                          <span className="hidden sm:inline">Watch</span>
-                                        </>
-                                      ) : (
-                                        <>
-                                          <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
-                                          <span className="hidden sm:inline">View</span>
-                                        </>
-                                      )}
-                                    </Button>
+                          <p className="text-sm text-muted-foreground text-center py-4">
+                            No resources available for this section.
+                          </p>
+                        ) : (
+                          <div className="grid gap-3">
+                            {chapterResources.map((resource) => {
+                              const typeInfo = RESOURCE_TYPE_INFO[resource.resource_type as keyof typeof RESOURCE_TYPE_INFO];
+                              const Icon = typeInfo?.icon || File;
+                              const isViewable = ['youtube_video', 'drive_link', 'document', 'image', 'notes', 'previous_paper', 'syllabus'].includes(resource.resource_type);
+                              
+                              return (
+                                <div
+                                  key={resource.id}
+                                  className="flex items-center gap-3 p-3 rounded-lg border hover:bg-muted/50 transition-colors group cursor-pointer"
+                                  onClick={() => handleViewResource(resource)}
+                                >
+                                  <Icon className={`w-5 h-5 ${typeInfo?.color || 'text-muted-foreground'}`} />
+                                  <div className="flex-1 min-w-0">
+                                    <p className="font-medium truncate">{resource.title}</p>
+                                    {resource.description && (
+                                      <p className="text-sm text-muted-foreground truncate">{resource.description}</p>
+                                    )}
                                   </div>
-                                );
-                              })}
-                            </div>
-                          )}
-                        </AccordionContent>
-                      </AccordionItem>
-                    );
-                  })}
+                                  <Button variant="ghost" size="sm" className="gap-1">
+                                    {resource.resource_type === 'youtube_video' ? (
+                                      <>
+                                        <Play className="w-4 h-4" />
+                                        Watch
+                                      </>
+                                    ) : (
+                                      <>
+                                        <Eye className="w-4 h-4" />
+                                        View
+                                      </>
+                                    )}
+                                  </Button>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </AccordionContent>
+                    </AccordionItem>
+                  );
+                })}
               </Accordion>
             )}
 

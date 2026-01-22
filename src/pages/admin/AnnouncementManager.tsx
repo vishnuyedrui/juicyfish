@@ -176,31 +176,31 @@ const AnnouncementManager = () => {
   return (
     <div className="min-h-screen bg-background">
       <header className="bg-card border-b sticky top-0 z-10">
-        <div className="container max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
-          <div className="flex items-center gap-3 sm:gap-4">
-            <Button variant="ghost" size="icon" onClick={() => navigate('/admin')} className="flex-shrink-0">
+        <div className="container max-w-6xl mx-auto px-4 py-4">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon" onClick={() => navigate('/admin')}>
               <ArrowLeft className="w-5 h-5" />
             </Button>
-            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center flex-shrink-0">
-                <Megaphone className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600 dark:text-orange-400" />
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
+                <Megaphone className="w-5 h-5 text-orange-600 dark:text-orange-400" />
               </div>
-              <h1 className="text-lg sm:text-xl font-bold truncate">Announcement Manager</h1>
+              <h1 className="text-xl font-bold">Announcement Manager</h1>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="container max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-8 space-y-4 sm:space-y-8">
+      <main className="container max-w-6xl mx-auto px-4 py-8 space-y-8">
         {/* Add Announcement */}
         <Card>
-          <CardHeader className="pb-3 sm:pb-6">
-            <CardTitle className="text-lg sm:text-xl">Add New Announcement</CardTitle>
+          <CardHeader>
+            <CardTitle>Add New Announcement</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3 sm:space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+          <CardContent className="space-y-4">
+            <div className="grid md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className="text-sm">Title</Label>
+                <Label>Title</Label>
                 <Input
                   placeholder="e.g., Join our WhatsApp Group"
                   value={newAnnouncement.title}
@@ -208,7 +208,7 @@ const AnnouncementManager = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label className="text-sm">Link Type</Label>
+                <Label>Link Type</Label>
                 <Select
                   value={newAnnouncement.link_type}
                   onValueChange={(v) => setNewAnnouncement({ ...newAnnouncement, link_type: v })}
@@ -227,9 +227,9 @@ const AnnouncementManager = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            <div className="grid md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className="text-sm">Link URL</Label>
+                <Label>Link URL</Label>
                 <Input
                   placeholder="https://..."
                   value={newAnnouncement.link_url}
@@ -237,7 +237,7 @@ const AnnouncementManager = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label className="text-sm">Button Label</Label>
+                <Label>Button Label</Label>
                 <Input
                   placeholder="e.g., Join Now"
                   value={newAnnouncement.link_label}
@@ -247,7 +247,7 @@ const AnnouncementManager = () => {
             </div>
 
             <div className="space-y-2">
-              <Label className="text-sm">Description (Optional)</Label>
+              <Label>Description (Optional)</Label>
               <Textarea
                 placeholder="Brief description of the announcement..."
                 value={newAnnouncement.description}
@@ -255,9 +255,9 @@ const AnnouncementManager = () => {
               />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            <div className="grid md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className="text-sm">Target Semester (Optional)</Label>
+                <Label>Target Semester (Optional - leave empty for all)</Label>
                 <Select
                   value={newAnnouncement.semester_id || "all"}
                   onValueChange={(v) => setNewAnnouncement({ ...newAnnouncement, semester_id: v === "all" ? "" : v })}
@@ -276,7 +276,7 @@ const AnnouncementManager = () => {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label className="text-sm">Target Branch (Optional)</Label>
+                <Label>Target Branch (Optional - leave empty for all)</Label>
                 <Select
                   value={newAnnouncement.branch_id || "all"}
                   onValueChange={(v) => setNewAnnouncement({ ...newAnnouncement, branch_id: v === "all" ? "" : v })}
@@ -316,29 +316,29 @@ const AnnouncementManager = () => {
             ) : announcements.length === 0 ? (
               <p className="text-muted-foreground text-center py-8">No announcements yet. Add your first announcement above.</p>
             ) : (
-              <div className="space-y-3 sm:space-y-4">
+              <div className="space-y-4">
                 {announcements.map((announcement) => {
                   const typeInfo = LINK_TYPES.find((t) => t.value === announcement.link_type);
                   const Icon = typeInfo?.icon || LinkIcon;
                   return (
                     <div
                       key={announcement.id}
-                      className={`p-3 sm:p-4 rounded-lg border ${announcement.is_active ? 'bg-card' : 'bg-muted/50 opacity-60'}`}
+                      className={`p-4 rounded-lg border ${announcement.is_active ? 'bg-card' : 'bg-muted/50 opacity-60'}`}
                     >
-                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4">
-                        <div className="flex items-start gap-2 sm:gap-3 flex-1 min-w-0">
-                          <Icon className="w-4 h-4 sm:w-5 sm:h-5 mt-1 text-primary flex-shrink-0" />
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-start gap-3 flex-1">
+                          <Icon className="w-5 h-5 mt-1 text-primary" />
                           <div className="flex-1 min-w-0">
-                            <h3 className="font-medium text-sm sm:text-base">{announcement.title}</h3>
+                            <h3 className="font-medium">{announcement.title}</h3>
                             {announcement.description && (
-                              <p className="text-xs sm:text-sm text-muted-foreground mt-1 line-clamp-2">{announcement.description}</p>
+                              <p className="text-sm text-muted-foreground mt-1">{announcement.description}</p>
                             )}
-                            <div className="flex items-center gap-2 mt-2 flex-wrap">
+                            <div className="flex items-center gap-2 mt-2">
                               <a
                                 href={announcement.link_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-xs sm:text-sm text-primary hover:underline flex items-center gap-1"
+                                className="text-sm text-primary hover:underline flex items-center gap-1"
                               >
                                 {announcement.link_label}
                                 <ExternalLink className="w-3 h-3" />
@@ -349,9 +349,9 @@ const AnnouncementManager = () => {
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center justify-end gap-2 sm:gap-3 flex-shrink-0">
+                        <div className="flex items-center gap-3">
                           <div className="flex items-center gap-2">
-                            <Label htmlFor={`active-${announcement.id}`} className="text-xs sm:text-sm">
+                            <Label htmlFor={`active-${announcement.id}`} className="text-sm">
                               Active
                             </Label>
                             <Switch
@@ -363,7 +363,7 @@ const AnnouncementManager = () => {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="text-destructive h-8 w-8"
+                            className="text-destructive"
                             onClick={() => handleDeleteAnnouncement(announcement.id)}
                           >
                             <Trash2 className="w-4 h-4" />

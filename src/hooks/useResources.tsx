@@ -26,8 +26,6 @@ interface Chapter {
   course_id: string;
   chapter_number: number;
   title: string;
-  section_type?: string | null;
-  sort_order?: number | null;
 }
 
 interface Resource {
@@ -125,25 +123,24 @@ export const useCourses = (semesterId?: string, branchId?: string) => {
 
 export const useChapters = (courseId?: string) => {
   const [chapters, setChapters] = useState<Chapter[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchChapters = async () => {
       if (!courseId) {
         setChapters([]);
+        setLoading(false);
         return;
       }
 
-      setLoading(true);
       const { data, error } = await supabase
         .from('chapters')
         .select('*')
         .eq('course_id', courseId)
-        .order('sort_order', { ascending: true, nullsFirst: false });
+        .order('chapter_number');
 
       if (error) {
         console.error('Error fetching chapters:', error);
-        setChapters([]);
       } else {
         setChapters(data || []);
       }
