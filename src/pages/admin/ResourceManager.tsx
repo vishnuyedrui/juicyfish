@@ -179,28 +179,28 @@ const ResourceManager = () => {
   return (
     <div className="min-h-screen bg-background">
       <header className="bg-card border-b sticky top-0 z-10">
-        <div className="container max-w-6xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-4">
+        <div className="container max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             <Button variant="ghost" size="icon" onClick={() => navigate('/admin')}>
               <ArrowLeft className="w-5 h-5" />
             </Button>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                <FolderPlus className="w-5 h-5 text-green-600 dark:text-green-400" />
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                <FolderPlus className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 dark:text-green-400" />
               </div>
-              <h1 className="text-xl font-bold">Resource Manager</h1>
+              <h1 className="text-lg sm:text-xl font-bold">Resource Manager</h1>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="container max-w-6xl mx-auto px-4 py-8 space-y-8">
+      <main className="container max-w-6xl mx-auto px-3 sm:px-4 py-6 sm:py-8 space-y-6 sm:space-y-8">
         {/* Filter Section */}
         <Card>
-          <CardHeader>
-            <CardTitle>Select Course</CardTitle>
+          <CardHeader className="pb-3 sm:pb-6">
+            <CardTitle className="text-base sm:text-lg">Select Course</CardTitle>
           </CardHeader>
-          <CardContent className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <CardContent className="grid gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div className="space-y-2">
               <Label>Semester</Label>
               <Select value={selectedSemester} onValueChange={setSelectedSemester}>
@@ -270,18 +270,18 @@ const ResourceManager = () => {
         {/* Add Resource Section */}
         {selectedCourse && (
           <Card>
-            <CardHeader>
-              <CardTitle>Add New Resource</CardTitle>
+            <CardHeader className="pb-3 sm:pb-6">
+              <CardTitle className="text-base sm:text-lg">Add New Resource</CardTitle>
             </CardHeader>
             <CardContent>
-              <Tabs defaultValue="link" className="space-y-4">
-                <TabsList className="grid w-full grid-cols-2">
+              <Tabs defaultValue="link" className="space-y-3 sm:space-y-4">
+                <TabsList className="grid w-full grid-cols-2 h-9 sm:h-10">
                   <TabsTrigger value="link">Add Link</TabsTrigger>
                   <TabsTrigger value="upload">Upload File</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="link" className="space-y-4">
-                  <div className="grid md:grid-cols-2 gap-4">
+                <TabsContent value="link" className="space-y-3 sm:space-y-4">
+                  <div className="grid gap-3 sm:gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
                       <Label>Resource Type</Label>
                       <Select
@@ -327,8 +327,8 @@ const ResourceManager = () => {
                   </div>
                 </TabsContent>
 
-                <TabsContent value="upload" className="space-y-4">
-                  <div className="grid md:grid-cols-2 gap-4">
+                <TabsContent value="upload" className="space-y-3 sm:space-y-4">
+                  <div className="grid gap-3 sm:gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
                       <Label>Resource Type</Label>
                       <Select
@@ -359,7 +359,7 @@ const ResourceManager = () => {
 
                   {/* Drag and Drop Zone */}
                   <div
-                    className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+                    className={`border-2 border-dashed rounded-lg p-4 sm:p-8 text-center transition-colors ${
                       isDragOver ? 'border-primary bg-primary/5' : 'border-muted-foreground/25'
                     }`}
                     onDragOver={(e) => {
@@ -420,18 +420,18 @@ const ResourceManager = () => {
         {/* Existing Resources */}
         {selectedCourse && (
           <Card>
-            <CardHeader>
-              <CardTitle>Existing Resources ({resources.length})</CardTitle>
+            <CardHeader className="pb-3 sm:pb-6">
+              <CardTitle className="text-base sm:text-lg">Existing Resources ({resources.length})</CardTitle>
             </CardHeader>
             <CardContent>
               {resources.length === 0 ? (
-                <p className="text-muted-foreground text-center py-8">No resources found. Add your first resource above.</p>
+                <p className="text-muted-foreground text-center py-6 sm:py-8 text-sm sm:text-base">No resources found. Add your first resource above.</p>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                   {resources.map((resource) => {
                     const TypeIcon = RESOURCE_TYPES.find((t) => t.value === resource.resource_type)?.icon || File;
                     return (
-                      <div key={resource.id} className="flex items-center justify-between p-4 rounded-lg border">
+                      <div key={resource.id} className="flex items-center justify-between p-3 sm:p-4 rounded-lg border gap-2">
                         <div className="flex items-center gap-3">
                           <TypeIcon className="w-5 h-5 text-muted-foreground" />
                           <div>
