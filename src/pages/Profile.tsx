@@ -74,38 +74,38 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-background">
       <header className="bg-card border-b sticky top-0 z-10">
-        <div className="container max-w-2xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-4">
+        <div className="container max-w-2xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             <Button variant="ghost" size="icon" onClick={() => navigate('/dashboard')}>
               <ArrowLeft className="w-5 h-5" />
             </Button>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                <User className="w-5 h-5 text-primary" />
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                <User className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
               </div>
-              <h1 className="text-xl font-bold">Profile Settings</h1>
+              <h1 className="text-lg sm:text-xl font-bold">Profile Settings</h1>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="container max-w-2xl mx-auto px-4 py-8 space-y-6">
+      <main className="container max-w-2xl mx-auto px-3 sm:px-4 py-6 sm:py-8 space-y-4 sm:space-y-6">
         {/* User Info */}
         <Card>
-          <CardHeader>
-            <CardTitle>Account Information</CardTitle>
-            <CardDescription>Your account details</CardDescription>
+          <CardHeader className="pb-3 sm:pb-6">
+            <CardTitle className="text-base sm:text-lg">Account Information</CardTitle>
+            <CardDescription className="text-xs sm:text-sm">Your account details</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label>Full Name</Label>
-              <p className="text-sm font-medium p-3 bg-muted rounded-lg">
+          <CardContent className="space-y-3 sm:space-y-4">
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label className="text-sm">Full Name</Label>
+              <p className="text-sm font-medium p-2.5 sm:p-3 bg-muted rounded-lg">
                 {profile?.full_name || 'Not set'}
               </p>
             </div>
-            <div className="space-y-2">
-              <Label>Email</Label>
-              <p className="text-sm font-medium p-3 bg-muted rounded-lg">
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label className="text-sm">Email</Label>
+              <p className="text-sm font-medium p-2.5 sm:p-3 bg-muted rounded-lg truncate">
                 {user?.email}
               </p>
             </div>
@@ -114,13 +114,13 @@ const Profile = () => {
 
         {/* Academic Info */}
         <Card>
-          <CardHeader>
-            <CardTitle>Academic Information</CardTitle>
-            <CardDescription>
+          <CardHeader className="pb-3 sm:pb-6">
+            <CardTitle className="text-base sm:text-lg">Academic Information</CardTitle>
+            <CardDescription className="text-xs sm:text-sm">
               Update your semester and branch to see relevant courses
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-3 sm:space-y-4">
             <div className="space-y-2">
               <Label>Semester</Label>
               <Select 

@@ -68,7 +68,7 @@ const CourseManager = () => {
         { title: 'Chapter 3', section_type: 'chapter', chapter_number: 3, sort_order: 4 },
         { title: 'Chapter 4', section_type: 'chapter', chapter_number: 4, sort_order: 5 },
         { title: 'Chapter 5', section_type: 'chapter', chapter_number: 5, sort_order: 6 },
-        { title: 'Additional Resources', section_type: 'additional_resources', chapter_number: 0, sort_order: 7 },
+        { title: 'Additional Materials', section_type: 'additional_resources', chapter_number: 0, sort_order: 7 },
         { title: 'PYQs', section_type: 'pyq', chapter_number: 0, sort_order: 8 },
       ];
 
@@ -176,28 +176,28 @@ const CourseManager = () => {
   return (
     <div className="min-h-screen bg-background">
       <header className="bg-card border-b sticky top-0 z-10">
-        <div className="container max-w-6xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-4">
+        <div className="container max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             <Button variant="ghost" size="icon" onClick={() => navigate('/admin')}>
               <ArrowLeft className="w-5 h-5" />
             </Button>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                <BookOpen className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 dark:text-blue-400" />
               </div>
-              <h1 className="text-xl font-bold">Course Manager</h1>
+              <h1 className="text-lg sm:text-xl font-bold">Course Manager</h1>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="container max-w-6xl mx-auto px-4 py-8 space-y-8">
+      <main className="container max-w-6xl mx-auto px-3 sm:px-4 py-6 sm:py-8 space-y-6 sm:space-y-8">
         {/* Filter Section */}
         <Card>
-          <CardHeader>
-            <CardTitle>Select Semester & Branch</CardTitle>
+          <CardHeader className="pb-3 sm:pb-6">
+            <CardTitle className="text-base sm:text-lg">Select Semester & Branch</CardTitle>
           </CardHeader>
-          <CardContent className="grid md:grid-cols-2 gap-4">
+          <CardContent className="grid gap-3 sm:gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label>Semester</Label>
               <Select value={selectedSemester} onValueChange={setSelectedSemester}>
@@ -234,11 +234,11 @@ const CourseManager = () => {
         {/* Add Course Section */}
         {selectedSemester && selectedBranch && (
           <Card>
-            <CardHeader>
-              <CardTitle>Add New Course</CardTitle>
+            <CardHeader className="pb-3 sm:pb-6">
+              <CardTitle className="text-base sm:text-lg">Add New Course</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid md:grid-cols-2 gap-4">
+            <CardContent className="space-y-3 sm:space-y-4">
+              <div className="grid gap-3 sm:gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label>Course Name</Label>
                   <Input
@@ -267,8 +267,8 @@ const CourseManager = () => {
         {/* Existing Courses */}
         {selectedSemester && selectedBranch && (
           <Card>
-            <CardHeader>
-              <CardTitle>Existing Courses ({courses.length})</CardTitle>
+            <CardHeader className="pb-3 sm:pb-6">
+              <CardTitle className="text-base sm:text-lg">Existing Courses ({courses.length})</CardTitle>
             </CardHeader>
             <CardContent>
               {coursesLoading ? (
@@ -278,18 +278,18 @@ const CourseManager = () => {
               ) : courses.length === 0 ? (
                 <p className="text-muted-foreground text-center py-8">No courses found. Add your first course above.</p>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                   {courses.map((course) => (
                     <div
                       key={course.id}
-                      className={`flex items-center justify-between p-4 rounded-lg border cursor-pointer transition-colors ${
+                      className={`flex items-center justify-between p-3 sm:p-4 rounded-lg border cursor-pointer transition-colors ${
                         selectedCourse === course.id ? 'bg-primary/10 border-primary' : 'hover:bg-muted/50'
                       }`}
                       onClick={() => setSelectedCourse(course.id)}
                     >
-                      <div>
-                        <p className="font-medium">{course.name}</p>
-                        <p className="text-sm text-muted-foreground">{course.code}</p>
+                      <div className="min-w-0 flex-1 mr-2">
+                        <p className="font-medium text-sm sm:text-base truncate">{course.name}</p>
+                        <p className="text-xs sm:text-sm text-muted-foreground">{course.code}</p>
                       </div>
                       <Button
                         variant="ghost"
@@ -313,11 +313,11 @@ const CourseManager = () => {
         {/* Chapter Management */}
         {selectedCourse && (
           <Card>
-            <CardHeader>
-              <CardTitle>Manage Chapters</CardTitle>
+            <CardHeader className="pb-3 sm:pb-6">
+              <CardTitle className="text-base sm:text-lg">Manage Chapters</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid md:grid-cols-3 gap-4">
+            <CardContent className="space-y-3 sm:space-y-4">
+              <div className="grid gap-3 sm:gap-4 sm:grid-cols-3">
                 <div className="space-y-2">
                   <Label>Chapter Number</Label>
                   <Select
@@ -336,8 +336,8 @@ const CourseManager = () => {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-2 md:col-span-2">
-                  <Label>Chapter Title</Label>
+                <div className="space-y-2 sm:col-span-2">
+                  <Label className="text-sm">Chapter Title</Label>
                   <Input
                     placeholder="e.g., Introduction to Arrays"
                     value={newChapter.title}
@@ -351,11 +351,11 @@ const CourseManager = () => {
               </Button>
 
               {chapters.length > 0 && (
-                <div className="mt-4 space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">Existing Chapters</p>
+                <div className="mt-3 sm:mt-4 space-y-2">
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Existing Chapters</p>
                   {chapters.map((chapter) => (
-                    <div key={chapter.id} className="flex items-center justify-between p-3 rounded-lg border">
-                      <span>
+                    <div key={chapter.id} className="flex items-center justify-between p-2 sm:p-3 rounded-lg border gap-2">
+                      <span className="text-sm sm:text-base truncate">
                         Chapter {chapter.chapter_number}: {chapter.title}
                       </span>
                       <Button

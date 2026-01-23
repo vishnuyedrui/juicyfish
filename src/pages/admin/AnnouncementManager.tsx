@@ -176,29 +176,29 @@ const AnnouncementManager = () => {
   return (
     <div className="min-h-screen bg-background">
       <header className="bg-card border-b sticky top-0 z-10">
-        <div className="container max-w-6xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-4">
+        <div className="container max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             <Button variant="ghost" size="icon" onClick={() => navigate('/admin')}>
               <ArrowLeft className="w-5 h-5" />
             </Button>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
-                <Megaphone className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
+                <Megaphone className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600 dark:text-orange-400" />
               </div>
-              <h1 className="text-xl font-bold">Announcement Manager</h1>
+              <h1 className="text-lg sm:text-xl font-bold">Announcements</h1>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="container max-w-6xl mx-auto px-4 py-8 space-y-8">
+      <main className="container max-w-6xl mx-auto px-3 sm:px-4 py-6 sm:py-8 space-y-6 sm:space-y-8">
         {/* Add Announcement */}
         <Card>
-          <CardHeader>
-            <CardTitle>Add New Announcement</CardTitle>
+          <CardHeader className="pb-3 sm:pb-6">
+            <CardTitle className="text-base sm:text-lg">Add New Announcement</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid md:grid-cols-2 gap-4">
+          <CardContent className="space-y-3 sm:space-y-4">
+            <div className="grid gap-3 sm:gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label>Title</Label>
                 <Input
@@ -227,9 +227,9 @@ const AnnouncementManager = () => {
               </div>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid gap-3 sm:gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label>Link URL</Label>
+                <Label className="text-sm">Link URL</Label>
                 <Input
                   placeholder="https://..."
                   value={newAnnouncement.link_url}
@@ -255,9 +255,9 @@ const AnnouncementManager = () => {
               />
             </div>
 
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid gap-3 sm:gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label>Target Semester (Optional - leave empty for all)</Label>
+                <Label className="text-sm">Target Semester (Optional)</Label>
                 <Select
                   value={newAnnouncement.semester_id || "all"}
                   onValueChange={(v) => setNewAnnouncement({ ...newAnnouncement, semester_id: v === "all" ? "" : v })}
@@ -276,7 +276,7 @@ const AnnouncementManager = () => {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label>Target Branch (Optional - leave empty for all)</Label>
+                <Label className="text-sm">Target Branch (Optional)</Label>
                 <Select
                   value={newAnnouncement.branch_id || "all"}
                   onValueChange={(v) => setNewAnnouncement({ ...newAnnouncement, branch_id: v === "all" ? "" : v })}
@@ -305,40 +305,40 @@ const AnnouncementManager = () => {
 
         {/* Existing Announcements */}
         <Card>
-          <CardHeader>
-            <CardTitle>Existing Announcements ({announcements.length})</CardTitle>
+          <CardHeader className="pb-3 sm:pb-6">
+            <CardTitle className="text-base sm:text-lg">Existing Announcements ({announcements.length})</CardTitle>
           </CardHeader>
           <CardContent>
             {loading ? (
-              <div className="flex justify-center py-8">
+              <div className="flex justify-center py-6 sm:py-8">
                 <Loader2 className="w-6 h-6 animate-spin" />
               </div>
             ) : announcements.length === 0 ? (
-              <p className="text-muted-foreground text-center py-8">No announcements yet. Add your first announcement above.</p>
+              <p className="text-muted-foreground text-center py-6 sm:py-8 text-sm sm:text-base">No announcements yet. Add your first announcement above.</p>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {announcements.map((announcement) => {
                   const typeInfo = LINK_TYPES.find((t) => t.value === announcement.link_type);
                   const Icon = typeInfo?.icon || LinkIcon;
                   return (
                     <div
                       key={announcement.id}
-                      className={`p-4 rounded-lg border ${announcement.is_active ? 'bg-card' : 'bg-muted/50 opacity-60'}`}
+                      className={`p-3 sm:p-4 rounded-lg border ${announcement.is_active ? 'bg-card' : 'bg-muted/50 opacity-60'}`}
                     >
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex items-start gap-3 flex-1">
-                          <Icon className="w-5 h-5 mt-1 text-primary" />
+                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4">
+                        <div className="flex items-start gap-2 sm:gap-3 flex-1 min-w-0">
+                          <Icon className="w-4 h-4 sm:w-5 sm:h-5 mt-0.5 text-primary flex-shrink-0" />
                           <div className="flex-1 min-w-0">
-                            <h3 className="font-medium">{announcement.title}</h3>
+                            <h3 className="font-medium text-sm sm:text-base">{announcement.title}</h3>
                             {announcement.description && (
-                              <p className="text-sm text-muted-foreground mt-1">{announcement.description}</p>
+                              <p className="text-xs sm:text-sm text-muted-foreground mt-1 line-clamp-2">{announcement.description}</p>
                             )}
-                            <div className="flex items-center gap-2 mt-2">
+                            <div className="flex flex-wrap items-center gap-2 mt-2">
                               <a
                                 href={announcement.link_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-sm text-primary hover:underline flex items-center gap-1"
+                                className="text-xs sm:text-sm text-primary hover:underline flex items-center gap-1"
                               >
                                 {announcement.link_label}
                                 <ExternalLink className="w-3 h-3" />
@@ -349,9 +349,9 @@ const AnnouncementManager = () => {
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 sm:gap-3 self-end sm:self-auto">
                           <div className="flex items-center gap-2">
-                            <Label htmlFor={`active-${announcement.id}`} className="text-sm">
+                            <Label htmlFor={`active-${announcement.id}`} className="text-xs sm:text-sm">
                               Active
                             </Label>
                             <Switch
@@ -363,7 +363,7 @@ const AnnouncementManager = () => {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="text-destructive"
+                            className="text-destructive h-8 w-8"
                             onClick={() => handleDeleteAnnouncement(announcement.id)}
                           >
                             <Trash2 className="w-4 h-4" />
