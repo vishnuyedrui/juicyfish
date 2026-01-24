@@ -5,7 +5,8 @@ import { useUserProfile, useCourses, useSemesters, useBranches } from '@/hooks/u
 import { useAnnouncements } from '@/hooks/useAnnouncements';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { GraduationCap, BookOpen, CalendarCheck, User, LogOut, Loader2, Megaphone, MessageCircle, Video, Send, Link as LinkIcon, ExternalLink } from 'lucide-react';
+import { GraduationCap, CalendarCheck, User, LogOut, Loader2, Megaphone, MessageCircle, Video, Send, Link as LinkIcon, ExternalLink } from 'lucide-react';
+import coursesIcon from '@/assets/courses-icon.jpg';
 
 const Dashboard = () => {
   const { user, signOut, loading: authLoading } = useAuth();
@@ -138,8 +139,8 @@ const Dashboard = () => {
           <Link to="/courses">
             <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
               <CardHeader>
-                <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-2">
-                  <BookOpen className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                <div className="w-12 h-12 rounded-xl overflow-hidden mb-2">
+                  <img src={coursesIcon} alt="Courses" className="w-full h-full object-cover" />
                 </div>
                 <CardTitle>View Courses</CardTitle>
                 <CardDescription>
@@ -202,7 +203,7 @@ const Dashboard = () => {
           <CardContent>
             {courses.length === 0 ? (
               <div className="text-center py-6 sm:py-8">
-                <BookOpen className="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-muted-foreground mb-3 sm:mb-4" />
+                <img src={coursesIcon} alt="No courses" className="w-10 h-10 sm:w-12 sm:h-12 mx-auto rounded-lg object-cover mb-3 sm:mb-4" />
                 <p className="text-sm sm:text-base text-muted-foreground">No courses available for your semester and branch yet.</p>
                 <p className="text-xs sm:text-sm text-muted-foreground mt-2">
                   Please check back later or update your profile settings.
