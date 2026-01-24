@@ -193,6 +193,25 @@ const Dashboard = () => {
               </CardContent>
             </Card>
           </Link>
+
+          <a href="https://teamdino.in" target="_blank" rel="noopener noreferrer">
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+              <CardHeader>
+                <div className="w-12 h-12 rounded-xl bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mb-2">
+                  <ExternalLink className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+                </div>
+                <CardTitle>TEAM DINO</CardTitle>
+                <CardDescription>
+                  External resources and study materials
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  For more resources, visit TeamDino
+                </p>
+              </CardContent>
+            </Card>
+          </a>
         </div>
 
         {/* Your Courses */}
