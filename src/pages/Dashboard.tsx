@@ -10,6 +10,7 @@ import coursesIcon from '@/assets/courses-icon.jpg';
 import profileAvatar from '@/assets/profile-avatar.jpg';
 import teamDinoIcon from '@/assets/team-dino.jpg';
 import gradeCalculatorIcon from '@/assets/grade-calculator-icon.jpg';
+import attendanceIcon from '@/assets/attendance-icon.jpg';
 
 const Dashboard = () => {
   const { user, signOut, loading: authLoading } = useAuth();
@@ -161,8 +162,8 @@ const Dashboard = () => {
           <Link to="/attendance">
             <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
               <CardHeader>
-                <div className="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-2">
-                  <CalendarCheck className="w-6 h-6 text-green-600 dark:text-green-400" />
+                <div className="w-12 h-12 rounded-xl overflow-hidden mb-2">
+                  <img src={attendanceIcon} alt="Attendance Calculator" className="w-full h-full object-cover" />
                 </div>
                 <CardTitle>Attendance Calculator</CardTitle>
                 <CardDescription>
