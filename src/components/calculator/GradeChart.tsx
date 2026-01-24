@@ -121,15 +121,13 @@ export function GradeChart() {
         {/* Image Below Grade Conversion Chart */}
         <div className="flex flex-col items-center pt-2 sm:pt-4">
           <img
-            src="/grade-conversion-640.webp"
-            srcSet="/grade-conversion-640.webp 640w"
-            sizes="640px"
-            alt="Grade points and symbols in relative grading"
-            className="max-w-full w-full sm:w-[600px] rounded-lg border shadow-md"
-            width={630}
-            height={352}
+            src="/grade-conversion.webp"
+            width="630"
+            height="352"
             fetchPriority="high"
             decoding="async"
+            alt="Grade points and symbols in relative grading"
+            className="max-w-full w-full sm:w-[600px] rounded-lg border shadow-md"
           />
           <p className="text-[10px] sm:text-xs text-muted-foreground mt-2 text-center">
             Grade points and symbols in relative grading
