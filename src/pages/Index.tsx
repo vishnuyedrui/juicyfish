@@ -8,7 +8,9 @@ import { CGPASection } from "@/components/calculator/CGPASection";
 import { GradeChart } from "@/components/calculator/GradeChart";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, Sparkles, LogIn, Shield, Download } from "lucide-react";
+import { MobileNav } from "@/components/MobileNav";
 import logo from "@/assets/logo.png";
+
 const Index = () => {
   const [courses, setCourses] = useState<Course[]>([createNewCourse()]);
   const [showCGPA, setShowCGPA] = useState(false);
@@ -64,39 +66,45 @@ const Index = () => {
     <div className="min-h-screen bg-background pb-12">
       {/* Header - Mobile Responsive */}
       <header className="bg-card border-b sticky top-0 z-10">
-        <div className="container max-w-4xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 sm:gap-3">
+        <div className="container max-w-4xl mx-auto px-3 sm:px-4 py-3">
+          <div className="flex items-center justify-between gap-2">
+            {/* Logo and Title */}
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
               <img 
                 src={logo} 
                 alt="JuicyFish Logo" 
-                className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex-shrink-0 object-contain"
+                className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl flex-shrink-0 object-contain"
               />
               <div className="min-w-0">
-                <h1 className="text-lg sm:text-xl font-bold truncate">Academic Grade Calculator</h1>
-                <p className="text-xs sm:text-sm text-muted-foreground truncate">Step-by-step WGP, SGPA & CGPA</p>
+                <h1 className="text-base sm:text-xl font-bold truncate">Academic Grade Calculator</h1>
+                <p className="text-[11px] sm:text-sm text-muted-foreground truncate">Step-by-step WGP, SGPA & CGPA</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            
+            {/* Desktop Navigation */}
+            <div className="hidden sm:flex items-center gap-2">
               <Link to="/admin/login" aria-label="Admin Login">
                 <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground" aria-label="Admin Login">
                   <Shield className="w-4 h-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Admin</span>
+                  <span>Admin</span>
                 </Button>
               </Link>
               <a href="/downloads/juicyfish.apk" download="JuicyFish.apk" aria-label="Download App">
                 <Button variant="outline" size="sm" className="gap-2" aria-label="Download App">
                   <Download className="w-4 h-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Download App</span>
+                  <span>Download App</span>
                 </Button>
               </a>
               <Link to="/auth" aria-label="Sign In">
                 <Button variant="outline" size="sm" className="gap-2" aria-label="Sign In">
                   <LogIn className="w-4 h-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Sign In</span>
+                  <span>Sign In</span>
                 </Button>
               </Link>
             </div>
+
+            {/* Mobile Navigation */}
+            <MobileNav />
           </div>
         </div>
       </header>
