@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TrendingUp, Calculator, ArrowRight, Download } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { exportResultsToPDF } from "@/utils/pdfExport";
 import confetti from "canvas-confetti";
 
@@ -25,12 +25,15 @@ export function CGPASection({ currentSGPA, currentCredits, courses, onCGPACalcul
     parseFloat(previousCGPA) >= 0 && parseFloat(previousCGPA) <= 10 &&
     parseInt(previousCredits) > 0;
 
-  const result = canCalculate ? calculateCGPA(
-    currentSGPA,
-    currentCredits,
-    parseFloat(previousCGPA),
-    parseInt(previousCredits)
-  ) : null;
+  const result = useMemo(() => {
+    if (!canCalculate) return null;
+    return calculateCGPA(
+      currentSGPA,
+      currentCredits,
+      parseFloat(previousCGPA),
+      parseInt(previousCredits)
+    );
+  }, [canCalculate, currentSGPA, currentCredits, previousCGPA, previousCredits]);
 
   // Trigger confetti when CGPA result is shown
   useEffect(() => {
@@ -74,18 +77,21 @@ export function CGPASection({ currentSGPA, currentCredits, courses, onCGPACalcul
     }
   }, [showResult]);
 
+  const cgpa = result?.cgpa;
+  const totalCredits = result?.totalCredits;
+  
   useEffect(() => {
-    if (showResult && result) {
+    if (showResult && cgpa !== undefined && totalCredits !== undefined) {
       onCGPACalculated?.({
-        cgpa: result.cgpa,
+        cgpa,
         previousCGPA: parseFloat(previousCGPA),
         previousCredits: parseInt(previousCredits),
-        newTotalCredits: result.totalCredits,
+        newTotalCredits: totalCredits,
       });
-    } else {
+    } else if (!showResult) {
       onCGPACalculated?.(null);
     }
-  }, [showResult, result, previousCGPA, previousCredits, onCGPACalculated]);
+  }, [showResult, cgpa, totalCredits, previousCGPA, previousCredits, onCGPACalculated]);
 
   const validCourses = courses.filter(c => c.finalGradePoint !== null && c.name.trim() !== '');
   const sgpaResult = calculateSGPA(validCourses);
