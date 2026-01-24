@@ -10,7 +10,7 @@ import { AttendanceStats } from '@/components/attendance/AttendanceStats';
 import { WhatIfSimulator } from '@/components/attendance/WhatIfSimulator';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { CalendarCheck, GraduationCap, LogOut, Loader2 } from 'lucide-react';
+import { CalendarCheck, GraduationCap, LogOut, Loader2, ArrowLeft } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Attendance = () => {
@@ -71,6 +71,14 @@ const Attendance = () => {
         <div className="container max-w-4xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 sm:gap-3">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => navigate(-1)}
+                className="flex-shrink-0"
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </Button>
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
                 <CalendarCheck className="w-5 h-5 sm:w-7 sm:h-7 text-white" />
               </div>
