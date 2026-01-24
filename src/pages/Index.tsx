@@ -75,15 +75,15 @@ const Index = () => {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Link to="/admin/login">
-                <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground">
-                  <Shield className="w-4 h-4" />
+              <Link to="/admin/login" aria-label="Admin Login">
+                <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground" aria-label="Admin Login">
+                  <Shield className="w-4 h-4" aria-hidden="true" />
                   <span className="hidden sm:inline">Admin</span>
                 </Button>
               </Link>
-              <Link to="/auth">
-                <Button variant="outline" size="sm" className="gap-2">
-                  <LogIn className="w-4 h-4" />
+              <Link to="/auth" aria-label="Sign In">
+                <Button variant="outline" size="sm" className="gap-2" aria-label="Sign In">
+                  <LogIn className="w-4 h-4" aria-hidden="true" />
                   <span className="hidden sm:inline">Sign In</span>
                 </Button>
               </Link>
@@ -148,7 +148,7 @@ const Index = () => {
       </main>
 
       {/* Footer */}
-      <footer className="mt-8 sm:mt-12 text-center text-xs sm:text-sm text-muted-foreground px-4">
+      <footer className="mt-8 sm:mt-12 text-center text-xs sm:text-sm text-foreground/70 px-4">
         <p>Built with ❤️ for students @ TEAMDINO teamdino.in</p>
       </footer>
     </div>

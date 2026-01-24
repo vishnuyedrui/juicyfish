@@ -822,7 +822,7 @@ export function CourseCard({
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
               <BookOpen className="w-5 h-5 text-primary" />
             </div>
-            <CardTitle className="text-lg">Course {index + 1}</CardTitle>
+            <h3 className="text-lg font-semibold">Course {index + 1}</h3>
           </div>
           {canRemove && (
             <Button
@@ -830,8 +830,9 @@ export function CourseCard({
               size="icon"
               onClick={onRemove}
               className="text-muted-foreground hover:text-destructive"
+              aria-label={`Remove course ${index + 1}`}
             >
-              <Trash2 className="w-4 h-4" />
+              <Trash2 className="w-4 h-4" aria-hidden="true" />
             </Button>
           )}
         </div>
@@ -842,8 +843,9 @@ export function CourseCard({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Course Name */}
           <div className="space-y-2">
-            <Label>Course Name</Label>
+            <Label htmlFor={`courseName-${course.id}`}>Course Name</Label>
             <Input
+              id={`courseName-${course.id}`}
               value={course.name}
               onChange={(e) =>
                 onUpdate({ ...course, name: e.target.value })
@@ -862,11 +864,12 @@ export function CourseCard({
             {!isCLAD && (
               <div className="flex items-center gap-2 mt-1">
                 <input
+                  id={`hasLab-${course.id}`}
                   type="checkbox"
                   checked={course.hasLab || false}
                   onChange={(e) => handleLabToggle(e.target.checked)}
                 />
-                <Label className="text-xs text-muted-foreground">
+                <Label htmlFor={`hasLab-${course.id}`} className="text-xs text-muted-foreground cursor-pointer">
                   This course has Lab
                 </Label>
               </div>
@@ -875,8 +878,9 @@ export function CourseCard({
 
           {/* Credits */}
           <div className="space-y-2">
-            <Label>Credits</Label>
+            <Label htmlFor={`credits-${course.id}`}>Credits</Label>
             <Input
+              id={`credits-${course.id}`}
               type="number"
               min={1}
               max={10}
@@ -897,8 +901,10 @@ export function CourseCard({
        {/* CLAD: Grade Selection */}
         {isCLAD && (
           <div className="space-y-2">
-            <Label>Final Grade</Label>
+            <Label htmlFor={`cladGrade-${course.id}`}>Final Grade</Label>
             <select
+              id={`cladGrade-${course.id}`}
+              aria-label="Select CLAD grade"
               className="w-full rounded-md border bg-card px-2 py-2 text-center"
               value={course.letterGrade ?? ""}
               onChange={(e) => {
@@ -934,7 +940,7 @@ export function CourseCard({
         {/* Assessments (hidden for CLAD) */}
         {!isCLAD && (
           <div className="space-y-3">
-            <h4 className="font-medium text-sm text-muted-foreground">
+            <h4 className="font-medium text-sm text-foreground/70">
               Assessment Grades
             </h4>
             <div className="bg-card rounded-lg border overflow-hidden">
@@ -973,6 +979,8 @@ export function CourseCard({
                         <td className="p-3">
                           <div className="space-y-2">
                             <select
+                              id={`grade-${course.id}-${i}`}
+                              aria-label={`Select grade for ${assessment.name}`}
                               className="w-full rounded-md border bg-background px-2 py-1 text-center"
                               value={assessment.gradeLabel ?? ""}
                               onChange={(e) => updateAssessmentGrade(i, e.target.value)}
@@ -989,6 +997,8 @@ export function CourseCard({
                             {showMarksInput && (
                               <div className="space-y-1">
                                 <Input
+                                  id={`marks-${course.id}-${i}`}
+                                  aria-label={`Enter marks for ${assessment.name}`}
                                   type="number"
                                   min={0}
                                   max={100}
@@ -1057,8 +1067,9 @@ export function CourseCard({
         {/* Lab Marks */}
         {!isCLAD && course.hasLab && (
           <div className="space-y-2">
-            <Label>Lab Marks (out of 100)</Label>
+            <Label htmlFor={`labMarks-${course.id}`}>Lab Marks (out of 100)</Label>
             <Input
+              id={`labMarks-${course.id}`}
               type="number"
               min={0}
               max={100}

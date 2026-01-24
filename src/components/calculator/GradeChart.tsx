@@ -71,10 +71,10 @@ export function GradeChart() {
   return (
     <Card className="bg-card/50">
       <CardHeader className="pb-2 px-3 sm:px-6">
-        <CardTitle className="text-xs sm:text-sm flex items-center gap-2 text-muted-foreground">
-          <Info className="w-3 h-3 sm:w-4 sm:h-4" />
+        <h2 className="text-xs sm:text-sm flex items-center gap-2 text-foreground/70 font-semibold">
+          <Info className="w-3 h-3 sm:w-4 sm:h-4" aria-hidden="true" />
           Grade Conversion Chart
-        </CardTitle>
+        </h2>
       </CardHeader>
 
       <CardContent className="space-y-3 sm:space-y-4 px-3 sm:px-6">

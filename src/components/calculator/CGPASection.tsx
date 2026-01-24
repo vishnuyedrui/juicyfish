@@ -82,6 +82,7 @@ export function CGPASection({ currentSGPA, currentCredits, courses, onCGPACalcul
             <Label htmlFor="prev-cgpa" className="text-sm">Previous CGPA</Label>
             <Input
               id="prev-cgpa"
+              aria-label="Enter your previous CGPA"
               type="number"
               step={0.01}
               min={0}
@@ -99,6 +100,7 @@ export function CGPASection({ currentSGPA, currentCredits, courses, onCGPACalcul
             <Label htmlFor="prev-credits" className="text-sm">Previous Total Credits</Label>
             <Input
               id="prev-credits"
+              aria-label="Enter your previous total credits"
               type="number"
               min={1}
               placeholder="e.g., 120"
