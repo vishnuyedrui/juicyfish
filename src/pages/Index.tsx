@@ -71,7 +71,7 @@ const Index = () => {
       
       {/* Header - Pop Art Style */}
       <header className="relative z-10 pop-gradient-pink border-b-4 border-foreground/20">
-        <div className="container max-w-4xl mx-auto px-3 sm:px-4 py-4">
+        <div className="container max-w-6xl mx-auto px-3 sm:px-4 lg:px-8 py-4">
           <div className="flex items-center justify-between gap-2">
             {/* Logo and Title */}
             <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
@@ -146,7 +146,7 @@ const Index = () => {
         <StepIndicator currentStep={currentStep} completedSteps={completedSteps} />
       </div>
 
-      <main className="container max-w-4xl mx-auto px-3 sm:px-4 space-y-6 sm:space-y-8 relative z-10">
+      <main className="container max-w-6xl mx-auto px-3 sm:px-4 lg:px-8 space-y-6 sm:space-y-8 relative z-10">
         {/* Grade Chart Reference */}
         <GradeChart />
 
