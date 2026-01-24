@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { GraduationCap, CalendarCheck, User, LogOut, Loader2, Megaphone, MessageCircle, Video, Send, Link as LinkIcon, ExternalLink } from 'lucide-react';
 import coursesIcon from '@/assets/courses-icon.jpg';
+import profileAvatar from '@/assets/profile-avatar.jpg';
 
 const Dashboard = () => {
   const { user, signOut, loading: authLoading } = useAuth();
@@ -82,9 +83,9 @@ const Dashboard = () => {
             </div>
             <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
               <Link to="/profile">
-                <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-10 sm:w-10">
-                  <User className="w-4 h-4 sm:w-5 sm:h-5" />
-                </Button>
+                <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full overflow-hidden border-2 border-primary/20 hover:border-primary transition-colors cursor-pointer">
+                  <img src={profileAvatar} alt="Profile" className="w-full h-full object-cover" />
+                </div>
               </Link>
               <Button variant="outline" onClick={handleSignOut} size="sm" className="h-8 sm:h-10">
                 <LogOut className="w-4 h-4 sm:mr-2" />
