@@ -9,6 +9,7 @@ import { GraduationCap, CalendarCheck, User, LogOut, Loader2, Megaphone, Message
 import coursesIcon from '@/assets/courses-icon.jpg';
 import profileAvatar from '@/assets/profile-avatar.jpg';
 import teamDinoIcon from '@/assets/team-dino.jpg';
+import gradeCalculatorIcon from '@/assets/grade-calculator-icon.jpg';
 
 const Dashboard = () => {
   const { user, signOut, loading: authLoading } = useAuth();
@@ -179,8 +180,8 @@ const Dashboard = () => {
           <Link to="/">
             <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
               <CardHeader>
-                <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center mb-2">
-                  <GraduationCap className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                <div className="w-12 h-12 rounded-xl overflow-hidden mb-2">
+                  <img src={gradeCalculatorIcon} alt="Grade Calculator" className="w-full h-full object-cover" />
                 </div>
                 <CardTitle>Grade Calculator</CardTitle>
                 <CardDescription>
