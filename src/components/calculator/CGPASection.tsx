@@ -1,12 +1,12 @@
-import { calculateCGPA, Course } from "@/types/calculator";
+import { calculateCGPA, Course, calculateSGPA } from "@/types/calculator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TrendingUp, Calculator, ArrowRight, Download } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { exportResultsToPDF } from "@/utils/pdfExport";
-import { calculateSGPA } from "@/types/calculator";
+import confetti from "canvas-confetti";
 
 interface CGPASectionProps {
   currentSGPA: number;
@@ -19,6 +19,7 @@ export function CGPASection({ currentSGPA, currentCredits, courses, onCGPACalcul
   const [previousCGPA, setPreviousCGPA] = useState<string>('');
   const [previousCredits, setPreviousCredits] = useState<string>('');
   const [showResult, setShowResult] = useState(false);
+  const hasTriggeredConfetti = useRef(false);
 
   const canCalculate = previousCGPA !== '' && previousCredits !== '' && 
     parseFloat(previousCGPA) >= 0 && parseFloat(previousCGPA) <= 10 &&
@@ -30,6 +31,48 @@ export function CGPASection({ currentSGPA, currentCredits, courses, onCGPACalcul
     parseFloat(previousCGPA),
     parseInt(previousCredits)
   ) : null;
+
+  // Trigger confetti when CGPA result is shown
+  useEffect(() => {
+    if (showResult && result && !hasTriggeredConfetti.current) {
+      hasTriggeredConfetti.current = true;
+      
+      // Pop art style confetti burst with orange theme
+      const colors = ['#FF8C42', '#FFE66D', '#FF6B9D', '#4ECDC4', '#A855F7', '#10B981'];
+      
+      confetti({
+        particleCount: 120,
+        spread: 80,
+        origin: { y: 0.6 },
+        colors: colors,
+      });
+
+      // Extra bursts from sides
+      setTimeout(() => {
+        confetti({
+          particleCount: 60,
+          angle: 60,
+          spread: 60,
+          origin: { x: 0 },
+          colors: colors,
+        });
+        confetti({
+          particleCount: 60,
+          angle: 120,
+          spread: 60,
+          origin: { x: 1 },
+          colors: colors,
+        });
+      }, 200);
+    }
+  }, [showResult, result]);
+
+  // Reset confetti trigger when result is hidden
+  useEffect(() => {
+    if (!showResult) {
+      hasTriggeredConfetti.current = false;
+    }
+  }, [showResult]);
 
   useEffect(() => {
     if (showResult && result) {

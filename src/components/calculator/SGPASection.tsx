@@ -2,9 +2,10 @@ import { Course, calculateSGPA } from "@/types/calculator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calculator, TrendingUp, Award, Download } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { GradeBadge } from "./GradeBadge";
 import { exportResultsToPDF } from "@/utils/pdfExport";
+import confetti from "canvas-confetti";
 
 interface SGPASectionProps {
   courses: Course[];
@@ -19,10 +20,53 @@ interface SGPASectionProps {
 
 export function SGPASection({ courses, onShowCGPA, cgpaData }: SGPASectionProps) {
   const [showResult, setShowResult] = useState(false);
+  const hasTriggeredConfetti = useRef(false);
   
   const validCourses = courses.filter(c => c.finalGradePoint !== null && c.name.trim() !== '');
   const canCalculate = validCourses.length > 0;
   const result = calculateSGPA(validCourses);
+
+  // Trigger confetti when result is shown
+  useEffect(() => {
+    if (showResult && result && !hasTriggeredConfetti.current) {
+      hasTriggeredConfetti.current = true;
+      
+      // Pop art style confetti burst
+      const colors = ['#FF6B9D', '#FFE66D', '#4ECDC4', '#A855F7', '#FF8C42', '#10B981'];
+      
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: colors,
+      });
+
+      // Second burst for extra celebration
+      setTimeout(() => {
+        confetti({
+          particleCount: 50,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 },
+          colors: colors,
+        });
+        confetti({
+          particleCount: 50,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 },
+          colors: colors,
+        });
+      }, 250);
+    }
+  }, [showResult, result]);
+
+  // Reset confetti trigger when result is hidden
+  useEffect(() => {
+    if (!showResult) {
+      hasTriggeredConfetti.current = false;
+    }
+  }, [showResult]);
 
   const handleDownloadPDF = () => {
     if (!result) return;
