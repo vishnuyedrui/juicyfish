@@ -16,41 +16,32 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 
     <!-- Preload LCP image -->
-    <link rel="preload" href="/grade-conversion.png" as="image" fetchpriority="high" />
+    <link rel="preload" href="/grade-conversion-640.webp" as="image" fetchpriority="high" />
 
     <!-- Open Graph -->
     <meta property="og:title" content="JuicyFish - SGPA/CGPA Calculator & Attendance Tracker" />
     <meta property="og:description" content="Free student portal with grade calculator, attendance tracker, and course materials. Calculate your GPA and track attendance easily." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://www.juicyfish.online" />
-    <meta property="og:image" content="https://www.juicyfish.online/grade-conversion.png" />
+    <meta property="og:image" content="https://www.juicyfish.online/grade-conversion-640.webp" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="JuicyFish - Student Grade & Attendance Portal" />
     <meta name="twitter:description" content="Free SGPA/CGPA calculator and attendance tracker for students." />
-    <meta name="twitter:image" content="https://www.juicyfish.online/grade-conversion.png" />
+    <meta name="twitter:image" content="https://www.juicyfish.online/grade-conversion-640.webp" />
 
-    <!-- Google AdSense - Deferred loading for better performance -->
+    <!-- Google AdSense - Deferred loading after page load -->
     <script>
-      // Delay AdSense loading until page is interactive
-      if ('requestIdleCallback' in window) {
-        requestIdleCallback(function() {
-          var script = document.createElement('script');
-          script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3849772039813147';
-          script.async = true;
-          script.crossOrigin = 'anonymous';
-          document.head.appendChild(script);
-        });
-      } else {
+      window.addEventListener("load", function() {
         setTimeout(function() {
           var script = document.createElement('script');
           script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3849772039813147';
           script.async = true;
           script.crossOrigin = 'anonymous';
           document.head.appendChild(script);
-        }, 3000);
-      }
+        }, 2000);
+      });
     </script>
   </head>
 
