@@ -7,7 +7,8 @@ import { SGPASection } from "@/components/calculator/SGPASection";
 import { CGPASection } from "@/components/calculator/CGPASection";
 import { GradeChart } from "@/components/calculator/GradeChart";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, GraduationCap, Sparkles, LogIn, Shield } from "lucide-react";
+import { PlusCircle, Sparkles, LogIn, Shield } from "lucide-react";
+import logo from "@/assets/logo.png";
 const Index = () => {
   const [courses, setCourses] = useState<Course[]>([createNewCourse()]);
   const [showCGPA, setShowCGPA] = useState(false);
@@ -66,9 +67,11 @@ const Index = () => {
         <div className="container max-w-4xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 sm:gap-3">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary flex items-center justify-center flex-shrink-0">
-                <GraduationCap className="w-5 h-5 sm:w-7 sm:h-7 text-primary-foreground" />
-              </div>
+              <img 
+                src={logo} 
+                alt="JuicyFish Logo" 
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex-shrink-0 object-contain"
+              />
               <div className="min-w-0">
                 <h1 className="text-lg sm:text-xl font-bold truncate">Academic Grade Calculator</h1>
                 <p className="text-xs sm:text-sm text-muted-foreground truncate">Step-by-step WGP, SGPA & CGPA</p>
