@@ -6,6 +6,7 @@ import { useAnnouncements } from '@/hooks/useAnnouncements';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { GraduationCap, CalendarCheck, User, LogOut, Loader2, Megaphone, MessageCircle, Video, Send, Link as LinkIcon, ExternalLink } from 'lucide-react';
+import { ResponsiveAd } from '@/components/AdSense';
 import coursesIcon from '@/assets/courses-icon.jpg';
 import profileAvatar from '@/assets/profile-avatar.jpg';
 import teamDinoIcon from '@/assets/team-dino.jpg';
@@ -216,6 +217,9 @@ const Dashboard = () => {
             </Card>
           </a>
         </div>
+
+        {/* Ad Banner - Between quick links and courses */}
+        <ResponsiveAd slot="1122334455" className="mb-6 sm:mb-8" />
 
         {/* Your Courses */}
         <Card>

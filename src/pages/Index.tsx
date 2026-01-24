@@ -8,6 +8,8 @@ import { CGPASection } from "@/components/calculator/CGPASection";
 import { GradeChart } from "@/components/calculator/GradeChart";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, GraduationCap, Sparkles, LogIn, Shield } from "lucide-react";
+import { ResponsiveAd, InArticleAd } from "@/components/AdSense";
+
 const Index = () => {
   const [courses, setCourses] = useState<Course[]>([createNewCourse()]);
   const [showCGPA, setShowCGPA] = useState(false);
@@ -96,6 +98,9 @@ const Index = () => {
       <StepIndicator currentStep={currentStep} completedSteps={completedSteps} />
 
       <main className="container max-w-4xl mx-auto px-3 sm:px-4 space-y-6 sm:space-y-8">
+        {/* Ad Banner - Top of content */}
+        <ResponsiveAd slot="1234567890" className="mt-4" />
+
         {/* Grade Chart Reference */}
         <GradeChart />
 
@@ -124,6 +129,9 @@ const Index = () => {
             Add Another Course
           </Button>
         </section>
+
+        {/* In-article Ad - Between course cards and SGPA */}
+        <InArticleAd slot="0987654321" />
 
         {/* Step 3: SGPA */}
         <section className="space-y-3 sm:space-y-4">
