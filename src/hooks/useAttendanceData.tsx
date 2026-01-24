@@ -349,7 +349,12 @@ export const useAttendanceData = () => {
       toast.error('Failed to delete subject');
       return;
     }
+    // Also remove related timetable entries from local state (CASCADE takes care of DB)
+    setTimetable(prev => prev.filter(t => t.subject_id !== id));
+    // Also remove related attendance records from local state
+    setAttendanceRecords(prev => prev.filter(r => r.subject_id !== id));
     setSubjects(subjects.filter(s => s.id !== id));
+    toast.success('Subject deleted');
   };
 
   // Time slot operations
@@ -396,13 +401,19 @@ export const useAttendanceData = () => {
       toast.error('Failed to delete time slot');
       return;
     }
+    // Also remove related timetable entries from local state (CASCADE takes care of DB)
+    setTimetable(prev => prev.filter(t => t.time_slot_id !== id));
+    // Also remove related attendance records from local state
+    setAttendanceRecords(prev => prev.filter(r => r.time_slot_id !== id));
     setTimeSlots(timeSlots.filter(s => s.id !== id));
+    toast.success('Time slot deleted');
   };
 
   // Timetable operations
   const setTimetableEntry = async (timeSlotId: string, dayOfWeek: number, subjectId: string | null) => {
     if (!user) return;
 
+    // Use current state to find existing entry
     const existing = timetable.find(t => t.time_slot_id === timeSlotId && t.day_of_week === dayOfWeek);
     
     if (existing) {
@@ -413,7 +424,7 @@ export const useAttendanceData = () => {
           toast.error('Failed to update timetable');
           return;
         }
-        setTimetable(timetable.filter(t => t.id !== existing.id));
+        setTimetable(prev => prev.filter(t => t.id !== existing.id));
       } else {
         // Update entry
         const { error } = await supabase
@@ -424,20 +435,33 @@ export const useAttendanceData = () => {
           toast.error('Failed to update timetable');
           return;
         }
-        setTimetable(timetable.map(t => t.id === existing.id ? { ...t, subject_id: subjectId } : t));
+        setTimetable(prev => prev.map(t => t.id === existing.id ? { ...t, subject_id: subjectId } : t));
       }
     } else if (subjectId !== null) {
-      // Insert new entry
+      // Insert new entry - use upsert to handle potential duplicates
       const { data, error } = await supabase
         .from('timetable')
-        .insert({ user_id: user.id, time_slot_id: timeSlotId, day_of_week: dayOfWeek, subject_id: subjectId })
+        .upsert(
+          { user_id: user.id, time_slot_id: timeSlotId, day_of_week: dayOfWeek, subject_id: subjectId },
+          { onConflict: 'user_id,time_slot_id,day_of_week' }
+        )
         .select()
         .single();
       if (error) {
+        console.error('Timetable insert error:', error);
         toast.error('Failed to update timetable');
         return;
       }
-      setTimetable([...timetable, data]);
+      // Update state - replace if exists or add new
+      setTimetable(prev => {
+        const existingIndex = prev.findIndex(t => t.time_slot_id === timeSlotId && t.day_of_week === dayOfWeek);
+        if (existingIndex >= 0) {
+          const updated = [...prev];
+          updated[existingIndex] = data;
+          return updated;
+        }
+        return [...prev, data];
+      });
     }
   };
 
