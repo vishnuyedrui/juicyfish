@@ -62,24 +62,24 @@ export function CGPASection({ currentSGPA, currentCredits, courses, onCGPACalcul
   };
 
   return (
-    <Card className="animate-fade-in gradient-orange border-2 border-orange-300/50">
-      <CardHeader className="pb-4">
+    <Card className="animate-fade-in border-3 border-pop-orange/40 rounded-3xl pop-shadow-lg overflow-hidden bg-card/80 backdrop-blur-sm">
+      <CardHeader className="pb-4 bg-pop-orange/10">
         <CardTitle className="flex items-center gap-3 text-base sm:text-lg">
-          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
-            <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600" />
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-pop-orange flex items-center justify-center flex-shrink-0 pop-shadow">
+            <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
           </div>
-          <span className="leading-tight">Step 4: New CGPA (Optional)</span>
+          <span className="leading-tight font-bold">Step 4: New CGPA (Optional)</span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4 sm:space-y-6">
-        <p className="text-muted-foreground text-xs sm:text-sm">
+      <CardContent className="space-y-4 sm:space-y-6 pt-4">
+        <p className="text-muted-foreground text-xs sm:text-sm font-medium">
           Enter your previous academic record to calculate your updated cumulative GPA.
         </p>
 
         {/* Input Fields */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
           <div className="space-y-2">
-            <Label htmlFor="prev-cgpa" className="text-sm">Previous CGPA</Label>
+            <Label htmlFor="prev-cgpa" className="text-sm font-bold">Previous CGPA</Label>
             <Input
               id="prev-cgpa"
               aria-label="Enter your previous CGPA"
@@ -93,11 +93,11 @@ export function CGPASection({ currentSGPA, currentCredits, courses, onCGPACalcul
                 setPreviousCGPA(e.target.value);
                 setShowResult(false);
               }}
-              className="bg-card"
+              className="bg-card rounded-xl border-2 border-foreground/10 focus:border-pop-orange h-12"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="prev-credits" className="text-sm">Previous Total Credits</Label>
+            <Label htmlFor="prev-credits" className="text-sm font-bold">Previous Total Credits</Label>
             <Input
               id="prev-credits"
               aria-label="Enter your previous total credits"
@@ -109,30 +109,33 @@ export function CGPASection({ currentSGPA, currentCredits, courses, onCGPACalcul
                 setPreviousCredits(e.target.value);
                 setShowResult(false);
               }}
-              className="bg-card"
+              className="bg-card rounded-xl border-2 border-foreground/10 focus:border-pop-orange h-12"
             />
           </div>
         </div>
 
         {/* Current Semester Info */}
-        <div className="bg-card rounded-lg border p-3 sm:p-4">
-          <h4 className="text-xs sm:text-sm font-medium mb-2">Current Semester</h4>
-          <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground">
-            <span>SGPA: <strong className="text-foreground">{currentSGPA.toFixed(2)}</strong></span>
-            <span className="hidden sm:inline">•</span>
-            <span>Credits: <strong className="text-foreground">{currentCredits}</strong></span>
+        <div className="bg-muted/50 rounded-2xl border-2 border-foreground/10 p-4 sm:p-5">
+          <h4 className="text-xs sm:text-sm font-bold mb-3">Current Semester</h4>
+          <div className="flex flex-wrap items-center gap-3 sm:gap-5 text-xs sm:text-sm text-muted-foreground">
+            <span className="bg-card px-3 py-1.5 rounded-full border-2 border-foreground/10">
+              SGPA: <strong className="text-foreground">{currentSGPA.toFixed(2)}</strong>
+            </span>
+            <span className="bg-card px-3 py-1.5 rounded-full border-2 border-foreground/10">
+              Credits: <strong className="text-foreground">{currentCredits}</strong>
+            </span>
           </div>
         </div>
 
         {/* Calculate Button */}
         {!showResult && (
-          <div className="text-center">
+          <div className="text-center pt-2">
             <Button 
               onClick={() => setShowResult(true)} 
               disabled={!canCalculate}
-              className="bg-orange-500 hover:bg-orange-600 w-full sm:w-auto"
+              className="bg-pop-orange hover:bg-pop-orange/90 text-white font-bold rounded-full px-8 pop-shadow transition-all duration-200 hover:scale-105 hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:scale-100"
             >
-              <Calculator className="w-4 h-4 mr-2" />
+              <Calculator className="w-5 h-5 mr-2" />
               Calculate New CGPA
             </Button>
           </div>
@@ -140,17 +143,17 @@ export function CGPASection({ currentSGPA, currentCredits, courses, onCGPACalcul
 
         {/* Result */}
         {showResult && result && (
-          <div className="space-y-4 sm:space-y-6 animate-scale-in">
+          <div className="space-y-5 sm:space-y-6 animate-bounce-in">
             {/* Formula */}
-            <Card className="bg-muted/30 border-dashed">
-              <CardHeader className="pb-2 px-3 sm:px-6">
-                <CardTitle className="text-xs sm:text-sm flex items-center gap-2 text-orange-600">
-                  <Calculator className="w-3 h-3 sm:w-4 sm:h-4" />
+            <Card className="bg-muted/30 border-dashed border-2 border-pop-orange/30 rounded-2xl">
+              <CardHeader className="pb-2 px-4 sm:px-6">
+                <CardTitle className="text-xs sm:text-sm flex items-center gap-2 text-pop-orange font-bold">
+                  <Calculator className="w-4 h-4 sm:w-5 sm:h-5" />
                   CGPA Formula
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2 sm:space-y-3 text-xs sm:text-sm px-3 sm:px-6">
-                <div className="font-mono bg-card p-2 sm:p-3 rounded border space-y-1 overflow-x-auto">
+              <CardContent className="space-y-2 sm:space-y-3 text-xs sm:text-sm px-4 sm:px-6">
+                <div className="font-mono bg-card p-3 sm:p-4 rounded-xl border-2 border-foreground/10 space-y-1.5 overflow-x-auto">
                   <div className="text-muted-foreground text-[10px] sm:text-xs whitespace-nowrap">
                     New CGPA = [(Prev CGPA × Prev Credits) + (SGPA × Credits)] ÷ Total Credits
                   </div>
@@ -163,28 +166,32 @@ export function CGPASection({ currentSGPA, currentCredits, courses, onCGPACalcul
                   <div className="text-muted-foreground whitespace-nowrap text-xs">
                     = {result.totalGradePoints.toFixed(2)} ÷ {result.totalCredits}
                   </div>
-                  <div className="text-foreground font-semibold text-base sm:text-lg">
-                    New CGPA = <span className="text-orange-600">{result.cgpa.toFixed(2)}</span>
+                  <div className="text-foreground font-bold text-lg sm:text-xl">
+                    New CGPA = <span className="text-pop-orange">{result.cgpa.toFixed(2)}</span>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             {/* CGPA Comparison */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 p-4 sm:p-6 bg-card rounded-lg border">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 p-6 sm:p-8 bg-gradient-to-br from-pop-orange/10 to-pop-yellow/10 rounded-3xl border-3 border-pop-orange/30 pop-shadow-lg">
               <div className="text-center">
-                <div className="text-xl sm:text-2xl font-bold text-muted-foreground">{previousCGPA}</div>
-                <div className="text-[10px] sm:text-xs text-muted-foreground">Previous CGPA</div>
+                <div className="text-2xl sm:text-3xl font-bold text-muted-foreground">{previousCGPA}</div>
+                <div className="text-[10px] sm:text-xs text-muted-foreground font-medium mt-1">Previous CGPA</div>
               </div>
-              <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 text-muted-foreground rotate-90 sm:rotate-0" />
+              <div className="w-12 h-12 rounded-full bg-pop-orange/20 flex items-center justify-center">
+                <ArrowRight className="w-6 h-6 text-pop-orange rotate-90 sm:rotate-0" />
+              </div>
               <div className="text-center">
-                <div className="text-4xl sm:text-5xl font-bold text-orange-600">{result.cgpa.toFixed(2)}</div>
-                <div className="text-xs sm:text-sm text-muted-foreground mt-1">New CGPA</div>
+                <div className="text-5xl sm:text-6xl font-black text-pop-orange drop-shadow-md">{result.cgpa.toFixed(2)}</div>
+                <div className="text-xs sm:text-sm text-muted-foreground font-medium mt-1">New CGPA</div>
               </div>
             </div>
 
             <div className="text-center text-xs sm:text-sm text-muted-foreground">
-              Total Credits Completed: <strong className="text-foreground">{result.totalCredits}</strong>
+              <span className="bg-card px-4 py-2 rounded-full border-2 border-foreground/10 inline-block">
+                Total Credits Completed: <strong className="text-foreground">{result.totalCredits}</strong>
+              </span>
             </div>
 
             {/* Download PDF Button */}
@@ -192,9 +199,9 @@ export function CGPASection({ currentSGPA, currentCredits, courses, onCGPACalcul
               <Button 
                 onClick={handleDownloadPDF}
                 size="lg"
-                className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600"
+                className="w-full sm:w-auto bg-pop-orange hover:bg-pop-orange/90 rounded-full font-bold pop-shadow transition-all duration-200 hover:scale-105 hover:-translate-y-0.5"
               >
-                <Download className="w-4 h-4 mr-2" />
+                <Download className="w-5 h-5 mr-2" />
                 Download Complete Report (PDF)
               </Button>
             </div>

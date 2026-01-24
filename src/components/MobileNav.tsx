@@ -10,41 +10,52 @@ export function MobileNav() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="sm:hidden" aria-label="Open menu">
-          <Menu className="h-5 w-5" />
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="sm:hidden text-white hover:bg-white/20 rounded-full" 
+          aria-label="Open menu"
+        >
+          <Menu className="h-6 w-6" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-[280px] sm:w-[350px]">
+      <SheetContent side="right" className="w-[300px] sm:w-[350px] pop-gradient-pink border-l-4 border-foreground/20">
         <SheetHeader>
-          <SheetTitle>Menu</SheetTitle>
+          <SheetTitle className="text-white text-xl font-bold">✨ Menu</SheetTitle>
         </SheetHeader>
-        <nav className="flex flex-col gap-4 mt-6">
+        <nav className="flex flex-col gap-3 mt-6">
           <Link 
             to="/admin/login" 
             onClick={() => setOpen(false)}
-            className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-muted transition-colors"
+            className="flex items-center gap-3 px-4 py-4 rounded-2xl bg-white/20 hover:bg-white/30 transition-all duration-200 hover:scale-[1.02] pop-shadow"
           >
-            <Shield className="h-5 w-5 text-muted-foreground" />
-            <span className="font-medium">Admin Login</span>
+            <div className="w-10 h-10 rounded-full bg-pop-purple flex items-center justify-center">
+              <Shield className="h-5 w-5 text-white" />
+            </div>
+            <span className="font-bold text-white">Admin Login</span>
           </Link>
           
           <a 
             href="/downloads/juicyfish.apk" 
             download="JuicyFish.apk"
             onClick={() => setOpen(false)}
-            className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-muted transition-colors"
+            className="flex items-center gap-3 px-4 py-4 rounded-2xl bg-white/20 hover:bg-white/30 transition-all duration-200 hover:scale-[1.02] pop-shadow"
           >
-            <Download className="h-5 w-5 text-muted-foreground" />
-            <span className="font-medium">Download App</span>
+            <div className="w-10 h-10 rounded-full bg-pop-cyan flex items-center justify-center">
+              <Download className="h-5 w-5 text-white" />
+            </div>
+            <span className="font-bold text-white">Download App</span>
           </a>
           
           <Link 
             to="/auth" 
             onClick={() => setOpen(false)}
-            className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-muted transition-colors"
+            className="flex items-center gap-3 px-4 py-4 rounded-2xl bg-pop-yellow hover:bg-pop-yellow/90 transition-all duration-200 hover:scale-[1.02] pop-shadow"
           >
-            <LogIn className="h-5 w-5 text-muted-foreground" />
-            <span className="font-medium">Sign In</span>
+            <div className="w-10 h-10 rounded-full bg-foreground/20 flex items-center justify-center">
+              <LogIn className="h-5 w-5 text-foreground" />
+            </div>
+            <span className="font-bold text-foreground">Sign In</span>
           </Link>
         </nav>
       </SheetContent>

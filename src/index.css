@@ -2,57 +2,68 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+/* Pop Art Design System - Bold, Vibrant, Playful
 All colors MUST be HSL.
 */
 
 @layer base {
   :root {
-    --background: 220 20% 97%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 45 100% 96%;
+    --foreground: 280 60% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 280 60% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 280 60% 15%;
 
-    --primary: 262 83% 58%;
+    /* Pop Art Primary - Hot Pink */
+    --primary: 330 100% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 199 89% 48%;
+    /* Pop Art Secondary - Electric Cyan */
+    --secondary: 180 100% 45%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 25% 35%;
+    --muted: 45 40% 92%;
+    --muted-foreground: 280 30% 40%;
 
-    --accent: 142 76% 36%;
+    /* Pop Art Accent - Vibrant Green */
+    --accent: 145 80% 45%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 90% 55%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 262 83% 58%;
+    --border: 280 30% 85%;
+    --input: 280 30% 85%;
+    --ring: 330 100% 60%;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
 
-    /* Grade colors */
-    --grade-o: 142 76% 36%;
-    --grade-a-plus: 166 72% 40%;
-    --grade-a: 199 89% 48%;
-    --grade-b-plus: 262 83% 58%;
-    --grade-b: 280 65% 60%;
-    --grade-c: 32 95% 55%;
-    --grade-p: 45 93% 47%;
-    --grade-f: 0 84% 60%;
+    /* Pop Art Colors */
+    --pop-pink: 330 100% 60%;
+    --pop-yellow: 45 100% 55%;
+    --pop-cyan: 180 100% 45%;
+    --pop-purple: 280 85% 60%;
+    --pop-orange: 25 100% 55%;
+    --pop-green: 145 80% 45%;
 
-    /* Card gradients */
-    --gradient-purple: linear-gradient(135deg, hsl(262 83% 58% / 0.1), hsl(280 65% 60% / 0.1));
-    --gradient-blue: linear-gradient(135deg, hsl(199 89% 48% / 0.1), hsl(166 72% 40% / 0.1));
-    --gradient-green: linear-gradient(135deg, hsl(142 76% 36% / 0.1), hsl(166 72% 40% / 0.1));
-    --gradient-orange: linear-gradient(135deg, hsl(32 95% 55% / 0.1), hsl(45 93% 47% / 0.1));
+    /* Grade colors - More vibrant */
+    --grade-o: 145 85% 42%;
+    --grade-a-plus: 165 80% 42%;
+    --grade-a: 180 100% 40%;
+    --grade-b-plus: 280 90% 55%;
+    --grade-b: 300 70% 55%;
+    --grade-c: 32 100% 50%;
+    --grade-p: 45 100% 45%;
+    --grade-f: 0 90% 55%;
+
+    /* Pop Art Gradients */
+    --gradient-purple: linear-gradient(135deg, hsl(280 85% 60% / 0.15), hsl(330 100% 60% / 0.15));
+    --gradient-blue: linear-gradient(135deg, hsl(180 100% 45% / 0.15), hsl(200 100% 50% / 0.15));
+    --gradient-green: linear-gradient(135deg, hsl(145 80% 45% / 0.15), hsl(165 75% 45% / 0.15));
+    --gradient-orange: linear-gradient(135deg, hsl(25 100% 55% / 0.15), hsl(45 100% 55% / 0.15));
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -65,33 +76,33 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 280 40% 8%;
+    --foreground: 45 50% 95%;
 
-    --card: 222.2 84% 8%;
-    --card-foreground: 210 40% 98%;
+    --card: 280 40% 12%;
+    --card-foreground: 45 50% 95%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 280 40% 10%;
+    --popover-foreground: 45 50% 95%;
 
-    --primary: 262 83% 65%;
+    --primary: 330 100% 65%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 199 89% 55%;
+    --secondary: 180 100% 50%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 280 30% 18%;
+    --muted-foreground: 45 30% 65%;
 
-    --accent: 142 76% 45%;
+    --accent: 145 80% 50%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 80% 50%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 262 83% 65%;
+    --border: 280 30% 25%;
+    --input: 280 30% 25%;
+    --ring: 330 100% 65%;
     
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
@@ -126,5 +137,34 @@ All colors MUST be HSL.
   }
   .gradient-orange {
     background: var(--gradient-orange);
+  }
+  
+  /* Pop Art Utilities */
+  .pop-border {
+    @apply border-[3px] border-foreground/80;
+  }
+  
+  .pop-shadow {
+    box-shadow: 4px 4px 0 hsl(var(--foreground) / 0.2);
+  }
+  
+  .pop-shadow-lg {
+    box-shadow: 6px 6px 0 hsl(var(--foreground) / 0.2);
+  }
+
+  .pop-gradient-pink {
+    background: linear-gradient(135deg, hsl(330 100% 60%), hsl(280 85% 60%));
+  }
+
+  .pop-gradient-cyan {
+    background: linear-gradient(135deg, hsl(180 100% 45%), hsl(200 100% 50%));
+  }
+
+  .pop-gradient-yellow {
+    background: linear-gradient(135deg, hsl(45 100% 55%), hsl(25 100% 55%));
+  }
+
+  .pop-gradient-green {
+    background: linear-gradient(135deg, hsl(145 80% 45%), hsl(165 80% 45%));
   }
 }

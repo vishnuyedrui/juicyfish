@@ -63,40 +63,65 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background pb-12">
-      {/* Header - Mobile Responsive */}
-      <header className="bg-card border-b sticky top-0 z-10">
-        <div className="container max-w-4xl mx-auto px-3 sm:px-4 py-3">
+    <div className="min-h-screen bg-background pb-12 relative overflow-hidden">
+      {/* Abstract background decorations */}
+      <div className="absolute top-0 left-0 w-72 h-72 bg-pop-pink/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+      <div className="absolute top-1/4 right-0 w-96 h-96 bg-pop-cyan/10 rounded-full blur-3xl translate-x-1/2" />
+      <div className="absolute bottom-1/4 left-0 w-80 h-80 bg-pop-yellow/10 rounded-full blur-3xl -translate-x-1/3" />
+      
+      {/* Header - Pop Art Style */}
+      <header className="relative z-10 pop-gradient-pink border-b-4 border-foreground/20">
+        <div className="container max-w-4xl mx-auto px-3 sm:px-4 py-4">
           <div className="flex items-center justify-between gap-2">
             {/* Logo and Title */}
-            <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-              <img 
-                src={logo} 
-                alt="JuicyFish Logo" 
-                className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl flex-shrink-0 object-contain"
-              />
+            <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
+              <div className="relative">
+                <img 
+                  src={logo} 
+                  alt="JuicyFish Logo" 
+                  className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex-shrink-0 object-contain pop-shadow border-2 border-white/50 bg-white"
+                />
+              </div>
               <div className="min-w-0">
-                <h1 className="text-base sm:text-xl font-bold truncate">Academic Grade Calculator</h1>
-                <p className="text-[11px] sm:text-sm text-muted-foreground truncate">Step-by-step WGP, SGPA & CGPA</p>
+                <h1 className="text-lg sm:text-2xl font-extrabold text-white drop-shadow-md truncate tracking-tight">
+                  Grade Calculator
+                </h1>
+                <p className="text-[11px] sm:text-sm text-white/80 truncate font-medium">
+                  ✨ WGP • SGPA • CGPA
+                </p>
               </div>
             </div>
             
             {/* Desktop Navigation */}
             <div className="hidden sm:flex items-center gap-2">
               <Link to="/admin/login" aria-label="Admin Login">
-                <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground" aria-label="Admin Login">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="gap-2 text-white/90 hover:text-white hover:bg-white/20 rounded-full font-semibold transition-all duration-200 hover:scale-105"
+                  aria-label="Admin Login"
+                >
                   <Shield className="w-4 h-4" aria-hidden="true" />
                   <span>Admin</span>
                 </Button>
               </Link>
               <a href="/downloads/juicyfish.apk" download="JuicyFish.apk" aria-label="Download App">
-                <Button variant="outline" size="sm" className="gap-2" aria-label="Download App">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="gap-2 bg-white text-primary hover:bg-white/90 border-2 border-white rounded-full font-semibold pop-shadow transition-all duration-200 hover:scale-105 hover:-translate-y-0.5"
+                  aria-label="Download App"
+                >
                   <Download className="w-4 h-4" aria-hidden="true" />
-                  <span>Download App</span>
+                  <span>Download</span>
                 </Button>
               </a>
               <Link to="/auth" aria-label="Sign In">
-                <Button variant="outline" size="sm" className="gap-2" aria-label="Sign In">
+                <Button 
+                  size="sm" 
+                  className="gap-2 bg-pop-yellow text-foreground hover:bg-pop-yellow/90 border-2 border-foreground/20 rounded-full font-semibold pop-shadow transition-all duration-200 hover:scale-105 hover:-translate-y-0.5"
+                  aria-label="Sign In"
+                >
                   <LogIn className="w-4 h-4" aria-hidden="true" />
                   <span>Sign In</span>
                 </Button>
@@ -107,20 +132,31 @@ const Index = () => {
             <MobileNav />
           </div>
         </div>
+        {/* Wavy bottom edge */}
+        <svg className="absolute -bottom-1 left-0 w-full h-4" viewBox="0 0 1200 24" preserveAspectRatio="none">
+          <path 
+            d="M0,24 C300,0 600,24 900,12 C1050,6 1150,18 1200,12 L1200,24 L0,24 Z" 
+            fill="hsl(var(--background))"
+          />
+        </svg>
       </header>
 
       {/* Step Indicator */}
-      <StepIndicator currentStep={currentStep} completedSteps={completedSteps} />
+      <div className="relative z-10">
+        <StepIndicator currentStep={currentStep} completedSteps={completedSteps} />
+      </div>
 
-      <main className="container max-w-4xl mx-auto px-3 sm:px-4 space-y-6 sm:space-y-8">
+      <main className="container max-w-4xl mx-auto px-3 sm:px-4 space-y-6 sm:space-y-8 relative z-10">
         {/* Grade Chart Reference */}
         <GradeChart />
 
         {/* Step 1 & 2: Course Cards */}
         <section className="space-y-3 sm:space-y-4">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-            <h2 className="text-base sm:text-lg font-semibold">Step 1 & 2: Courses & Grades</h2>
+          <div className="flex items-center gap-2 bg-card rounded-2xl px-4 py-3 pop-shadow border-2 border-foreground/10">
+            <div className="w-8 h-8 rounded-full bg-pop-purple flex items-center justify-center">
+              <Sparkles className="w-4 h-4 text-white" />
+            </div>
+            <h2 className="text-base sm:text-lg font-bold">Step 1 & 2: Courses & Grades</h2>
           </div>
 
           <div className="space-y-4 sm:space-y-6">
@@ -136,8 +172,12 @@ const Index = () => {
             ))}
           </div>
 
-          <Button onClick={addCourse} variant="outline" className="w-full border-dashed">
-            <PlusCircle className="w-4 h-4 mr-2" />
+          <Button 
+            onClick={addCourse} 
+            variant="outline" 
+            className="w-full border-dashed border-2 border-primary/50 hover:border-primary hover:bg-primary/5 rounded-2xl py-6 text-primary font-semibold transition-all duration-200 hover:scale-[1.01]"
+          >
+            <PlusCircle className="w-5 h-5 mr-2" />
             Add Another Course
           </Button>
         </section>
@@ -164,9 +204,13 @@ const Index = () => {
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="mt-8 sm:mt-12 text-center text-xs sm:text-sm text-foreground/70 px-4">
-        <p>Built with ❤️ for students @ TEAMDINO teamdino.in</p>
+      {/* Footer - Pop Art Style */}
+      <footer className="mt-8 sm:mt-12 relative z-10">
+        <div className="pop-gradient-cyan py-4">
+          <p className="text-center text-sm font-semibold text-white drop-shadow-sm">
+            Built with <span className="text-2xl animate-pulse">❤️</span> for students @ TEAMDINO teamdino.in
+          </p>
+        </div>
       </footer>
     </div>
   );
