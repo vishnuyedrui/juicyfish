@@ -248,7 +248,7 @@ const ResourceManager = () => {
             </div>
             <div className="space-y-2">
               <Label>Section</Label>
-              <Select value={selectedChapter || "all"} onValueChange={(v) => setSelectedChapter(v === "all" ? "" : v)} disabled={chapters.length === 0}>
+              <Select value={selectedChapter || "all"} onValueChange={(v) => setSelectedChapter(v === "all" ? "" : v)} disabled={!selectedCourse}>
                 <SelectTrigger>
                   <SelectValue placeholder={chapters.length === 0 ? 'No sections' : 'All sections'} />
                 </SelectTrigger>
