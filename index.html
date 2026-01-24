@@ -8,8 +8,15 @@
     <meta name="author" content="Team Dino" />
     <meta name="keywords" content="SGPA calculator, CGPA calculator, grade calculator, attendance tracker, student portal, GPA calculator, academic tools, course materials" />
 
+    <!-- DNS Prefetch for external resources -->
+    <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
+    <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin />
+
     <!-- Favicon: A+ badge -->
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <!-- Preload LCP image -->
+    <link rel="preload" href="/grade-conversion.png" as="image" fetchpriority="high" />
 
     <!-- Open Graph -->
     <meta property="og:title" content="JuicyFish - SGPA/CGPA Calculator & Attendance Tracker" />
@@ -24,8 +31,27 @@
     <meta name="twitter:description" content="Free SGPA/CGPA calculator and attendance tracker for students." />
     <meta name="twitter:image" content="https://www.juicyfish.online/grade-conversion.png" />
 
-    <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3849772039813147" crossorigin="anonymous"></script>
+    <!-- Google AdSense - Deferred loading for better performance -->
+    <script>
+      // Delay AdSense loading until page is interactive
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(function() {
+          var script = document.createElement('script');
+          script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3849772039813147';
+          script.async = true;
+          script.crossOrigin = 'anonymous';
+          document.head.appendChild(script);
+        });
+      } else {
+        setTimeout(function() {
+          var script = document.createElement('script');
+          script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3849772039813147';
+          script.async = true;
+          script.crossOrigin = 'anonymous';
+          document.head.appendChild(script);
+        }, 3000);
+      }
+    </script>
   </head>
 
   <body>

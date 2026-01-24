@@ -124,6 +124,10 @@ export function GradeChart() {
             src="/grade-conversion.png"
             alt="Grade points and symbols in relative grading"
             className="max-w-full w-full sm:w-[600px] rounded-lg border shadow-md"
+            width={630}
+            height={352}
+            fetchPriority="high"
+            decoding="async"
           />
           <p className="text-[10px] sm:text-xs text-muted-foreground mt-2 text-center">
             Grade points and symbols in relative grading
