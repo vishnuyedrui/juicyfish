@@ -24,9 +24,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+      
+      // Handle session-only mode (when "Remember Me" is unchecked)
+      if (_event === 'SIGNED_IN' && sessionStorage.getItem('session_only') === 'true') {
+        // Clear localStorage token so session doesn't persist after browser close
+        const storageKey = `sb-cydqjkzzvmklykhoxoer-auth-token`;
+        const sessionData = localStorage.getItem(storageKey);
+        if (sessionData) {
+          sessionStorage.setItem(storageKey, sessionData);
+          localStorage.removeItem(storageKey);
+        }
+      }
     });
 
-    // Check for existing session
+    // Check for existing session (from localStorage or sessionStorage)
+    const storageKey = `sb-cydqjkzzvmklykhoxoer-auth-token`;
+    const sessionOnlyData = sessionStorage.getItem(storageKey);
+    if (sessionOnlyData && !localStorage.getItem(storageKey)) {
+      // Restore session-only token for this browser session
+      localStorage.setItem(storageKey, sessionOnlyData);
+    }
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
