@@ -23,16 +23,6 @@ const RESOURCE_TYPES = [
   { value: 'image', label: 'Image', icon: Image },
 ];
 
-const STATIC_SECTIONS = [
-  { value: 'syllabus', label: 'Syllabus', sort_order: 0 },
-  { value: 'chapter_1', label: 'Chapter 1', sort_order: 1 },
-  { value: 'chapter_2', label: 'Chapter 2', sort_order: 2 },
-  { value: 'chapter_3', label: 'Chapter 3', sort_order: 3 },
-  { value: 'chapter_4', label: 'Chapter 4', sort_order: 4 },
-  { value: 'chapter_5', label: 'Chapter 5', sort_order: 5 },
-  { value: 'additional_resources', label: 'Additional Materials', sort_order: 6 },
-  { value: 'pyq', label: 'PYQs', sort_order: 7 },
-];
 
 const ResourceManager = () => {
   const { isAdmin, loading: adminLoading } = useAdmin();
@@ -270,20 +260,19 @@ const ResourceManager = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Sections</SelectItem>
-                  {STATIC_SECTIONS.map((section) => {
-                    const matchingChapter = chapters.find(
-                      (ch) => ch.title.toLowerCase() === section.label.toLowerCase() || 
-                              (ch as any).section_type === section.value
-                    );
-                    return (
-                      <SelectItem 
-                        key={section.value} 
-                        value={matchingChapter?.id || section.value}
-                      >
-                        {section.label}
-                      </SelectItem>
-                    );
-                  })}
+                  {chapters.length === 0 ? (
+                    <SelectItem value="no-sections" disabled>
+                      No sections - sync in Course Manager
+                    </SelectItem>
+                  ) : (
+                    [...chapters]
+                      .sort((a, b) => ((a as any).sort_order ?? a.chapter_number) - ((b as any).sort_order ?? b.chapter_number))
+                      .map((chapter) => (
+                        <SelectItem key={chapter.id} value={chapter.id}>
+                          {chapter.title}
+                        </SelectItem>
+                      ))
+                  )}
                 </SelectContent>
               </Select>
             </div>

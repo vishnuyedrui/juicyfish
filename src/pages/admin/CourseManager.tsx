@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Plus, Trash2, Loader2, BookOpen } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, Loader2, BookOpen, RefreshCw } from 'lucide-react';
 
 const CourseManager = () => {
   const { isAdmin, loading: adminLoading } = useAdmin();
@@ -102,6 +102,55 @@ const CourseManager = () => {
       setCourses(courses.filter((c) => c.id !== courseId));
       if (selectedCourse === courseId) setSelectedCourse('');
       toast({ title: 'Success', description: 'Course deleted' });
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message,
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleSyncSections = async (courseId: string) => {
+    try {
+      // Check if sections already exist
+      const { data: existingSections, error: checkError } = await supabase
+        .from('chapters')
+        .select('id')
+        .eq('course_id', courseId);
+
+      if (checkError) throw checkError;
+
+      if (existingSections && existingSections.length > 0) {
+        toast({
+          title: 'Sections Already Exist',
+          description: `This course already has ${existingSections.length} sections`,
+        });
+        return;
+      }
+
+      // Create default sections
+      const defaultSections = [
+        { title: 'Syllabus', section_type: 'syllabus', chapter_number: 0, sort_order: 1 },
+        { title: 'Chapter 1', section_type: 'chapter', chapter_number: 1, sort_order: 2 },
+        { title: 'Chapter 2', section_type: 'chapter', chapter_number: 2, sort_order: 3 },
+        { title: 'Chapter 3', section_type: 'chapter', chapter_number: 3, sort_order: 4 },
+        { title: 'Chapter 4', section_type: 'chapter', chapter_number: 4, sort_order: 5 },
+        { title: 'Chapter 5', section_type: 'chapter', chapter_number: 5, sort_order: 6 },
+        { title: 'Additional Materials', section_type: 'additional_resources', chapter_number: 0, sort_order: 7 },
+        { title: 'PYQs', section_type: 'pyq', chapter_number: 0, sort_order: 8 },
+      ];
+
+      const { error: insertError } = await supabase
+        .from('chapters')
+        .insert(defaultSections.map((s) => ({ ...s, course_id: courseId })));
+
+      if (insertError) throw insertError;
+
+      toast({
+        title: 'Success',
+        description: 'Default sections added (Syllabus, Ch 1-5, Additional Resources, PYQs)',
+      });
     } catch (error: any) {
       toast({
         title: 'Error',
@@ -291,17 +340,30 @@ const CourseManager = () => {
                         <p className="font-medium text-sm sm:text-base truncate">{course.name}</p>
                         <p className="text-xs sm:text-sm text-muted-foreground">{course.code}</p>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-destructive hover:text-destructive"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteCourse(course.id);
-                        }}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          title="Sync default sections"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleSyncSections(course.id);
+                          }}
+                        >
+                          <RefreshCw className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-destructive hover:text-destructive"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteCourse(course.id);
+                          }}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </div>
                   ))}
                 </div>
