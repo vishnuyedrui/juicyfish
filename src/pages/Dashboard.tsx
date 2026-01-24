@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { GraduationCap, CalendarCheck, User, LogOut, Loader2, Megaphone, MessageCircle, Video, Send, Link as LinkIcon, ExternalLink } from 'lucide-react';
 import coursesIcon from '@/assets/courses-icon.jpg';
 import profileAvatar from '@/assets/profile-avatar.jpg';
+import teamDinoIcon from '@/assets/team-dino.jpg';
 
 const Dashboard = () => {
   const { user, signOut, loading: authLoading } = useAuth();
@@ -197,8 +198,8 @@ const Dashboard = () => {
           <a href="https://teamdino.in" target="_blank" rel="noopener noreferrer">
             <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
               <CardHeader>
-                <div className="w-12 h-12 rounded-xl bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mb-2">
-                  <ExternalLink className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+                <div className="w-12 h-12 rounded-xl overflow-hidden mb-2">
+                  <img src={teamDinoIcon} alt="Team Dino" className="w-full h-full object-cover" />
                 </div>
                 <CardTitle>TEAM DINO</CardTitle>
                 <CardDescription>
