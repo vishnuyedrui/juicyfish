@@ -22,7 +22,7 @@ const RESOURCE_TYPE_INFO = {
 const SECTION_TYPE_INFO: Record<string, { label: string; icon: React.ComponentType<any>; color: string }> = {
   syllabus: { label: 'Syllabus', icon: FileText, color: 'text-green-500' },
   chapter: { label: 'Chapter', icon: BookOpen, color: 'text-blue-500' },
-  additional_resources: { label: 'Additional Materials', icon: File, color: 'text-purple-500' },
+  additional_resources: { label: 'Additional Resources', icon: File, color: 'text-purple-500' },
   pyq: { label: 'Previous Year Questions', icon: FileText, color: 'text-orange-500' },
 };
 

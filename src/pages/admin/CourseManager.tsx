@@ -68,7 +68,7 @@ const CourseManager = () => {
         { title: 'Chapter 3', section_type: 'chapter', chapter_number: 3, sort_order: 4 },
         { title: 'Chapter 4', section_type: 'chapter', chapter_number: 4, sort_order: 5 },
         { title: 'Chapter 5', section_type: 'chapter', chapter_number: 5, sort_order: 6 },
-        { title: 'Additional Materials', section_type: 'additional_resources', chapter_number: 0, sort_order: 7 },
+        { title: 'Additional Resources', section_type: 'additional_resources', chapter_number: 0, sort_order: 7 },
         { title: 'PYQs', section_type: 'pyq', chapter_number: 0, sort_order: 8 },
       ];
 
@@ -137,7 +137,7 @@ const CourseManager = () => {
         { title: 'Chapter 3', section_type: 'chapter', chapter_number: 3, sort_order: 4 },
         { title: 'Chapter 4', section_type: 'chapter', chapter_number: 4, sort_order: 5 },
         { title: 'Chapter 5', section_type: 'chapter', chapter_number: 5, sort_order: 6 },
-        { title: 'Additional Materials', section_type: 'additional_resources', chapter_number: 0, sort_order: 7 },
+        { title: 'Additional Resources', section_type: 'additional_resources', chapter_number: 0, sort_order: 7 },
         { title: 'PYQs', section_type: 'pyq', chapter_number: 0, sort_order: 8 },
       ];
 
