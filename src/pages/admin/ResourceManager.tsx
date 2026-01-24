@@ -23,6 +23,17 @@ const RESOURCE_TYPES = [
   { value: 'image', label: 'Image', icon: Image },
 ];
 
+const STATIC_SECTIONS = [
+  { value: 'syllabus', label: 'Syllabus', sort_order: 0 },
+  { value: 'chapter_1', label: 'Chapter 1', sort_order: 1 },
+  { value: 'chapter_2', label: 'Chapter 2', sort_order: 2 },
+  { value: 'chapter_3', label: 'Chapter 3', sort_order: 3 },
+  { value: 'chapter_4', label: 'Chapter 4', sort_order: 4 },
+  { value: 'chapter_5', label: 'Chapter 5', sort_order: 5 },
+  { value: 'additional_resources', label: 'Additional Materials', sort_order: 6 },
+  { value: 'pyq', label: 'PYQs', sort_order: 7 },
+];
+
 const ResourceManager = () => {
   const { isAdmin, loading: adminLoading } = useAdmin();
   const navigate = useNavigate();
@@ -37,6 +48,11 @@ const ResourceManager = () => {
   const { chapters } = useChapters(selectedCourse);
   const [selectedChapter, setSelectedChapter] = useState<string>('');
   const { resources, setResources } = useResources(selectedCourse);
+
+  // Filter resources by selected section (chapter_id)
+  const filteredResources = selectedChapter 
+    ? resources.filter((r) => r.chapter_id === selectedChapter)
+    : resources;
 
   const [newResource, setNewResource] = useState({
     title: '',
@@ -250,17 +266,24 @@ const ResourceManager = () => {
               <Label>Section</Label>
               <Select value={selectedChapter || "all"} onValueChange={(v) => setSelectedChapter(v === "all" ? "" : v)} disabled={!selectedCourse}>
                 <SelectTrigger>
-                  <SelectValue placeholder={chapters.length === 0 ? 'No sections' : 'All sections'} />
+                  <SelectValue placeholder="All Sections" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Sections</SelectItem>
-                  {[...chapters]
-                    .sort((a, b) => ((a as any).sort_order ?? a.chapter_number) - ((b as any).sort_order ?? b.chapter_number))
-                    .map((chapter) => (
-                      <SelectItem key={chapter.id} value={chapter.id}>
-                        {chapter.title}
+                  {STATIC_SECTIONS.map((section) => {
+                    const matchingChapter = chapters.find(
+                      (ch) => ch.title.toLowerCase() === section.label.toLowerCase() || 
+                              (ch as any).section_type === section.value
+                    );
+                    return (
+                      <SelectItem 
+                        key={section.value} 
+                        value={matchingChapter?.id || section.value}
+                      >
+                        {section.label}
                       </SelectItem>
-                    ))}
+                    );
+                  })}
                 </SelectContent>
               </Select>
             </div>
@@ -421,15 +444,18 @@ const ResourceManager = () => {
         {selectedCourse && (
           <Card>
             <CardHeader className="pb-3 sm:pb-6">
-              <CardTitle className="text-base sm:text-lg">Existing Resources ({resources.length})</CardTitle>
+              <CardTitle className="text-base sm:text-lg">
+                Existing Resources ({selectedChapter ? filteredResources.length : resources.length})
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              {resources.length === 0 ? (
+              {(selectedChapter ? filteredResources : resources).length === 0 ? (
                 <p className="text-muted-foreground text-center py-6 sm:py-8 text-sm sm:text-base">No resources found. Add your first resource above.</p>
               ) : (
                 <div className="space-y-2 sm:space-y-3">
-                  {resources.map((resource) => {
+                  {(selectedChapter ? filteredResources : resources).map((resource) => {
                     const TypeIcon = RESOURCE_TYPES.find((t) => t.value === resource.resource_type)?.icon || File;
+                    const sectionName = chapters.find((ch) => ch.id === resource.chapter_id)?.title || 'Uncategorized';
                     return (
                       <div key={resource.id} className="flex items-center justify-between p-3 sm:p-4 rounded-lg border gap-2">
                         <div className="flex items-center gap-3">
@@ -438,6 +464,7 @@ const ResourceManager = () => {
                             <p className="font-medium">{resource.title}</p>
                             <p className="text-sm text-muted-foreground">
                               {RESOURCE_TYPES.find((t) => t.value === resource.resource_type)?.label}
+                              <span className="text-primary"> • {sectionName}</span>
                               {resource.description && ` • ${resource.description}`}
                             </p>
                           </div>
