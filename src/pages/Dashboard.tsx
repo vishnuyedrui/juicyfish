@@ -140,7 +140,7 @@ const Dashboard = () => {
 
         {/* Quick Links */}
         <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-6 sm:mb-8">
-          <Link to="/courses">
+          <Link to="/courses" className="animate-fade-in" style={{ animationDelay: '0ms', animationFillMode: 'both' }}>
             <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
               <CardHeader>
                 <div className="w-12 h-12 rounded-xl overflow-hidden mb-2">
@@ -159,7 +159,7 @@ const Dashboard = () => {
             </Card>
           </Link>
 
-          <Link to="/attendance">
+          <Link to="/attendance" className="animate-fade-in" style={{ animationDelay: '75ms', animationFillMode: 'both' }}>
             <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
               <CardHeader>
                 <div className="w-12 h-12 rounded-xl overflow-hidden mb-2">
@@ -178,7 +178,7 @@ const Dashboard = () => {
             </Card>
           </Link>
 
-          <Link to="/">
+          <Link to="/" className="animate-fade-in" style={{ animationDelay: '150ms', animationFillMode: 'both' }}>
             <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
               <CardHeader>
                 <div className="w-12 h-12 rounded-xl overflow-hidden mb-2">
@@ -197,7 +197,7 @@ const Dashboard = () => {
             </Card>
           </Link>
 
-          <a href="https://teamdino.in" target="_blank" rel="noopener noreferrer">
+          <a href="https://teamdino.in" target="_blank" rel="noopener noreferrer" className="animate-fade-in" style={{ animationDelay: '225ms', animationFillMode: 'both' }}>
             <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
               <CardHeader>
                 <div className="w-12 h-12 rounded-xl overflow-hidden mb-2">
