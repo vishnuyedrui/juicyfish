@@ -7,7 +7,8 @@ import { SGPASection } from "@/components/calculator/SGPASection";
 import { CGPASection } from "@/components/calculator/CGPASection";
 import { GradeChart } from "@/components/calculator/GradeChart";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Sparkles, LogIn, Shield, Download } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PlusCircle, Sparkles, LogIn, Shield, Download, GraduationCap, Calculator, Target, BookOpen } from "lucide-react";
 import { MobileNav } from "@/components/MobileNav";
 import logo from "@/assets/logo.png";
 
@@ -147,6 +148,50 @@ const Index = () => {
       </div>
 
       <main className="container max-w-6xl mx-auto px-3 sm:px-4 lg:px-8 space-y-6 sm:space-y-8 relative z-10">
+        {/* Educational Introduction Section */}
+        <section className="space-y-4">
+          <Card className="pop-shadow border-2 border-foreground/10 bg-gradient-to-br from-card to-card/80">
+            <CardHeader className="pb-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-pop-purple flex items-center justify-center">
+                  <GraduationCap className="w-5 h-5 text-white" />
+                </div>
+                <CardTitle className="text-lg sm:text-xl">Understanding Your Grade Point Average</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4 text-sm sm:text-base text-muted-foreground">
+              <p>
+                <strong className="text-foreground">Grade Point Average (GPA)</strong> is the standard way universities measure 
+                academic performance. In India, most universities use a <strong className="text-foreground">10-point grading system</strong> where 
+                grades are converted to grade points ranging from 0 to 10.
+              </p>
+              <div className="grid sm:grid-cols-3 gap-3 mt-4">
+                <div className="flex items-start gap-2 p-3 bg-pop-pink/10 rounded-xl">
+                  <Calculator className="w-5 h-5 text-pop-pink flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-semibold text-foreground text-sm">SGPA</p>
+                    <p className="text-xs">Semester Grade Point Average - your GPA for one semester</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2 p-3 bg-pop-cyan/10 rounded-xl">
+                  <Target className="w-5 h-5 text-pop-cyan flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-semibold text-foreground text-sm">CGPA</p>
+                    <p className="text-xs">Cumulative GPA - your overall average across all semesters</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2 p-3 bg-pop-yellow/10 rounded-xl">
+                  <BookOpen className="w-5 h-5 text-pop-yellow flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-semibold text-foreground text-sm">WGP</p>
+                    <p className="text-xs">Weighted Grade Points - credits × grade point for each course</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
         {/* Grade Chart Reference */}
         <GradeChart />
 
@@ -202,6 +247,55 @@ const Index = () => {
             />
           </section>
         )}
+
+        {/* Educational Tips Section */}
+        <section className="space-y-4">
+          <Card className="pop-shadow border-2 border-foreground/10 bg-gradient-to-br from-pop-cyan/5 to-pop-purple/5">
+            <CardHeader className="pb-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-pop-cyan flex items-center justify-center">
+                  <Target className="w-5 h-5 text-white" />
+                </div>
+                <CardTitle className="text-lg sm:text-xl">Tips for Academic Success</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm text-muted-foreground">
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <p className="font-semibold text-foreground">📚 How SGPA is Calculated</p>
+                  <p>
+                    SGPA = Sum of (Credit × Grade Point) / Total Credits. For example, if you have 
+                    3 courses with 4, 3, and 3 credits earning grade points of 9, 8, and 7 respectively:
+                    SGPA = (4×9 + 3×8 + 3×7) / (4+3+3) = 81/10 = 8.1
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <p className="font-semibold text-foreground">🎯 Setting GPA Goals</p>
+                  <p>
+                    Aim for consistent improvement each semester. A CGPA above 8.0 is considered 
+                    excellent for placements, while 9.0+ opens doors to top graduate programs and 
+                    competitive opportunities.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <p className="font-semibold text-foreground">📈 Improving Your GPA</p>
+                  <p>
+                    Focus on high-credit courses as they impact your GPA more significantly. 
+                    Consistent study habits and regular attendance typically correlate with 
+                    better grades.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <p className="font-semibold text-foreground">🔄 CGPA vs Percentage</p>
+                  <p>
+                    Many universities use the formula: Percentage = CGPA × 9.5 (or a similar multiplier). 
+                    Check your university's specific conversion formula for accurate results.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
       </main>
 
       {/* Footer - Pop Art Style */}

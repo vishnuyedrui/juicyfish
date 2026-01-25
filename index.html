@@ -31,18 +31,20 @@
     <meta name="twitter:description" content="Free SGPA/CGPA calculator and attendance tracker for students." />
     <meta name="twitter:image" content="https://www.juicyfish.online/grade-conversion-640.webp" />
 
-    <!-- Google AdSense - Deferred loading after page load -->
-    <script>
-      window.addEventListener("load", function() {
-        setTimeout(function() {
-          var script = document.createElement('script');
-          script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3849772039813147';
-          script.async = true;
-          script.crossOrigin = 'anonymous';
-          document.head.appendChild(script);
-        }, 4000);
-      });
-    </script>
+    <!-- 
+      Google AdSense - Now loaded conditionally via React component (AdSenseLoader.tsx)
+      This ensures ads only appear on pages with meaningful content, complying with:
+      - Google AdSense Program Policies
+      - Google Publisher Policies
+      - Webmaster Quality Guidelines
+      
+      Ads are NOT shown on:
+      - Login/Auth pages
+      - Admin pages
+      - Profile/Settings pages
+      - Error (404) pages
+      - Loading/redirect screens
+    -->
   </head>
 
   <body>

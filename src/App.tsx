@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
+import { AdSenseProvider } from "@/contexts/AdSenseContext";
+import { AdSenseLoader } from "@/components/ads/AdSenseLoader";
 
 // Eager load the home page for fast initial render
 import Index from "./pages/Index";
@@ -81,65 +83,69 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              {/* Public routes */}
-              <Route path="/" element={<Index />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/admin/login" element={<AdminLogin />} />
-              
-              {/* Protected student routes */}
-              <Route path="/dashboard" element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              } />
-              <Route path="/courses" element={
-                <ProtectedRoute>
-                  <Courses />
-                </ProtectedRoute>
-              } />
-              <Route path="/courses/:id" element={
-                <ProtectedRoute>
-                  <CourseDetail />
-                </ProtectedRoute>
-              } />
-              <Route path="/attendance" element={
-                <ProtectedRoute>
-                  <Attendance />
-                </ProtectedRoute>
-              } />
-              <Route path="/profile" element={
-                <ProtectedRoute>
-                  <Profile />
-                </ProtectedRoute>
-              } />
-              
-              {/* Admin-only routes */}
-              <Route path="/admin" element={
-                <AdminRoute>
-                  <AdminDashboard />
-                </AdminRoute>
-              } />
-              <Route path="/admin/courses" element={
-                <AdminRoute>
-                  <CourseManager />
-                </AdminRoute>
-              } />
-              <Route path="/admin/resources" element={
-                <AdminRoute>
-                  <ResourceManager />
-                </AdminRoute>
-              } />
-              <Route path="/admin/announcements" element={
-                <AdminRoute>
-                  <AnnouncementManager />
-                </AdminRoute>
-              } />
-              
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
+          <AdSenseProvider>
+            {/* Conditional AdSense loader - only loads on content-rich pages */}
+            <AdSenseLoader />
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                {/* Public routes */}
+                <Route path="/" element={<Index />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/admin/login" element={<AdminLogin />} />
+                
+                {/* Protected student routes */}
+                <Route path="/dashboard" element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                } />
+                <Route path="/courses" element={
+                  <ProtectedRoute>
+                    <Courses />
+                  </ProtectedRoute>
+                } />
+                <Route path="/courses/:id" element={
+                  <ProtectedRoute>
+                    <CourseDetail />
+                  </ProtectedRoute>
+                } />
+                <Route path="/attendance" element={
+                  <ProtectedRoute>
+                    <Attendance />
+                  </ProtectedRoute>
+                } />
+                <Route path="/profile" element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                } />
+                
+                {/* Admin-only routes */}
+                <Route path="/admin" element={
+                  <AdminRoute>
+                    <AdminDashboard />
+                  </AdminRoute>
+                } />
+                <Route path="/admin/courses" element={
+                  <AdminRoute>
+                    <CourseManager />
+                  </AdminRoute>
+                } />
+                <Route path="/admin/resources" element={
+                  <AdminRoute>
+                    <ResourceManager />
+                  </AdminRoute>
+                } />
+                <Route path="/admin/announcements" element={
+                  <AdminRoute>
+                    <AnnouncementManager />
+                  </AdminRoute>
+                } />
+                
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </AdSenseProvider>
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
