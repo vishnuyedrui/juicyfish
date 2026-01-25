@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>JuicyFish - Redirecting...</title>
+    <script>
+      // Single Page App redirect for GitHub Pages
+      // When GitHub Pages can't find a route, it serves this 404.html
+      // We capture the intended path and redirect to root with the path as a query parameter
+      // The main app's script in index.html will then restore the correct URL
+      (function() {
+        var l = window.location;
+        var pathSegmentsToKeep = 0;
+        
+        // Get the path after the base (e.g., /dashboard, /admin/login)
+        var redirectPath = l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/');
+        
+        // Preserve any query string parameters
+        var redirectSearch = l.search ? '&q=' + encodeURIComponent(l.search.slice(1)) : '';
+        
+        // Preserve hash
+        var redirectHash = l.hash ? '&h=' + encodeURIComponent(l.hash.slice(1)) : '';
+        
+        // Redirect to root with the path encoded in query params
+        l.replace(
+          l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+          '/?p=/' + encodeURIComponent(redirectPath) + redirectSearch + redirectHash
+        );
+      })();
+    </script>
+  </head>
+  <body>
+    <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; font-family: system-ui, -apple-system, sans-serif;">
+      <div style="text-align: center;">
+        <div style="width: 32px; height: 32px; border: 3px solid #e5e7eb; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px;"></div>
+        <p style="color: #6b7280;">Redirecting...</p>
+      </div>
+    </div>
+    <style>
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+    </style>
+  </body>
+</html>

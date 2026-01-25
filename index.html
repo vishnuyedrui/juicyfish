@@ -48,6 +48,34 @@
   </head>
 
   <body>
+    <!-- Handle GitHub Pages SPA redirect from 404.html -->
+    <script>
+      (function(){
+        var query = window.location.search;
+        if (query && query.indexOf('?p=') === 0) {
+          // Extract the encoded path
+          var params = query.slice(3).split('&');
+          var path = decodeURIComponent(params[0]);
+          
+          // Extract original query string if present
+          var originalQuery = '';
+          var originalHash = '';
+          
+          for (var i = 1; i < params.length; i++) {
+            if (params[i].indexOf('q=') === 0) {
+              originalQuery = '?' + decodeURIComponent(params[i].slice(2));
+            }
+            if (params[i].indexOf('h=') === 0) {
+              originalHash = '#' + decodeURIComponent(params[i].slice(2));
+            }
+          }
+          
+          // Use replaceState to restore the original URL without triggering a page reload
+          var restoredUrl = path + originalQuery + (originalHash || window.location.hash);
+          window.history.replaceState(null, null, restoredUrl);
+        }
+      })();
+    </script>
     <div id="root"></div>
 
     <script type="module" src="/src/main.tsx"></script>
