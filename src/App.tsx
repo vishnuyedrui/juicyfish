@@ -21,6 +21,7 @@ const CourseDetail = lazy(() => import("./pages/CourseDetail"));
 const Profile = lazy(() => import("./pages/Profile"));
 const AdminLogin = lazy(() => import("./pages/admin/AdminLogin"));
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
+const AdminManager = lazy(() => import("./pages/admin/AdminManager"));
 const CourseManager = lazy(() => import("./pages/admin/CourseManager"));
 const ResourceManager = lazy(() => import("./pages/admin/ResourceManager"));
 const AnnouncementManager = lazy(() => import("./pages/admin/AnnouncementManager"));
@@ -71,6 +72,29 @@ const AdminRoute = ({ children }: { children: React.ReactNode }) => {
 
   if (!isAdmin) {
     return <Navigate to="/dashboard" replace />;
+  }
+  
+  return <>{children}</>;
+};
+
+const SuperAdminRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user, loading } = useAuth();
+  const { isSuperAdmin, loading: adminLoading } = useAdmin();
+  
+  if (loading || adminLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+  
+  if (!user) {
+    return <Navigate to="/admin/login" replace />;
+  }
+
+  if (!isSuperAdmin) {
+    return <Navigate to="/admin" replace />;
   }
   
   return <>{children}</>;
@@ -140,6 +164,11 @@ const App = () => (
                   <AdminRoute>
                     <AnnouncementManager />
                   </AdminRoute>
+                } />
+                <Route path="/admin/manage-admins" element={
+                  <SuperAdminRoute>
+                    <AdminManager />
+                  </SuperAdminRoute>
                 } />
                 
                 <Route path="*" element={<NotFound />} />

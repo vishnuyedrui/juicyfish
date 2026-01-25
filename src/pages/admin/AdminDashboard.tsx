@@ -4,11 +4,11 @@ import { useAuth } from '@/hooks/useAuth';
 import { useAdmin } from '@/hooks/useAdmin';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Shield, BookOpen, FolderPlus, Users, LogOut, Loader2, Megaphone } from 'lucide-react';
+import { Shield, BookOpen, FolderPlus, Users, LogOut, Loader2, Megaphone, Crown } from 'lucide-react';
 
 const AdminDashboard = () => {
   const { user, signOut } = useAuth();
-  const { isAdmin, loading } = useAdmin();
+  const { isAdmin, isSuperAdmin, loading } = useAdmin();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -136,6 +136,28 @@ const AdminDashboard = () => {
               </Button>
             </CardContent>
           </Card>
+
+          {/* Manage Admins - Super Admin Only */}
+          {isSuperAdmin && (
+            <Link to="/admin/manage-admins">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full border-red-200 dark:border-red-900/50">
+                <CardHeader>
+                  <div className="w-12 h-12 rounded-xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center mb-2">
+                    <Crown className="w-6 h-6 text-red-600 dark:text-red-400" />
+                  </div>
+                  <CardTitle>Manage Admins</CardTitle>
+                  <CardDescription>
+                    Add or remove sub-admin access for users
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button variant="secondary" className="w-full">
+                    Go to Admin Manager
+                  </Button>
+                </CardContent>
+              </Card>
+            </Link>
+          )}
         </div>
       </main>
     </div>
