@@ -45,8 +45,7 @@ export function CTASection() {
             <a href="/downloads/juicyfish.apk" download="JuicyFish.apk">
               <Button 
                 size="lg" 
-                variant="outline" 
-                className="border-[3px] border-white/50 text-white hover:bg-white/20 rounded-2xl px-8 font-bold transition-all duration-200 hover:scale-105"
+                className="bg-pop-yellow text-foreground hover:bg-pop-yellow/90 rounded-2xl px-8 font-black pop-shadow transition-all duration-200 hover:scale-105"
               >
                 <Download className="mr-2 h-4 w-4" />
                 Download App
