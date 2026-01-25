@@ -2,116 +2,118 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Pop Art Design System - Bold, Vibrant, Playful
+/* Art Deco Design System - Refined, Structured, Aspirational
 All colors MUST be HSL.
 */
 
 @layer base {
   :root {
-    --background: 45 100% 96%;
-    --foreground: 280 60% 15%;
+    /* Art Deco Core Palette */
+    --background: 45 30% 97%;
+    --foreground: 220 25% 20%;
 
     --card: 0 0% 100%;
-    --card-foreground: 280 60% 15%;
+    --card-foreground: 220 25% 20%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 280 60% 15%;
+    --popover-foreground: 220 25% 20%;
 
-    /* Pop Art Primary - Hot Pink */
-    --primary: 330 100% 60%;
-    --primary-foreground: 0 0% 100%;
+    /* Art Deco Primary - Deep Navy */
+    --primary: 220 55% 18%;
+    --primary-foreground: 45 40% 95%;
 
-    /* Pop Art Secondary - Electric Cyan */
-    --secondary: 180 100% 45%;
+    /* Art Deco Secondary - Rich Teal */
+    --secondary: 175 45% 35%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 45 40% 92%;
-    --muted-foreground: 280 30% 40%;
+    --muted: 45 20% 92%;
+    --muted-foreground: 220 15% 45%;
 
-    /* Pop Art Accent - Vibrant Green */
-    --accent: 145 80% 45%;
-    --accent-foreground: 0 0% 100%;
+    /* Art Deco Accent - Luxurious Gold */
+    --accent: 42 85% 55%;
+    --accent-foreground: 220 55% 15%;
 
-    --destructive: 0 90% 55%;
+    --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 280 30% 85%;
-    --input: 280 30% 85%;
-    --ring: 330 100% 60%;
+    --border: 220 20% 88%;
+    --input: 220 20% 88%;
+    --ring: 42 85% 55%;
 
-    --radius: 1rem;
+    --radius: 0.5rem;
 
-    /* Pop Art Colors */
-    --pop-pink: 330 100% 60%;
-    --pop-yellow: 45 100% 55%;
-    --pop-cyan: 180 100% 45%;
-    --pop-purple: 280 85% 60%;
-    --pop-orange: 25 100% 55%;
-    --pop-green: 145 80% 45%;
+    /* Art Deco Extended Palette */
+    --deco-navy: 220 55% 18%;
+    --deco-navy-light: 220 45% 25%;
+    --deco-gold: 42 85% 55%;
+    --deco-gold-dark: 38 80% 45%;
+    --deco-cream: 45 30% 97%;
+    --deco-teal: 175 45% 35%;
+    --deco-burgundy: 350 50% 38%;
+    --deco-charcoal: 220 25% 20%;
 
-    /* Grade colors - More vibrant */
-    --grade-o: 145 85% 42%;
-    --grade-a-plus: 165 80% 42%;
-    --grade-a: 180 100% 40%;
-    --grade-b-plus: 280 90% 55%;
-    --grade-b: 300 70% 55%;
-    --grade-c: 32 100% 50%;
-    --grade-p: 45 100% 45%;
-    --grade-f: 0 90% 55%;
+    /* Grade colors - Elegant tones */
+    --grade-o: 160 50% 38%;
+    --grade-a-plus: 175 45% 38%;
+    --grade-a: 190 50% 38%;
+    --grade-b-plus: 220 45% 45%;
+    --grade-b: 240 40% 50%;
+    --grade-c: 38 70% 48%;
+    --grade-p: 45 60% 45%;
+    --grade-f: 0 60% 48%;
 
-    /* Pop Art Gradients */
-    --gradient-purple: linear-gradient(135deg, hsl(280 85% 60% / 0.15), hsl(330 100% 60% / 0.15));
-    --gradient-blue: linear-gradient(135deg, hsl(180 100% 45% / 0.15), hsl(200 100% 50% / 0.15));
-    --gradient-green: linear-gradient(135deg, hsl(145 80% 45% / 0.15), hsl(165 75% 45% / 0.15));
-    --gradient-orange: linear-gradient(135deg, hsl(25 100% 55% / 0.15), hsl(45 100% 55% / 0.15));
+    /* Art Deco Gradients */
+    --gradient-navy: linear-gradient(135deg, hsl(220 55% 18%), hsl(220 45% 25%));
+    --gradient-gold: linear-gradient(135deg, hsl(42 85% 55%), hsl(38 80% 45%));
+    --gradient-hero: linear-gradient(180deg, hsl(220 55% 15%), hsl(220 50% 22%));
 
     --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-foreground: 220 25% 20%;
+    --sidebar-primary: 220 55% 18%;
+    --sidebar-primary-foreground: 45 40% 95%;
+    --sidebar-accent: 45 20% 95%;
+    --sidebar-accent-foreground: 220 55% 18%;
+    --sidebar-border: 220 20% 90%;
+    --sidebar-ring: 42 85% 55%;
   }
 
   .dark {
-    --background: 280 40% 8%;
-    --foreground: 45 50% 95%;
+    --background: 220 40% 8%;
+    --foreground: 45 30% 95%;
 
-    --card: 280 40% 12%;
-    --card-foreground: 45 50% 95%;
+    --card: 220 40% 12%;
+    --card-foreground: 45 30% 95%;
 
-    --popover: 280 40% 10%;
-    --popover-foreground: 45 50% 95%;
+    --popover: 220 40% 10%;
+    --popover-foreground: 45 30% 95%;
 
-    --primary: 330 100% 65%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 42 85% 55%;
+    --primary-foreground: 220 55% 15%;
 
-    --secondary: 180 100% 50%;
+    --secondary: 175 45% 40%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 280 30% 18%;
-    --muted-foreground: 45 30% 65%;
+    --muted: 220 30% 18%;
+    --muted-foreground: 45 20% 65%;
 
-    --accent: 145 80% 50%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 42 80% 50%;
+    --accent-foreground: 220 55% 12%;
 
-    --destructive: 0 80% 50%;
+    --destructive: 0 65% 45%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 280 30% 25%;
-    --input: 280 30% 25%;
-    --ring: 330 100% 65%;
+    --border: 220 30% 25%;
+    --input: 220 30% 25%;
+    --ring: 42 85% 55%;
     
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 220 40% 10%;
+    --sidebar-foreground: 45 30% 95%;
+    --sidebar-primary: 42 85% 55%;
+    --sidebar-primary-foreground: 220 55% 12%;
+    --sidebar-accent: 220 30% 15%;
+    --sidebar-accent-foreground: 45 30% 95%;
+    --sidebar-border: 220 30% 20%;
+    --sidebar-ring: 42 85% 55%;
   }
 }
 
@@ -126,46 +128,116 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
-  .gradient-purple {
-    background: var(--gradient-purple);
-  }
-  .gradient-blue {
-    background: var(--gradient-blue);
-  }
-  .gradient-green {
-    background: var(--gradient-green);
-  }
-  .gradient-orange {
-    background: var(--gradient-orange);
+  /* Art Deco Utilities */
+  .deco-border {
+    @apply border-2 border-foreground/20;
   }
   
-  /* Pop Art Utilities */
+  .deco-border-gold {
+    border: 2px solid hsl(var(--deco-gold));
+  }
+
+  .deco-shadow {
+    box-shadow: 0 4px 20px hsl(var(--deco-navy) / 0.08);
+  }
+  
+  .deco-shadow-lg {
+    box-shadow: 0 8px 30px hsl(var(--deco-navy) / 0.12);
+  }
+
+  .deco-gradient-navy {
+    background: linear-gradient(180deg, hsl(220 55% 15%), hsl(220 50% 22%));
+  }
+
+  .deco-gradient-gold {
+    background: linear-gradient(135deg, hsl(42 85% 55%), hsl(38 80% 45%));
+  }
+
+  .deco-gradient-cream {
+    background: linear-gradient(180deg, hsl(45 30% 97%), hsl(45 25% 94%));
+  }
+
+  .deco-text-gold {
+    color: hsl(var(--deco-gold));
+  }
+
+  .deco-text-navy {
+    color: hsl(var(--deco-navy));
+  }
+
+  /* Art Deco Typography */
+  .deco-heading {
+    @apply font-bold tracking-wide uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .deco-subheading {
+    @apply font-semibold tracking-wider;
+    letter-spacing: 0.05em;
+  }
+
+  /* Art Deco Patterns */
+  .deco-pattern-lines {
+    background-image: repeating-linear-gradient(
+      90deg,
+      hsl(var(--deco-gold) / 0.1) 0px,
+      hsl(var(--deco-gold) / 0.1) 1px,
+      transparent 1px,
+      transparent 40px
+    );
+  }
+
+  .deco-pattern-chevron {
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 10px,
+      hsl(var(--deco-gold) / 0.05) 10px,
+      hsl(var(--deco-gold) / 0.05) 20px
+    );
+  }
+
+  /* Legacy gradient utilities for compatibility */
+  .gradient-purple {
+    background: linear-gradient(135deg, hsl(220 55% 18% / 0.1), hsl(175 45% 35% / 0.1));
+  }
+  .gradient-blue {
+    background: linear-gradient(135deg, hsl(175 45% 35% / 0.15), hsl(190 50% 40% / 0.15));
+  }
+  .gradient-green {
+    background: linear-gradient(135deg, hsl(160 50% 38% / 0.15), hsl(175 45% 35% / 0.15));
+  }
+  .gradient-orange {
+    background: linear-gradient(135deg, hsl(42 85% 55% / 0.15), hsl(38 80% 45% / 0.15));
+  }
+
+  /* Legacy Pop Art utilities mapped to Art Deco */
   .pop-border {
-    @apply border-[3px] border-foreground/80;
+    @apply border-2 border-foreground/15;
   }
   
   .pop-shadow {
-    box-shadow: 4px 4px 0 hsl(var(--foreground) / 0.2);
+    box-shadow: 0 4px 20px hsl(var(--deco-navy) / 0.08);
   }
   
   .pop-shadow-lg {
-    box-shadow: 6px 6px 0 hsl(var(--foreground) / 0.2);
+    box-shadow: 0 8px 30px hsl(var(--deco-navy) / 0.12);
   }
 
   .pop-gradient-pink {
-    background: linear-gradient(135deg, hsl(330 100% 60%), hsl(280 85% 60%));
+    background: linear-gradient(180deg, hsl(220 55% 15%), hsl(220 50% 22%));
   }
 
   .pop-gradient-cyan {
-    background: linear-gradient(135deg, hsl(180 100% 45%), hsl(200 100% 50%));
+    background: linear-gradient(135deg, hsl(175 45% 35%), hsl(190 50% 40%));
   }
 
   .pop-gradient-yellow {
-    background: linear-gradient(135deg, hsl(45 100% 55%), hsl(25 100% 55%));
+    background: linear-gradient(135deg, hsl(42 85% 55%), hsl(38 80% 45%));
   }
 
   .pop-gradient-green {
-    background: linear-gradient(135deg, hsl(145 80% 45%), hsl(165 80% 45%));
+    background: linear-gradient(135deg, hsl(160 50% 38%), hsl(175 45% 35%));
   }
 }
 

@@ -2,7 +2,12 @@ import type { Config } from "tailwindcss";
 
 export default {
   darkMode: ["class"],
-  content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  content: [
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+  ],
   prefix: "",
   theme: {
     container: {
@@ -14,7 +19,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ["Inter", "system-ui", "sans-serif"],
+        display: ["Inter", "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -60,6 +66,18 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // Art Deco Extended Colors
+        deco: {
+          navy: "hsl(var(--deco-navy))",
+          "navy-light": "hsl(var(--deco-navy-light))",
+          gold: "hsl(var(--deco-gold))",
+          "gold-dark": "hsl(var(--deco-gold-dark))",
+          cream: "hsl(var(--deco-cream))",
+          teal: "hsl(var(--deco-teal))",
+          burgundy: "hsl(var(--deco-burgundy))",
+          charcoal: "hsl(var(--deco-charcoal))",
+        },
+        // Grade Colors
         grade: {
           o: "hsl(var(--grade-o))",
           "a-plus": "hsl(var(--grade-a-plus))",
@@ -70,112 +88,60 @@ export default {
           p: "hsl(var(--grade-p))",
           f: "hsl(var(--grade-f))",
         },
-        pop: {
-          pink: "hsl(var(--pop-pink))",
-          yellow: "hsl(var(--pop-yellow))",
-          cyan: "hsl(var(--pop-cyan))",
-          purple: "hsl(var(--pop-purple))",
-          orange: "hsl(var(--pop-orange))",
-          green: "hsl(var(--pop-green))",
-        },
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
-        "2xl": "1.5rem",
-        "3xl": "2rem",
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0", opacity: "0" },
+          to: { height: "var(--radix-accordion-content-height)", opacity: "1" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)", opacity: "1" },
+          to: { height: "0", opacity: "0" },
         },
         "fade-in": {
-          from: {
-            opacity: "0",
-            transform: "translateY(10px)",
-          },
-          to: {
-            opacity: "1",
-            transform: "translateY(0)",
-          },
+          "0%": { opacity: "0", transform: "translateY(10px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "fade-up": {
+          "0%": { opacity: "0", transform: "translateY(20px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "fade-in-slow": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
         },
         "scale-in": {
-          from: {
-            opacity: "0",
-            transform: "scale(0.95)",
-          },
-          to: {
-            opacity: "1",
-            transform: "scale(1)",
-          },
+          "0%": { transform: "scale(0.95)", opacity: "0" },
+          "100%": { transform: "scale(1)", opacity: "1" },
         },
-        "bounce-in": {
-          "0%": {
-            opacity: "0",
-            transform: "scale(0.3)",
-          },
-          "50%": {
-            transform: "scale(1.05)",
-          },
-          "70%": {
-            transform: "scale(0.9)",
-          },
-          "100%": {
-            opacity: "1",
-            transform: "scale(1)",
-          },
+        "slide-in-right": {
+          "0%": { transform: "translateX(100%)" },
+          "100%": { transform: "translateX(0)" },
         },
-        wiggle: {
-          "0%, 100%": {
-            transform: "rotate(-3deg)",
-          },
-          "50%": {
-            transform: "rotate(3deg)",
-          },
+        "draw-line": {
+          "0%": { strokeDashoffset: "100" },
+          "100%": { strokeDashoffset: "0" },
         },
-        pop: {
-          "0%": {
-            transform: "scale(1)",
-          },
-          "50%": {
-            transform: "scale(1.1)",
-          },
-          "100%": {
-            transform: "scale(1)",
-          },
-        },
-        float: {
-          "0%, 100%": {
-            transform: "translateY(0)",
-          },
-          "50%": {
-            transform: "translateY(-5px)",
-          },
+        "glow-pulse": {
+          "0%, 100%": { boxShadow: "0 0 20px hsl(42 85% 55% / 0.3)" },
+          "50%": { boxShadow: "0 0 30px hsl(42 85% 55% / 0.5)" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "fade-in": "fade-in 0.3s ease-out",
-        "scale-in": "scale-in 0.2s ease-out",
-        "bounce-in": "bounce-in 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
-        wiggle: "wiggle 0.5s ease-in-out",
-        pop: "pop 0.3s ease-in-out",
-        float: "float 3s ease-in-out infinite",
+        "fade-in": "fade-in 0.5s ease-out",
+        "fade-up": "fade-up 0.6s ease-out",
+        "fade-in-slow": "fade-in-slow 0.8s ease-out",
+        "scale-in": "scale-in 0.3s ease-out",
+        "slide-in-right": "slide-in-right 0.3s ease-out",
+        "draw-line": "draw-line 1s ease-out forwards",
+        "glow-pulse": "glow-pulse 2s ease-in-out infinite",
       },
     },
   },

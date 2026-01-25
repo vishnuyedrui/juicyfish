@@ -10,10 +10,11 @@ import { AdSenseProvider } from "@/contexts/AdSenseContext";
 import { AdSenseLoader } from "@/components/ads/AdSenseLoader";
 import AuthLoadingSkeleton from "@/components/AuthLoadingSkeleton";
 
-// Eager load the home page for fast initial render
-import Index from "./pages/Index";
+// Eager load the landing page for fast initial render
+import Landing from "./pages/Landing";
 
 // Lazy load all other pages for code splitting
+const Index = lazy(() => import("./pages/Index"));
 const Attendance = lazy(() => import("./pages/Attendance"));
 const Auth = lazy(() => import("./pages/Auth"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -82,7 +83,8 @@ const App = () => (
             <Suspense fallback={<PageLoader />}>
               <Routes>
                 {/* Public routes */}
-                <Route path="/" element={<Index />} />
+                <Route path="/" element={<Landing />} />
+                <Route path="/calculator" element={<Index />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/admin/login" element={<AdminLogin />} />
                 
