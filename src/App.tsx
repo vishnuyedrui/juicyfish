@@ -47,7 +47,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     return <Navigate to="/auth" replace />;
   }
   
-  return <>{children}</>;
+  return <div className="animate-fade-in">{children}</div>;
 };
 
 const AdminRoute = ({ children }: { children: React.ReactNode }) => {
@@ -66,7 +66,7 @@ const AdminRoute = ({ children }: { children: React.ReactNode }) => {
     return <Navigate to="/dashboard" replace />;
   }
   
-  return <>{children}</>;
+  return <div className="animate-fade-in">{children}</div>;
 };
 
 const App = () => (
