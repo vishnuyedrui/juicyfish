@@ -2,20 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Art Deco / Bento Design System - Refined, Structured, Academic
+/* Pop Art / Abstract Design System - Playful, Creative, Energetic
 All colors MUST be HSL.
 */
 
 @layer base {
   :root {
-    /* Bento/Art Deco Palette */
-    --bento-bg: 220 20% 94%;
+    /* Bento/Art Deco Palette (kept for compatibility) */
+    --bento-bg: 45 60% 95%;
     --bento-card: 0 0% 100%;
-    --bento-accent: 217 91% 60%;
-    --bento-navy: 220 60% 15%;
-    --bento-gold: 45 85% 55%;
-    --bento-text: 220 20% 25%;
-    --bento-muted: 220 15% 55%;
+    --bento-accent: 330 100% 60%;
+    --bento-navy: 280 60% 25%;
+    --bento-gold: 45 100% 55%;
+    --bento-text: 280 60% 20%;
+    --bento-muted: 280 20% 50%;
     --background: 45 100% 96%;
     --foreground: 280 60% 15%;
 
