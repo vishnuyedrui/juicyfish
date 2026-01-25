@@ -31,10 +31,9 @@ const AdminLogin = () => {
         throw new Error('Login failed');
       }
 
-      // Check if user is admin using the secure has_role function
-      const { data: isAdmin, error: roleError } = await supabase.rpc('has_role', {
-        _user_id: authData.user.id,
-        _role: 'admin'
+      // Check if user is admin using the secure is_admin function (accepts admin or super_admin)
+      const { data: isAdmin, error: roleError } = await supabase.rpc('is_admin', {
+        _user_id: authData.user.id
       });
 
       if (roleError) throw roleError;
