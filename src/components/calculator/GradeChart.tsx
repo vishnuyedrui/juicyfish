@@ -1,7 +1,6 @@
 import { GRADE_MAPPINGS } from "@/types/calculator";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Info } from "lucide-react";
-
 export function GradeChart() {
   const gradeColorMap: Record<string, string> = {
     "grade-o": "bg-grade-o",
@@ -28,9 +27,7 @@ export function GradeChart() {
     description: 'LE Absent (GP: 0, Final: F)',
     color: 'bg-grade-f'
   }];
-
-  return (
-    <Card className="bg-card/80 backdrop-blur-sm border-3 border-pop-yellow/30 rounded-3xl pop-shadow-lg overflow-hidden">
+  return <Card className="bg-card/80 backdrop-blur-sm border-3 border-pop-yellow/30 rounded-3xl pop-shadow-lg overflow-hidden">
       <CardHeader className="pb-2 px-4 sm:px-6 bg-pop-yellow/10">
         <h2 className="text-sm sm:text-base flex items-center gap-2 text-foreground font-bold">
           <div className="w-7 h-7 rounded-full bg-pop-yellow flex items-center justify-center">
@@ -43,54 +40,35 @@ export function GradeChart() {
       <CardContent className="space-y-4 sm:space-y-5 px-4 sm:px-6 pt-4">
         {/* Grade Conversion Chart */}
         <div className="flex flex-wrap gap-2 sm:gap-3">
-          {GRADE_MAPPINGS.map(grade => (
-            <div 
-              key={grade.letter} 
-              className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-muted border-2 border-foreground/10 text-xs sm:text-sm font-medium transition-all duration-200 hover:scale-105 hover:pop-shadow"
-            >
+          {GRADE_MAPPINGS.map(grade => <div key={grade.letter} className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-muted border-2 border-foreground/10 text-xs sm:text-sm font-medium transition-all duration-200 hover:scale-105 hover:pop-shadow">
               <div className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full ${gradeColorMap[grade.color]} border-2 border-white`} />
               <span className="font-bold">{grade.letter}</span>
               <span className="text-muted-foreground hidden sm:inline">
                 {grade.letter === "F" ? "< 4.00" : grade.letter === "P" ? "= 4.00" : `> ${grade.min.toFixed(2)}`}
               </span>
-            </div>
-          ))}
+            </div>)}
         </div>
         
         {/* Additional Special Grades */}
         <div className="flex flex-wrap gap-2 sm:gap-3">
-          {additionalGrades.map(grade => (
-            <div 
-              key={grade.letter} 
-              className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-muted border-2 border-foreground/10 text-xs sm:text-sm font-medium transition-all duration-200 hover:scale-105"
-            >
+          {additionalGrades.map(grade => <div key={grade.letter} className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-muted border-2 border-foreground/10 text-xs sm:text-sm font-medium transition-all duration-200 hover:scale-105">
               <div className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full ${grade.color} border-2 border-white`} />
               <span className="font-bold">{grade.letter}</span>
               <span className="text-muted-foreground hidden sm:inline">
                 {grade.description}
               </span>
-            </div>
-          ))}
+            </div>)}
         </div>
 
         {/* Image Below Grade Conversion Chart */}
         <div className="flex flex-col items-center pt-3 sm:pt-4">
           <div className="rounded-2xl overflow-hidden border-3 border-foreground/10 pop-shadow-lg">
-            <img 
-              width="630" 
-              height="352" 
-              fetchPriority="high" 
-              decoding="async" 
-              alt="Grade points and symbols in relative grading" 
-              className="max-w-full w-full sm:w-[600px]" 
-              src="/grade-conversion.webp" 
-            />
+            <img width="630" height="352" fetchPriority="high" decoding="async" alt="Grade points and symbols in relative grading" className="max-w-full w-full sm:w-[600px]" src="/lovable-uploads/c2187dad-8fb2-4cc5-9207-8a66b6657bb6.jpg" />
           </div>
           <p className="text-[10px] sm:text-xs text-muted-foreground mt-3 text-center font-medium">
             Grade points and symbols in relative grading
           </p>
         </div>
       </CardContent>
-    </Card>
-  );
+    </Card>;
 }
