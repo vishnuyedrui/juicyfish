@@ -1,9 +1,54 @@
 import { Link } from "react-router-dom";
 import { BentoCard } from "./BentoCard";
 import { Button } from "@/components/ui/button";
-import { Calculator, Calendar, BookOpen, ArrowRight, Sparkles, Users, TrendingUp, Zap } from "lucide-react";
+import { Calculator, Calendar, BookOpen, ArrowRight, Sparkles, Users, TrendingUp } from "lucide-react";
+import confetti from "canvas-confetti";
+import { useCallback, useRef } from "react";
 
 export function BentoGrid() {
+  const hasTriggeredConfetti = useRef(false);
+
+  const triggerConfetti = useCallback(() => {
+    if (hasTriggeredConfetti.current) return;
+    hasTriggeredConfetti.current = true;
+
+    // Playful pop art confetti colors
+    const popColors = ['#ff3399', '#00e5ff', '#ffeb3b', '#aa66ff', '#ff9100', '#4caf50'];
+
+    // Center burst
+    confetti({
+      particleCount: 60,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: popColors,
+      shapes: ['circle', 'square'],
+      scalar: 1.2,
+    });
+
+    // Side bursts with delay
+    setTimeout(() => {
+      confetti({
+        particleCount: 30,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0, y: 0.6 },
+        colors: popColors,
+      });
+      confetti({
+        particleCount: 30,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1, y: 0.6 },
+        colors: popColors,
+      });
+    }, 150);
+
+    // Reset after 3 seconds to allow re-trigger
+    setTimeout(() => {
+      hasTriggeredConfetti.current = false;
+    }, 3000);
+  }, []);
+
   return (
     <section className="container mx-auto px-4 lg:px-8 pt-24 pb-16">
       {/* Abstract background blobs */}
@@ -52,7 +97,11 @@ export function BentoGrid() {
             </p>
             <div className="flex flex-wrap gap-3">
               <Link to="/auth">
-                <Button size="lg" className="bg-white text-foreground hover:bg-pop-yellow font-black rounded-2xl px-6 pop-shadow transition-all duration-200 hover:scale-105">
+                <Button 
+                  size="lg" 
+                  className="bg-white text-foreground hover:bg-pop-yellow font-black rounded-2xl px-6 pop-shadow transition-all duration-200 hover:scale-105"
+                  onMouseEnter={triggerConfetti}
+                >
                   Get Started
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
