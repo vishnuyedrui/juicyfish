@@ -5,40 +5,31 @@ import { useAuth } from './useAuth';
 export const useAdmin = () => {
   const { user } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
-  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const checkAdminStatus = async () => {
       if (!user) {
         setIsAdmin(false);
-        setIsSuperAdmin(false);
         setLoading(false);
         return;
       }
 
       try {
-        // Check for both admin and super_admin roles
-        const { data: roleData, error } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', user.id)
-          .maybeSingle();
+        const { data, error } = await supabase.rpc('has_role', {
+          _user_id: user.id,
+          _role: 'admin'
+        });
 
         if (error) {
           console.error('Error checking admin status:', error);
           setIsAdmin(false);
-          setIsSuperAdmin(false);
         } else {
-          const role = roleData?.role;
-          // Super admins are also admins
-          setIsSuperAdmin(role === 'super_admin');
-          setIsAdmin(role === 'admin' || role === 'super_admin');
+          setIsAdmin(data === true);
         }
       } catch (error) {
         console.error('Error checking admin status:', error);
         setIsAdmin(false);
-        setIsSuperAdmin(false);
       } finally {
         setLoading(false);
       }
@@ -47,5 +38,5 @@ export const useAdmin = () => {
     checkAdminStatus();
   }, [user]);
 
-  return { isAdmin, isSuperAdmin, loading };
+  return { isAdmin, loading };
 };
