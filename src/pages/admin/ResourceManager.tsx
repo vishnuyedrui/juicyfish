@@ -154,27 +154,36 @@ const ResourceManager = () => {
     }
   };
 
-  const handleDeleteResource = async (resourceId: string, filePath?: string | null) => {
+  const extractStoragePath = (ref?: string | null): string | null => {
+    if (!ref) return null;
+    const cleaned = ref.trim().split('?')[0].split('#')[0];
+    if (!cleaned) return null;
+
+    // If it's already a bucket-relative path like "<courseId>/<filename>"
+    if (!/^https?:\/\//i.test(cleaned)) {
+      return cleaned.replace(/^\/+/, '');
+    }
+
+    // Only treat as a storage object URL if it contains the bucket segment
+    if (!cleaned.includes('/resources/')) return null;
+
+    // Common public URL format: .../storage/v1/object/public/resources/<path>
+    const match = cleaned.match(/\/resources\/(.+)$/);
+    return match?.[1] ?? null;
+  };
+
+  const handleDeleteResource = async (resourceId: string, fileRef?: string | null) => {
     try {
-      if (filePath) {
-        let storagePath = filePath;
-        
-        // Handle legacy full URLs - extract path after bucket name
-        if (filePath.includes('supabase.co') || filePath.includes('/storage/')) {
-          // Match path after /resources/ in the URL
-          const match = filePath.match(/\/(?:object\/public\/)?resources\/(.+)$/);
-          if (match) {
-            storagePath = match[1];
-          }
-        }
-        
-        console.log('Deleting from storage:', storagePath);
-        const { error: storageError } = await supabase.storage
-          .from('resources')
-          .remove([storagePath]);
-        
-        if (storageError) {
-          console.error('Storage deletion error:', storageError);
+      const storagePath = extractStoragePath(fileRef);
+
+      // If we can identify a storage object path, delete it first.
+      // If this fails (e.g. policy), we do NOT delete the DB row to avoid orphaned files.
+      if (storagePath) {
+        const { error: storageError } = await supabase.storage.from('resources').remove([storagePath]);
+
+        // Treat "not found" as success (file already gone), but block on real errors.
+        if (storageError && !/not found/i.test(storageError.message ?? '')) {
+          throw storageError;
         }
       }
 
@@ -489,7 +498,7 @@ const ResourceManager = () => {
                             variant="ghost"
                             size="icon"
                             className="text-destructive"
-                            onClick={() => handleDeleteResource(resource.id, resource.file_path)}
+                            onClick={() => handleDeleteResource(resource.id, resource.file_path ?? resource.url)}
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>
