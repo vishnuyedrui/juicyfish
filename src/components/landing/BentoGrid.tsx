@@ -107,7 +107,7 @@ export function BentoGrid() {
                 </Button>
               </Link>
               <Link to="/calculator">
-                <Button size="lg" variant="outline" className="border-[3px] border-white/50 text-white hover:bg-white/20 rounded-2xl px-6 font-bold transition-all duration-200 hover:scale-105">
+                <Button size="lg" className="bg-pop-cyan text-white hover:bg-pop-cyan/90 font-black rounded-2xl px-6 pop-shadow transition-all duration-200 hover:scale-105">
                   Try Calculator
                 </Button>
               </Link>
