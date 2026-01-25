@@ -78,8 +78,13 @@ const Courses = () => {
           </div>
         ) : (
           <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {courses.map((course) => (
-              <Link key={course.id} to={`/courses/${course.id}`}>
+            {courses.map((course, index) => (
+              <Link 
+                key={course.id} 
+                to={`/courses/${course.id}`}
+                className="animate-fade-in"
+                style={{ animationDelay: `${index * 75}ms`, animationFillMode: 'both' }}
+              >
                 <Card className="hover:shadow-lg transition-all cursor-pointer h-full group">
                   <CardContent className="pt-4 sm:pt-6">
                     <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3 sm:mb-4 group-hover:bg-primary/20 transition-colors">
