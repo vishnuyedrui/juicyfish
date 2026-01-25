@@ -8,7 +8,7 @@ import { CGPASection } from "@/components/calculator/CGPASection";
 import { GradeChart } from "@/components/calculator/GradeChart";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PlusCircle, Sparkles, LogIn, Shield, Download, GraduationCap, Calculator, Target, BookOpen } from "lucide-react";
+import { PlusCircle, Sparkles, LogIn, Shield, Download, GraduationCap, Calculator, Target, BookOpen, Home } from "lucide-react";
 import { MobileNav } from "@/components/MobileNav";
 import logo from "@/assets/logo.png";
 
@@ -95,6 +95,17 @@ const Index = () => {
             
             {/* Desktop Navigation */}
             <div className="hidden sm:flex items-center gap-2">
+              <Link to="/" aria-label="Home">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="gap-2 text-white/90 hover:text-white hover:bg-white/20 rounded-full font-semibold transition-all duration-200 hover:scale-105"
+                  aria-label="Home"
+                >
+                  <Home className="w-4 h-4" aria-hidden="true" />
+                  <span>Home</span>
+                </Button>
+              </Link>
               <Link to="/admin/login" aria-label="Admin Login">
                 <Button 
                   variant="ghost" 

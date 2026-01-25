@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { Menu, Shield, Download, LogIn } from "lucide-react";
+import { Menu, Shield, Download, LogIn, Home } from "lucide-react";
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
@@ -24,6 +24,17 @@ export function MobileNav() {
           <SheetTitle className="text-white text-xl font-bold">✨ Menu</SheetTitle>
         </SheetHeader>
         <nav className="flex flex-col gap-3 mt-6">
+          <Link 
+            to="/" 
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-3 px-4 py-4 rounded-2xl bg-white/20 hover:bg-white/30 transition-all duration-200 hover:scale-[1.02] pop-shadow"
+          >
+            <div className="w-10 h-10 rounded-full bg-pop-green flex items-center justify-center">
+              <Home className="h-5 w-5 text-white" />
+            </div>
+            <span className="font-bold text-white">Home</span>
+          </Link>
+          
           <Link 
             to="/admin/login" 
             onClick={() => setOpen(false)}
