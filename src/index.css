@@ -212,3 +212,34 @@ All colors MUST be HSL.
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Secure Viewer Protection Styles */
+.secure-viewer-wrapper {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.secure-viewer-wrapper img,
+.secure-viewer-wrapper canvas,
+.secure-viewer-wrapper video {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+  pointer-events: none;
+}
+
+/* Hide content when printing */
+@media print {
+  .secure-viewer-wrapper {
+    display: none !important;
+  }
+  
+  .secure-viewer-wrapper * {
+    display: none !important;
+  }
+}
