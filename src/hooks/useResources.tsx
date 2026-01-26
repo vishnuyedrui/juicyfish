@@ -166,9 +166,8 @@ export const useResources = (courseId?: string, chapterId?: string, resourceType
       }
 
       // Use resources_public view which excludes created_by for security
-      // Query directly with explicit typing since views aren't in auto-generated types
       let query = supabase
-        .from('resources')
+        .from('resources_public')
         .select('id, course_id, chapter_id, resource_type, title, description, url, file_path, created_at, updated_at')
         .eq('course_id', courseId);
 
