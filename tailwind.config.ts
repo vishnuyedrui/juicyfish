@@ -70,6 +70,13 @@ export default {
           p: "hsl(var(--grade-p))",
           f: "hsl(var(--grade-f))",
         },
+        // Feature colors - intentionally limited palette
+        coral: "hsl(var(--coral))",
+        teal: "hsl(var(--teal))",
+        gold: "hsl(var(--gold))",
+        sage: "hsl(var(--sage))",
+        lavender: "hsl(var(--lavender))",
+        // Legacy support
         pop: {
           pink: "hsl(var(--pop-pink))",
           yellow: "hsl(var(--pop-yellow))",

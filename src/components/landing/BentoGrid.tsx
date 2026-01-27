@@ -1,193 +1,138 @@
 import { Link } from "react-router-dom";
-import { BentoCard } from "./BentoCard";
 import { Button } from "@/components/ui/button";
-import { Calculator, Calendar, BookOpen, ArrowRight, Sparkles, Users, TrendingUp } from "lucide-react";
-import confetti from "canvas-confetti";
-import { useCallback, useRef } from "react";
+import { Calculator, Calendar, BookOpen, ArrowRight, Users, TrendingUp } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 export function BentoGrid() {
-  const hasTriggeredConfetti = useRef(false);
-
-  const triggerConfetti = useCallback(() => {
-    if (hasTriggeredConfetti.current) return;
-    hasTriggeredConfetti.current = true;
-
-    // Playful pop art confetti colors
-    const popColors = ['#ff3399', '#00e5ff', '#ffeb3b', '#aa66ff', '#ff9100', '#4caf50'];
-
-    // Center burst
-    confetti({
-      particleCount: 60,
-      spread: 70,
-      origin: { y: 0.6 },
-      colors: popColors,
-      shapes: ['circle', 'square'],
-      scalar: 1.2,
-    });
-
-    // Side bursts with delay
-    setTimeout(() => {
-      confetti({
-        particleCount: 30,
-        angle: 60,
-        spread: 55,
-        origin: { x: 0, y: 0.6 },
-        colors: popColors,
-      });
-      confetti({
-        particleCount: 30,
-        angle: 120,
-        spread: 55,
-        origin: { x: 1, y: 0.6 },
-        colors: popColors,
-      });
-    }, 150);
-
-    // Reset after 3 seconds to allow re-trigger
-    setTimeout(() => {
-      hasTriggeredConfetti.current = false;
-    }, 3000);
-  }, []);
-
   return (
-    <section className="container mx-auto px-4 lg:px-8 pt-24 pb-16">
-      {/* Abstract background blobs */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-pop-pink/20 rounded-full blur-3xl animate-float" />
-        <div className="absolute top-40 right-20 w-96 h-96 bg-pop-cyan/20 rounded-full blur-3xl animate-float" style={{ animationDelay: "1s" }} />
-        <div className="absolute bottom-40 left-1/3 w-80 h-80 bg-pop-yellow/20 rounded-full blur-3xl animate-float" style={{ animationDelay: "2s" }} />
-        <div className="absolute bottom-20 right-10 w-64 h-64 bg-pop-purple/20 rounded-full blur-3xl animate-float" style={{ animationDelay: "0.5s" }} />
+    <section className="container mx-auto px-4 lg:px-8 pt-28 pb-12">
+      {/* Hero - Editorial Style */}
+      <div className="max-w-3xl mb-16">
+        <div className="flex items-center gap-3 mb-6">
+          <img 
+            src={logo} 
+            alt="JuicyFish" 
+            className="h-12 w-12 rounded-xl offset-shadow"
+          />
+          <span className="text-sm font-semibold text-muted-foreground tracking-wide uppercase">
+            Student Portal
+          </span>
+        </div>
+        
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-foreground mb-6">
+          Your grades,
+          <br />
+          <span className="squiggle-underline">sorted.</span>
+        </h1>
+        
+        <p className="text-lg text-muted-foreground max-w-xl mb-8 leading-relaxed">
+          Calculate SGPA/CGPA, track attendance, and access study resources. 
+          Built by students who actually use it.
+        </p>
+        
+        <div className="flex flex-wrap gap-3">
+          <Link to="/auth">
+            <Button 
+              size="lg" 
+              className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold rounded-xl px-6 offset-shadow transition-all duration-200 hover:translate-x-[-2px] hover:translate-y-[-2px]"
+            >
+              Get Started
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </Link>
+          <Link to="/calculator">
+            <Button 
+              size="lg" 
+              variant="outline"
+              className="font-semibold rounded-xl px-6 border-2 hover:bg-secondary/10 hover:border-secondary transition-all duration-200"
+            >
+              Try Calculator
+            </Button>
+          </Link>
+        </div>
+        
+        {/* Social Proof - Inline */}
+        <div className="flex items-center gap-6 mt-10 pt-6 border-t border-border">
+          <div className="flex items-center gap-2">
+            <Users className="h-5 w-5 text-secondary" />
+            <span className="font-bold text-foreground">5,000+</span>
+            <span className="text-muted-foreground text-sm">students</span>
+          </div>
+          <div className="w-px h-4 bg-border" />
+          <span className="text-sm text-muted-foreground">Made by Team Dino</span>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6">
+      {/* Feature Cards - Asymmetric Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 lg:gap-5">
         
-        {/* Hero Card - Large */}
-        <BentoCard 
-          variant="navy" 
-          className="lg:col-span-7 lg:row-span-2 min-h-[320px] lg:min-h-[420px] flex flex-col justify-between relative overflow-hidden"
-          hover={false}
-        >
-          {/* Abstract decorative elements */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-2xl" />
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-pop-yellow/30 rounded-full blur-xl" />
-          <div className="absolute top-1/2 right-10 w-20 h-20 bg-pop-cyan/40 rounded-full blur-lg animate-pulse" />
-          
-          {/* Geometric pattern */}
-          <svg className="absolute inset-0 w-full h-full opacity-10" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <circle cx="80" cy="20" r="15" fill="white" />
-            <circle cx="20" cy="80" r="10" fill="white" />
-            <rect x="60" y="60" width="20" height="20" rx="4" fill="white" transform="rotate(15 70 70)" />
-          </svg>
-          
-          <div className="relative z-10">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 text-white font-bold text-sm mb-4 animate-bounce-in">
-              <Sparkles className="h-4 w-4 text-pop-yellow" />
-              Academic Excellence Made Fun!
-            </div>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
-              Your Academic
-              <br />
-              <span className="text-pop-yellow drop-shadow-lg">Journey</span>, Simplified
-            </h1>
-          </div>
-          
-          <div className="relative z-10">
-            <p className="text-white/80 text-lg mb-6 max-w-md font-medium">
-              Calculate SGPA/CGPA, track attendance, and access study resources — all in one colorful platform! 🎨
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <Link to="/auth">
-                <Button 
-                  size="lg" 
-                  className="bg-white text-foreground hover:bg-pop-yellow font-black rounded-2xl px-6 pop-shadow transition-all duration-200 hover:scale-105"
-                  onMouseEnter={triggerConfetti}
-                >
-                  Get Started
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
-              <Link to="/calculator">
-                <Button size="lg" className="bg-pop-cyan text-white hover:bg-pop-cyan/90 font-black rounded-2xl px-6 pop-shadow transition-all duration-200 hover:scale-105">
-                  Try Calculator
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </BentoCard>
-
-        {/* Calculator Card */}
-        <Link to="/calculator" className="lg:col-span-5 contents lg:block">
-          <BentoCard variant="pink" className="lg:col-span-5 group cursor-pointer">
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-14 h-14 rounded-2xl bg-pop-pink flex items-center justify-center pop-shadow transition-all duration-300 group-hover:rotate-6 group-hover:scale-110">
-                <Calculator className="h-7 w-7 text-white" />
+        {/* Calculator - Wide Card */}
+        <Link to="/calculator" className="md:col-span-7 group">
+          <div className="h-full p-6 lg:p-8 rounded-2xl bg-card border border-border soft-shadow transition-all duration-200 hover:border-primary/30 hover:shadow-md">
+            <div className="flex items-start justify-between mb-5">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center transition-transform duration-200 group-hover:scale-105">
+                <Calculator className="h-6 w-6 text-primary" />
               </div>
-              <ArrowRight className="h-5 w-5 text-pop-pink group-hover:translate-x-2 transition-all duration-300" />
+              <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all duration-200" />
             </div>
-            <h3 className="text-xl font-black text-foreground mb-2">Grade Calculator</h3>
-            <p className="text-muted-foreground font-medium">
-              Calculate your <span className="text-pop-pink font-bold">SGPA & CGPA</span> instantly with our precision calculator.
+            <h3 className="text-xl font-bold text-foreground mb-2">Grade Calculator</h3>
+            <p className="text-muted-foreground leading-relaxed">
+              Calculate your SGPA & CGPA instantly. No sign-up required for basic calculations.
             </p>
-          </BentoCard>
+          </div>
         </Link>
 
-        {/* Stats Card */}
-        <BentoCard variant="yellow" className="lg:col-span-5">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-pop-yellow flex items-center justify-center pop-shadow animate-wiggle">
-              <Users className="h-7 w-7 text-foreground" />
+        {/* Attendance - Tall Card */}
+        <Link to="/auth" className="md:col-span-5 md:row-span-2 group">
+          <div className="h-full p-6 lg:p-8 rounded-2xl bg-secondary/5 border border-secondary/20 transition-all duration-200 hover:border-secondary/40 hover:bg-secondary/10">
+            <div className="flex items-start justify-between mb-5">
+              <div className="w-12 h-12 rounded-xl bg-secondary/20 flex items-center justify-center transition-transform duration-200 group-hover:scale-105">
+                <Calendar className="h-6 w-6 text-secondary" />
+              </div>
+              <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-secondary group-hover:translate-x-1 transition-all duration-200" />
             </div>
-            <div>
-              <p className="text-3xl font-black text-foreground">5,000+</p>
-              <p className="text-muted-foreground font-bold">Students trust JuicyFish 🐟</p>
+            <h3 className="text-xl font-bold text-foreground mb-2">Attendance Tracker</h3>
+            <p className="text-muted-foreground leading-relaxed mb-6">
+              Know exactly how many classes you can skip while staying above the threshold.
+            </p>
+            
+            {/* Visual element */}
+            <div className="mt-auto pt-4 border-t border-secondary/20">
+              <div className="flex items-baseline gap-2">
+                <span className="text-3xl font-black text-secondary">75%</span>
+                <span className="text-sm text-muted-foreground">minimum safe</span>
+              </div>
+              <div className="mt-3 h-2 rounded-full bg-secondary/20 overflow-hidden">
+                <div className="h-full w-3/4 rounded-full bg-secondary" />
+              </div>
             </div>
           </div>
-        </BentoCard>
-
-        {/* Attendance Card */}
-        <Link to="/auth" className="lg:col-span-4 contents lg:block">
-          <BentoCard variant="cyan" className="lg:col-span-4 group cursor-pointer">
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-14 h-14 rounded-2xl bg-pop-cyan flex items-center justify-center pop-shadow transition-all duration-300 group-hover:rotate-6 group-hover:scale-110">
-                <Calendar className="h-7 w-7 text-white" />
-              </div>
-              <ArrowRight className="h-5 w-5 text-pop-cyan group-hover:translate-x-2 transition-all duration-300" />
-            </div>
-            <h3 className="text-xl font-black text-foreground mb-2">Attendance Tracker</h3>
-            <p className="text-muted-foreground font-medium">
-              Never miss a class. Know exactly <span className="text-pop-cyan font-bold">how many you can skip</span>. 😎
-            </p>
-          </BentoCard>
         </Link>
 
-        {/* Resources Card */}
-        <Link to="/auth" className="lg:col-span-4 contents lg:block">
-          <BentoCard variant="green" className="lg:col-span-4 group cursor-pointer">
+        {/* Resources - Medium Card */}
+        <Link to="/auth" className="md:col-span-4 group">
+          <div className="h-full p-6 rounded-2xl bg-accent/5 border border-accent/20 transition-all duration-200 hover:border-accent/40 hover:bg-accent/10">
             <div className="flex items-start justify-between mb-4">
-              <div className="w-14 h-14 rounded-2xl bg-pop-green flex items-center justify-center pop-shadow transition-all duration-300 group-hover:rotate-6 group-hover:scale-110">
-                <BookOpen className="h-7 w-7 text-white" />
+              <div className="w-11 h-11 rounded-xl bg-accent/20 flex items-center justify-center transition-transform duration-200 group-hover:scale-105">
+                <BookOpen className="h-5 w-5 text-accent-foreground" />
               </div>
-              <ArrowRight className="h-5 w-5 text-pop-green group-hover:translate-x-2 transition-all duration-300" />
+              <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-accent-foreground group-hover:translate-x-1 transition-all duration-200" />
             </div>
-            <h3 className="text-xl font-black text-foreground mb-2">Study Resources</h3>
-            <p className="text-muted-foreground font-medium">
-              Access organized <span className="text-pop-green font-bold">notes, videos & papers</span> in one place. 📚
+            <h3 className="text-lg font-bold text-foreground mb-1">Study Resources</h3>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              Notes, videos & past papers organized by course.
             </p>
-          </BentoCard>
-        </Link>
-
-        {/* Progress Card */}
-        <BentoCard variant="featured" className="lg:col-span-4">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-pop-purple flex items-center justify-center pop-shadow animate-pop">
-              <TrendingUp className="h-7 w-7 text-white" />
-            </div>
-            <div>
-              <p className="text-3xl font-black text-foreground">Track</p>
-              <p className="text-muted-foreground font-bold">Your academic progress ✨</p>
-            </div>
           </div>
-        </BentoCard>
+        </Link>
+
+        {/* Progress - Small Card */}
+        <div className="md:col-span-3">
+          <div className="h-full p-5 rounded-2xl bg-lavender/10 border border-lavender/20">
+            <TrendingUp className="h-5 w-5 text-lavender mb-3" />
+            <p className="text-sm font-semibold text-foreground">Track Progress</p>
+            <p className="text-xs text-muted-foreground mt-1">Semester by semester</p>
+          </div>
+        </div>
 
       </div>
     </section>

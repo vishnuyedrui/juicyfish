@@ -2,76 +2,79 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Pop Art / Abstract Design System - Playful, Creative, Energetic
-All colors MUST be HSL.
+/* Human-Crafted Design System - Warm, Authentic, Student-Built
+   All colors MUST be HSL.
 */
 
 @layer base {
   :root {
-    /* Bento/Art Deco Palette (kept for compatibility) */
-    --bento-bg: 45 60% 95%;
-    --bento-card: 0 0% 100%;
-    --bento-accent: 330 100% 60%;
-    --bento-navy: 280 60% 25%;
-    --bento-gold: 45 100% 55%;
-    --bento-text: 280 60% 20%;
-    --bento-muted: 280 20% 50%;
-    --background: 45 100% 96%;
-    --foreground: 280 60% 15%;
+    /* Core Brand Palette - Warm & Distinctive */
+    --background: 30 50% 98%;
+    --foreground: 25 30% 18%;
 
     --card: 0 0% 100%;
-    --card-foreground: 280 60% 15%;
+    --card-foreground: 25 30% 18%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 280 60% 15%;
+    --popover-foreground: 25 30% 18%;
 
-    /* Pop Art Primary - Hot Pink */
-    --primary: 330 100% 60%;
+    /* Primary - Deep Coral/Salmon */
+    --primary: 350 75% 55%;
     --primary-foreground: 0 0% 100%;
 
-    /* Pop Art Secondary - Electric Cyan */
-    --secondary: 180 100% 45%;
+    /* Secondary - Warm Teal */
+    --secondary: 172 55% 42%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 45 40% 92%;
-    --muted-foreground: 280 30% 40%;
+    --muted: 30 25% 93%;
+    --muted-foreground: 25 20% 45%;
 
-    /* Pop Art Accent - Vibrant Green */
-    --accent: 145 80% 45%;
-    --accent-foreground: 0 0% 100%;
+    /* Accent - Warm Gold */
+    --accent: 38 90% 55%;
+    --accent-foreground: 25 30% 18%;
 
-    --destructive: 0 90% 55%;
+    --destructive: 0 80% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 280 30% 85%;
-    --input: 280 30% 85%;
-    --ring: 330 100% 60%;
+    --border: 25 20% 88%;
+    --input: 25 20% 88%;
+    --ring: 350 75% 55%;
 
-    --radius: 1rem;
+    --radius: 0.75rem;
 
-    /* Pop Art Colors */
-    --pop-pink: 330 100% 60%;
-    --pop-yellow: 45 100% 55%;
-    --pop-cyan: 180 100% 45%;
-    --pop-purple: 280 85% 60%;
-    --pop-orange: 25 100% 55%;
-    --pop-green: 145 80% 45%;
+    /* Feature Colors - Intentionally Limited */
+    --coral: 350 75% 55%;
+    --teal: 172 55% 42%;
+    --gold: 38 90% 55%;
+    --sage: 145 35% 45%;
+    --lavender: 270 45% 60%;
 
-    /* Grade colors - More vibrant */
-    --grade-o: 145 85% 42%;
-    --grade-a-plus: 165 80% 42%;
-    --grade-a: 180 100% 40%;
-    --grade-b-plus: 280 90% 55%;
-    --grade-b: 300 70% 55%;
-    --grade-c: 32 100% 50%;
-    --grade-p: 45 100% 45%;
-    --grade-f: 0 90% 55%;
+    /* Grade colors */
+    --grade-o: 145 65% 40%;
+    --grade-a-plus: 165 55% 40%;
+    --grade-a: 172 55% 42%;
+    --grade-b-plus: 270 50% 55%;
+    --grade-b: 290 45% 55%;
+    --grade-c: 38 80% 50%;
+    --grade-p: 45 70% 50%;
+    --grade-f: 0 70% 55%;
 
-    /* Pop Art Gradients */
-    --gradient-purple: linear-gradient(135deg, hsl(280 85% 60% / 0.15), hsl(330 100% 60% / 0.15));
-    --gradient-blue: linear-gradient(135deg, hsl(180 100% 45% / 0.15), hsl(200 100% 50% / 0.15));
-    --gradient-green: linear-gradient(135deg, hsl(145 80% 45% / 0.15), hsl(165 75% 45% / 0.15));
-    --gradient-orange: linear-gradient(135deg, hsl(25 100% 55% / 0.15), hsl(45 100% 55% / 0.15));
+    /* Legacy pop colors - mapped to new palette */
+    --pop-pink: 350 75% 55%;
+    --pop-yellow: 38 90% 55%;
+    --pop-cyan: 172 55% 42%;
+    --pop-purple: 270 45% 60%;
+    --pop-orange: 25 85% 55%;
+    --pop-green: 145 50% 42%;
+
+    /* Bento compatibility */
+    --bento-bg: 30 50% 98%;
+    --bento-card: 0 0% 100%;
+    --bento-accent: 350 75% 55%;
+    --bento-navy: 270 45% 25%;
+    --bento-gold: 38 90% 55%;
+    --bento-text: 25 30% 18%;
+    --bento-muted: 25 20% 50%;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -84,33 +87,33 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 280 40% 8%;
-    --foreground: 45 50% 95%;
+    --background: 25 25% 8%;
+    --foreground: 30 40% 95%;
 
-    --card: 280 40% 12%;
-    --card-foreground: 45 50% 95%;
+    --card: 25 25% 12%;
+    --card-foreground: 30 40% 95%;
 
-    --popover: 280 40% 10%;
-    --popover-foreground: 45 50% 95%;
+    --popover: 25 25% 10%;
+    --popover-foreground: 30 40% 95%;
 
-    --primary: 330 100% 65%;
+    --primary: 350 70% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 180 100% 50%;
+    --secondary: 172 50% 48%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 280 30% 18%;
-    --muted-foreground: 45 30% 65%;
+    --muted: 25 20% 18%;
+    --muted-foreground: 30 25% 65%;
 
-    --accent: 145 80% 50%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 38 85% 55%;
+    --accent-foreground: 25 30% 10%;
 
-    --destructive: 0 80% 50%;
+    --destructive: 0 75% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 280 30% 25%;
-    --input: 280 30% 25%;
-    --ring: 330 100% 65%;
+    --border: 25 20% 22%;
+    --input: 25 20% 22%;
+    --ring: 350 70% 60%;
     
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
@@ -134,75 +137,67 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
-  .gradient-purple {
-    background: var(--gradient-purple);
-  }
-  .gradient-blue {
-    background: var(--gradient-blue);
-  }
-  .gradient-green {
-    background: var(--gradient-green);
-  }
-  .gradient-orange {
-    background: var(--gradient-orange);
+  /* Human-touch shadow - slightly offset for handmade feel */
+  .offset-shadow {
+    box-shadow: 3px 4px 0 hsl(var(--foreground) / 0.08);
   }
   
-  /* Pop Art Utilities */
-  .pop-border {
-    @apply border-[3px] border-foreground/80;
+  .offset-shadow-md {
+    box-shadow: 4px 5px 0 hsl(var(--foreground) / 0.1);
   }
-  
+
+  /* Soft shadow for cards */
+  .soft-shadow {
+    box-shadow: 0 4px 20px -4px hsl(var(--foreground) / 0.1);
+  }
+
+  /* Legacy pop utilities - now simplified */
   .pop-shadow {
-    box-shadow: 4px 4px 0 hsl(var(--foreground) / 0.2);
+    box-shadow: 3px 4px 0 hsl(var(--foreground) / 0.08);
   }
   
   .pop-shadow-lg {
-    box-shadow: 6px 6px 0 hsl(var(--foreground) / 0.2);
+    box-shadow: 4px 5px 0 hsl(var(--foreground) / 0.1);
   }
 
+  /* Gradient backgrounds - subtle and warm */
+  .gradient-warm {
+    background: linear-gradient(135deg, hsl(var(--coral) / 0.08), hsl(var(--gold) / 0.08));
+  }
+
+  .gradient-cool {
+    background: linear-gradient(135deg, hsl(var(--teal) / 0.08), hsl(var(--lavender) / 0.08));
+  }
+
+  /* Legacy gradients mapped to new style */
   .pop-gradient-pink {
-    background: linear-gradient(135deg, hsl(330 100% 60%), hsl(280 85% 60%));
+    background: linear-gradient(135deg, hsl(350 75% 55%), hsl(350 65% 50%));
   }
 
   .pop-gradient-cyan {
-    background: linear-gradient(135deg, hsl(180 100% 45%), hsl(200 100% 50%));
+    background: linear-gradient(135deg, hsl(172 55% 42%), hsl(172 50% 38%));
   }
 
-  .pop-gradient-yellow {
-    background: linear-gradient(135deg, hsl(45 100% 55%), hsl(25 100% 55%));
-  }
-
-  .pop-gradient-green {
-    background: linear-gradient(135deg, hsl(145 80% 45%), hsl(120 70% 45%));
-  }
-
-  .pop-gradient-purple {
-    background: linear-gradient(135deg, hsl(280 85% 60%), hsl(300 80% 55%));
-  }
-
-  .pop-gradient-orange {
-    background: linear-gradient(135deg, hsl(25 100% 55%), hsl(40 100% 50%));
-  }
-
-  /* Bento Card Utilities */
+  /* Card utilities */
   .bento-card {
-    @apply bg-white rounded-3xl shadow-sm border border-border/50 transition-all duration-300;
+    @apply bg-card rounded-2xl shadow-sm border border-border transition-all duration-200;
   }
 
   .bento-card-hover {
-    @apply hover:shadow-lg hover:scale-[1.02] hover:border-primary/20;
+    @apply hover:shadow-md hover:border-primary/20;
   }
 
-  .bento-gradient {
-    background: linear-gradient(135deg, hsl(217 91% 60% / 0.1), hsl(220 60% 15% / 0.05));
-  }
-
-  .bento-accent-text {
-    @apply text-primary font-semibold;
+  /* Squiggly underline for human touch */
+  .squiggle-underline {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 6'%3E%3Cpath d='M0 3 Q 12.5 0, 25 3 T 50 3 T 75 3 T 100 3' stroke='%23E85D75' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: repeat-x;
+    background-position: bottom;
+    background-size: 20px 6px;
+    padding-bottom: 6px;
   }
 }
 
-/* Reduced motion for accessibility and performance */
+/* Reduced motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
