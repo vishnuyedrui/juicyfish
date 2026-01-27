@@ -217,6 +217,57 @@ export type Database = {
           },
         ]
       }
+      file_access_logs: {
+        Row: {
+          access_type: string
+          created_at: string
+          file_path: string
+          id: string
+          ip_address: string | null
+          referrer: string | null
+          resource_id: string | null
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          access_type?: string
+          created_at?: string
+          file_path: string
+          id?: string
+          ip_address?: string | null
+          referrer?: string | null
+          resource_id?: string | null
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          access_type?: string
+          created_at?: string
+          file_path?: string
+          id?: string
+          ip_address?: string | null
+          referrer?: string | null
+          resource_id?: string | null
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "file_access_logs_resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: false
+            referencedRelation: "resources"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "file_access_logs_resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: false
+            referencedRelation: "resources_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       holidays: {
         Row: {
           created_at: string
@@ -291,6 +342,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      rate_limits: {
+        Row: {
+          action_type: string
+          created_at: string
+          id: string
+          request_count: number
+          user_id: string
+          window_start: string
+        }
+        Insert: {
+          action_type?: string
+          created_at?: string
+          id?: string
+          request_count?: number
+          user_id: string
+          window_start?: string
+        }
+        Update: {
+          action_type?: string
+          created_at?: string
+          id?: string
+          request_count?: number
+          user_id?: string
+          window_start?: string
+        }
+        Relationships: []
       }
       resources: {
         Row: {
