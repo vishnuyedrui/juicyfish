@@ -136,8 +136,8 @@ const Auth = () => {
       }
     }
 
-    toast.success('Account created successfully!');
-    navigate('/dashboard');
+    toast.success('Account created! Please check your email to confirm your account before signing in.');
+    // Don't navigate - user needs to confirm email first
     
     setIsLoading(false);
   };
