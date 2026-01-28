@@ -153,8 +153,8 @@ const Auth = () => {
                 <CalendarCheck className="w-5 h-5 sm:w-7 sm:h-7 text-white" />
               </div>
               <div className="min-w-0">
-                <h1 className="text-lg sm:text-xl font-bold truncate">Smart Attendance</h1>
-                <p className="text-xs sm:text-sm text-muted-foreground truncate">Management System</p>
+                <h1 className="text-lg sm:text-xl font-bold truncate">Juicy Fish</h1>
+                <p className="text-xs sm:text-sm text-muted-foreground truncate">Student Portal</p>
               </div>
             </div>
             <Link to="/">
@@ -207,18 +207,26 @@ const Auth = () => {
                       required
                     />
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox 
-                      id="remember-me" 
-                      checked={rememberMe}
-                      onCheckedChange={(checked) => setRememberMe(checked === true)}
-                    />
-                    <Label 
-                      htmlFor="remember-me" 
-                      className="text-sm font-normal cursor-pointer"
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="remember-me" 
+                        checked={rememberMe}
+                        onCheckedChange={(checked) => setRememberMe(checked === true)}
+                      />
+                      <Label 
+                        htmlFor="remember-me"
+                        className="text-sm font-normal cursor-pointer"
+                      >
+                        Remember me
+                      </Label>
+                    </div>
+                    <Link 
+                      to="/forgot-password" 
+                      className="text-sm text-primary hover:underline"
                     >
-                      Remember me
-                    </Label>
+                      Forgot password?
+                    </Link>
                   </div>
                   <Button type="submit" className="w-full" disabled={isLoading}>
                     {isLoading ? (

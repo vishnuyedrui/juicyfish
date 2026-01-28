@@ -17,6 +17,8 @@ import Landing from "./pages/Landing";
 const Index = lazy(() => import("./pages/Index"));
 const Attendance = lazy(() => import("./pages/Attendance"));
 const Auth = lazy(() => import("./pages/Auth"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Courses = lazy(() => import("./pages/Courses"));
 const CourseDetail = lazy(() => import("./pages/CourseDetail"));
@@ -86,6 +88,8 @@ const App = () => (
                 <Route path="/" element={<Landing />} />
                 <Route path="/calculator" element={<Index />} />
                 <Route path="/auth" element={<Auth />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/admin/login" element={<AdminLogin />} />
                 
                 {/* Protected student routes */}
