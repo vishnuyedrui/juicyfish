@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { CalendarCheck, Loader2, GraduationCap } from 'lucide-react';
+import { CalendarCheck, Loader2, GraduationCap, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 
@@ -50,6 +50,11 @@ const Auth = () => {
   const [signInEmail, setSignInEmail] = useState('');
   const [signInPassword, setSignInPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
+  
+  // Forgot password state
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [isResetting, setIsResetting] = useState(false);
 
   // Sign Up form state
   const [signUpEmail, setSignUpEmail] = useState('');
@@ -142,6 +147,31 @@ const Auth = () => {
     setIsLoading(false);
   };
 
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!resetEmail) {
+      toast.error('Please enter your email address');
+      return;
+    }
+    
+    setIsResetting(true);
+    
+    const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+      redirectTo: `${window.location.origin}/auth`,
+    });
+    
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success('Password reset email sent! Check your inbox.');
+      setShowForgotPassword(false);
+      setResetEmail('');
+    }
+    
+    setIsResetting(false);
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
@@ -177,61 +207,113 @@ const Auth = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="signin" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-6">
-                <TabsTrigger value="signin">Sign In</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="signin">
-                <form onSubmit={handleSignIn} className="space-y-4">
+            {showForgotPassword ? (
+              <div className="space-y-4">
+                <button
+                  type="button"
+                  onClick={() => setShowForgotPassword(false)}
+                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  Back to sign in
+                </button>
+                
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">Reset your password</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Enter your email address and we'll send you a link to reset your password.
+                  </p>
+                </div>
+                
+                <form onSubmit={handleForgotPassword} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signin-email">Email</Label>
+                    <Label htmlFor="reset-email">Email</Label>
                     <Input
-                      id="signin-email"
+                      id="reset-email"
                       type="email"
                       placeholder="you@example.com"
-                      value={signInEmail}
-                      onChange={(e) => setSignInEmail(e.target.value)}
+                      value={resetEmail}
+                      onChange={(e) => setResetEmail(e.target.value)}
                       required
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-password">Password</Label>
-                    <Input
-                      id="signin-password"
-                      type="password"
-                      placeholder="••••••••"
-                      value={signInPassword}
-                      onChange={(e) => setSignInPassword(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox 
-                      id="remember-me" 
-                      checked={rememberMe}
-                      onCheckedChange={(checked) => setRememberMe(checked === true)}
-                    />
-                    <Label 
-                      htmlFor="remember-me" 
-                      className="text-sm font-normal cursor-pointer"
-                    >
-                      Remember me
-                    </Label>
-                  </div>
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? (
+                  <Button type="submit" className="w-full" disabled={isResetting}>
+                    {isResetting ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Signing in...
+                        Sending...
                       </>
                     ) : (
-                      'Sign In'
+                      'Send Reset Link'
                     )}
                   </Button>
                 </form>
-              </TabsContent>
+              </div>
+            ) : (
+              <Tabs defaultValue="signin" className="w-full">
+                <TabsList className="grid w-full grid-cols-2 mb-6">
+                  <TabsTrigger value="signin">Sign In</TabsTrigger>
+                  <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="signin">
+                  <form onSubmit={handleSignIn} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="signin-email">Email</Label>
+                      <Input
+                        id="signin-email"
+                        type="email"
+                        placeholder="you@example.com"
+                        value={signInEmail}
+                        onChange={(e) => setSignInEmail(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="signin-password">Password</Label>
+                        <button
+                          type="button"
+                          onClick={() => setShowForgotPassword(true)}
+                          className="text-sm text-primary hover:underline"
+                        >
+                          Forgot password?
+                        </button>
+                      </div>
+                      <Input
+                        id="signin-password"
+                        type="password"
+                        placeholder="••••••••"
+                        value={signInPassword}
+                        onChange={(e) => setSignInPassword(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="remember-me" 
+                        checked={rememberMe}
+                        onCheckedChange={(checked) => setRememberMe(checked === true)}
+                      />
+                      <Label 
+                        htmlFor="remember-me" 
+                        className="text-sm font-normal cursor-pointer"
+                      >
+                        Remember me
+                      </Label>
+                    </div>
+                    <Button type="submit" className="w-full" disabled={isLoading}>
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Signing in...
+                        </>
+                      ) : (
+                        'Sign In'
+                      )}
+                    </Button>
+                  </form>
+                </TabsContent>
               
               <TabsContent value="signup">
                 <form onSubmit={handleSignUp} className="space-y-4">
@@ -310,8 +392,9 @@ const Auth = () => {
                     )}
                   </Button>
                 </form>
-              </TabsContent>
-            </Tabs>
+                </TabsContent>
+              </Tabs>
+            )}
           </CardContent>
         </Card>
       </main>
