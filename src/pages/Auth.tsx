@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { CalendarCheck, Loader2, GraduationCap, ArrowLeft } from 'lucide-react';
+import { CalendarCheck, Loader2, GraduationCap, ArrowLeft, KeyRound, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 
@@ -30,12 +30,30 @@ const Auth = () => {
   const { user, loading, signIn, signUp } = useAuth();
   const navigate = useNavigate();
 
-  // Redirect if already authenticated
+  // Password update state (for reset flow)
+  const [isPasswordRecovery, setIsPasswordRecovery] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
+  const [passwordUpdated, setPasswordUpdated] = useState(false);
+
+  // Listen for password recovery event
   useEffect(() => {
-    if (!loading && user) {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setIsPasswordRecovery(true);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Redirect if already authenticated (but not during password recovery)
+  useEffect(() => {
+    if (!loading && user && !isPasswordRecovery && !passwordUpdated) {
       navigate('/dashboard');
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, isPasswordRecovery, passwordUpdated]);
 
   // Show loading while checking auth status
   if (loading) {
@@ -79,6 +97,42 @@ const Auth = () => {
     };
     fetchData();
   }, []);
+
+  const handleUpdatePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (newPassword.length < 6) {
+      toast.error('Password must be at least 6 characters');
+      return;
+    }
+    
+    if (newPassword !== confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
+    
+    setIsUpdatingPassword(true);
+    
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword
+    });
+    
+    if (error) {
+      toast.error(error.message);
+    } else {
+      setPasswordUpdated(true);
+      toast.success('Password updated successfully!');
+    }
+    
+    setIsUpdatingPassword(false);
+  };
+
+  const handleBackToSignIn = () => {
+    setIsPasswordRecovery(false);
+    setPasswordUpdated(false);
+    setNewPassword('');
+    setConfirmPassword('');
+  };
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -207,7 +261,75 @@ const Auth = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {showForgotPassword ? (
+          {isPasswordRecovery ? (
+            passwordUpdated ? (
+              // Success state after password update
+              <div className="space-y-6 text-center">
+                <div className="w-16 h-16 mx-auto rounded-full bg-green-100 flex items-center justify-center">
+                  <CheckCircle className="h-8 w-8 text-green-600" />
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">Password Updated!</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Your password has been successfully updated. You can now sign in with your new password.
+                  </p>
+                </div>
+                <Button onClick={handleBackToSignIn} className="w-full">
+                  Back to Sign In
+                </Button>
+              </div>
+            ) : (
+              // Password update form
+              <div className="space-y-4">
+                <div className="w-12 h-12 mx-auto rounded-full bg-primary/10 flex items-center justify-center">
+                  <KeyRound className="h-6 w-6 text-primary" />
+                </div>
+                <div className="space-y-2 text-center">
+                  <h3 className="text-lg font-semibold">Set New Password</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Enter your new password below.
+                  </p>
+                </div>
+                
+                <form onSubmit={handleUpdatePassword} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="new-password">New Password</Label>
+                    <Input
+                      id="new-password"
+                      type="password"
+                      placeholder="••••••••"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      required
+                      minLength={6}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="confirm-password">Confirm Password</Label>
+                    <Input
+                      id="confirm-password"
+                      type="password"
+                      placeholder="••••••••"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                      minLength={6}
+                    />
+                  </div>
+                  <Button type="submit" className="w-full" disabled={isUpdatingPassword}>
+                    {isUpdatingPassword ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Updating...
+                      </>
+                    ) : (
+                      'Update Password'
+                    )}
+                  </Button>
+                </form>
+              </div>
+            )
+          ) : showForgotPassword ? (
               <div className="space-y-4">
                 <button
                   type="button"
