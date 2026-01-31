@@ -19,6 +19,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Extract project reference from Supabase URL for storage key
+    const projectRef = import.meta.env.VITE_SUPABASE_URL?.match(/https:\/\/([^.]+)\.supabase\.co/)?.[1] || '';
+    const storageKey = `sb-${projectRef}-auth-token`;
+
     // Set up auth state listener BEFORE checking session
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
@@ -28,7 +32,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // Handle session-only mode (when "Remember Me" is unchecked)
       if (_event === 'SIGNED_IN' && sessionStorage.getItem('session_only') === 'true') {
         // Clear localStorage token so session doesn't persist after browser close
-        const storageKey = `sb-cydqjkzzvmklykhoxoer-auth-token`;
         const sessionData = localStorage.getItem(storageKey);
         if (sessionData) {
           sessionStorage.setItem(storageKey, sessionData);
@@ -38,7 +41,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
 
     // Check for existing session (from localStorage or sessionStorage)
-    const storageKey = `sb-cydqjkzzvmklykhoxoer-auth-token`;
     const sessionOnlyData = sessionStorage.getItem(storageKey);
     if (sessionOnlyData && !localStorage.getItem(storageKey)) {
       // Restore session-only token for this browser session
