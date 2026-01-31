@@ -299,7 +299,6 @@ export type Database = {
         Row: {
           branch_id: string | null
           created_at: string
-          email: string | null
           full_name: string | null
           id: string
           semester_id: string | null
@@ -309,7 +308,6 @@ export type Database = {
         Insert: {
           branch_id?: string | null
           created_at?: string
-          email?: string | null
           full_name?: string | null
           id?: string
           semester_id?: string | null
@@ -319,7 +317,6 @@ export type Database = {
         Update: {
           branch_id?: string | null
           created_at?: string
-          email?: string | null
           full_name?: string | null
           id?: string
           semester_id?: string | null
