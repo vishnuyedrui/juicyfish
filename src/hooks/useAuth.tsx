@@ -59,7 +59,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       email,
       password,
       options: {
-        emailRedirectTo: 'https://www.juicyfish.online/auth',
+        emailRedirectTo: 'https://juicyfish.online/email-confirmed',
         data: { full_name: fullName },
       },
     });

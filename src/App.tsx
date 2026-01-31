@@ -16,6 +16,8 @@ import Index from "./pages/Index";
 // Lazy load all other pages for code splitting
 const Attendance = lazy(() => import("./pages/Attendance"));
 const Auth = lazy(() => import("./pages/Auth"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const EmailConfirmed = lazy(() => import("./pages/EmailConfirmed"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Courses = lazy(() => import("./pages/Courses"));
 const CourseDetail = lazy(() => import("./pages/CourseDetail"));
@@ -84,6 +86,8 @@ const App = () => (
                 {/* Public routes */}
                 <Route path="/" element={<Index />} />
                 <Route path="/auth" element={<Auth />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/email-confirmed" element={<EmailConfirmed />} />
                 <Route path="/admin/login" element={<AdminLogin />} />
                 
                 {/* Protected student routes */}
