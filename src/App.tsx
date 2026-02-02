@@ -91,7 +91,6 @@ const App = () => (
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/email-confirmed" element={<EmailConfirmed />} />
                 <Route path="/admin/login" element={<AdminLogin />} />
-                <Route path="/admin/login" element={<AdminLogin />} />
                 
                 {/* Protected student routes */}
                 <Route path="/dashboard" element={
