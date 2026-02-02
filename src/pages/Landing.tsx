@@ -1,22 +1,29 @@
 import { LandingNav } from "@/components/landing/LandingNav";
-import { BentoGrid } from "@/components/landing/BentoGrid";
-import { FeatureSection } from "@/components/landing/FeatureSection";
-import { GradeReference } from "@/components/landing/GradeReference";
-import { CTASection } from "@/components/landing/CTASection";
+import { BookScroll } from "@/components/book/BookScroll";
+import { LandingFeatures } from "@/components/landing/LandingFeatures";
+import { LandingAbout } from "@/components/landing/LandingAbout";
+import { LandingCTA } from "@/components/landing/LandingCTA";
 import { LandingFooter } from "@/components/landing/LandingFooter";
 
 const Landing = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen" style={{ backgroundColor: "#1a1a1a" }}>
+      {/* Fixed Navigation */}
       <LandingNav />
+
+      {/* Hero Scroll Animation */}
+      <BookScroll />
+
+      {/* Features Section */}
+      <LandingFeatures />
+
+      {/* About Section */}
+      <LandingAbout />
+
+      {/* CTA Section */}
+      <LandingCTA />
       
-      <main>
-        <BentoGrid />
-        <FeatureSection />
-        <GradeReference />
-        <CTASection />
-      </main>
-      
+      {/* Footer */}
       <LandingFooter />
     </div>
   );

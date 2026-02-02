@@ -10,10 +10,11 @@ import { AdSenseProvider } from "@/contexts/AdSenseContext";
 import { AdSenseLoader } from "@/components/ads/AdSenseLoader";
 import AuthLoadingSkeleton from "@/components/AuthLoadingSkeleton";
 
-// Eager load the grade calculator for fast initial render
-import Index from "./pages/Index";
+// Eager load the landing page for fast initial render
+import Landing from "./pages/Landing";
 
 // Lazy load all other pages for code splitting
+const Index = lazy(() => import("./pages/Index"));
 const Attendance = lazy(() => import("./pages/Attendance"));
 const Auth = lazy(() => import("./pages/Auth"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
@@ -27,7 +28,6 @@ const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const CourseManager = lazy(() => import("./pages/admin/CourseManager"));
 const ResourceManager = lazy(() => import("./pages/admin/ResourceManager"));
 const AnnouncementManager = lazy(() => import("./pages/admin/AnnouncementManager"));
-const BookLanding = lazy(() => import("./pages/BookLanding"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 // Loading component for Suspense fallback
@@ -85,8 +85,8 @@ const App = () => (
             <Suspense fallback={<PageLoader />}>
               <Routes>
                 {/* Public routes */}
-                <Route path="/" element={<Index />} />
-                <Route path="/book" element={<BookLanding />} />
+                <Route path="/" element={<Landing />} />
+                <Route path="/calculator" element={<Index />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/email-confirmed" element={<EmailConfirmed />} />
