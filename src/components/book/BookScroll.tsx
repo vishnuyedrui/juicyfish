@@ -1,51 +1,133 @@
 import { useRef, useEffect, useState, useCallback } from "react";
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 
-const TOTAL_FRAMES = 39; // Frames 001-039 available in public/frames/
+const TOTAL_FRAMES = 39;
 const FRAME_PREFIX = "/frames/frame-";
+const PRIORITY_FRAMES = 5; // Load first 5 frames with high priority
 
-// Preload all images with proper validation
-const preloadImages = (onProgress: (progress: number) => void): Promise<HTMLImageElement[]> => {
-  return new Promise((resolve) => {
-    const images: HTMLImageElement[] = [];
-    let loadedCount = 0;
-    const validImages: Set<number> = new Set();
+// Image cache for better performance
+const imageCache = new Map<number, HTMLImageElement>();
 
-    for (let i = 1; i <= TOTAL_FRAMES; i++) {
-      const img = new Image();
-      const frameNum = i.toString().padStart(3, "0");
-      img.src = `${FRAME_PREFIX}${frameNum}.jpg`;
-      
-      img.onload = () => {
-        loadedCount++;
-        validImages.add(i - 1); // Track valid image indices
-        onProgress((loadedCount / TOTAL_FRAMES) * 100);
-        if (loadedCount === TOTAL_FRAMES) {
-          resolve(images);
-        }
-      };
-      
-      img.onerror = () => {
-        loadedCount++;
-        console.warn(`Failed to load frame: ${frameNum}`);
-        onProgress((loadedCount / TOTAL_FRAMES) * 100);
-        if (loadedCount === TOTAL_FRAMES) {
-          resolve(images);
-        }
-      };
-      
-      images.push(img);
+// Load a single image with caching
+const loadImage = (index: number): Promise<HTMLImageElement> => {
+  return new Promise((resolve, reject) => {
+    // Check cache first
+    if (imageCache.has(index)) {
+      const cached = imageCache.get(index)!;
+      if (cached.complete && cached.naturalWidth > 0) {
+        resolve(cached);
+        return;
+      }
     }
+
+    const img = new Image();
+    const frameNum = (index + 1).toString().padStart(3, "0");
+    img.src = `${FRAME_PREFIX}${frameNum}.jpg`;
+    
+    img.onload = () => {
+      imageCache.set(index, img);
+      resolve(img);
+    };
+    
+    img.onerror = () => {
+      console.warn(`Failed to load frame: ${frameNum}`);
+      reject(new Error(`Failed to load frame ${frameNum}`));
+    };
   });
+};
+
+// Progressive image loader - loads priority frames first, then rest in background
+const useProgressiveImages = () => {
+  const [images, setImages] = useState<HTMLImageElement[]>([]);
+  const [isReady, setIsReady] = useState(false);
+  const [loadProgress, setLoadProgress] = useState(0);
+  const loadedCountRef = useRef(0);
+
+  useEffect(() => {
+    let isMounted = true;
+    const allImages: HTMLImageElement[] = new Array(TOTAL_FRAMES);
+
+    // Phase 1: Load priority frames (first few) immediately
+    const loadPriorityFrames = async () => {
+      const priorityPromises = [];
+      for (let i = 0; i < PRIORITY_FRAMES; i++) {
+        priorityPromises.push(
+          loadImage(i).then((img) => {
+            allImages[i] = img;
+            loadedCountRef.current++;
+            if (isMounted) {
+              setLoadProgress((loadedCountRef.current / TOTAL_FRAMES) * 100);
+            }
+          }).catch(() => {
+            loadedCountRef.current++;
+          })
+        );
+      }
+      await Promise.all(priorityPromises);
+      
+      if (isMounted && allImages[0]) {
+        setImages([...allImages]);
+        setIsReady(true);
+      }
+    };
+
+    // Phase 2: Load remaining frames in background with idle callback
+    const loadRemainingFrames = () => {
+      const loadBatch = (startIndex: number) => {
+        if (startIndex >= TOTAL_FRAMES || !isMounted) return;
+
+        const batchSize = 3; // Load 3 frames per batch
+        const endIndex = Math.min(startIndex + batchSize, TOTAL_FRAMES);
+        
+        const batchPromises = [];
+        for (let i = startIndex; i < endIndex; i++) {
+          if (i < PRIORITY_FRAMES) continue; // Skip already loaded priority frames
+          
+          batchPromises.push(
+            loadImage(i).then((img) => {
+              allImages[i] = img;
+              loadedCountRef.current++;
+              if (isMounted) {
+                setLoadProgress((loadedCountRef.current / TOTAL_FRAMES) * 100);
+                setImages([...allImages]);
+              }
+            }).catch(() => {
+              loadedCountRef.current++;
+            })
+          );
+        }
+
+        Promise.all(batchPromises).then(() => {
+          // Use requestIdleCallback for background loading, fallback to setTimeout
+          if ('requestIdleCallback' in window) {
+            (window as any).requestIdleCallback(() => loadBatch(endIndex), { timeout: 100 });
+          } else {
+            setTimeout(() => loadBatch(endIndex), 16);
+          }
+        });
+      };
+
+      loadBatch(PRIORITY_FRAMES);
+    };
+
+    loadPriorityFrames().then(() => {
+      loadRemainingFrames();
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  return { images, isReady, loadProgress };
 };
 
 export function BookScroll() {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [images, setImages] = useState<HTMLImageElement[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [loadProgress, setLoadProgress] = useState(0);
   const [currentFrame, setCurrentFrame] = useState(0);
+  
+  const { images, isReady, loadProgress } = useProgressiveImages();
   
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -54,16 +136,6 @@ export function BookScroll() {
 
   // Transform scroll progress to frame index
   const frameIndex = useTransform(scrollYProgress, [0, 1], [0, TOTAL_FRAMES - 1]);
-
-  // Preload images on mount
-  useEffect(() => {
-    preloadImages((progress) => {
-      setLoadProgress(progress);
-    }).then((loadedImages) => {
-      setImages(loadedImages);
-      setIsLoading(false);
-    });
-  }, []);
 
   // Draw frame to canvas with validation
   const drawFrame = useCallback((index: number) => {
@@ -133,7 +205,8 @@ export function BookScroll() {
   const designedOpacity = useTransform(scrollYProgress, [0.5, 0.6, 0.7, 0.8], [0, 1, 1, 0]);
   const ctaOpacity = useTransform(scrollYProgress, [0.8, 0.9], [0, 1]);
 
-  if (isLoading) {
+  // Show loading state until priority frames are ready
+  if (!isReady) {
     return (
       <div className="fixed inset-0 bg-[#1a1a1a] flex flex-col items-center justify-center z-50">
         <div className="relative w-24 h-24">
