@@ -1,14 +1,15 @@
 import { useRef, useEffect, useState, useCallback } from "react";
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 
-const TOTAL_FRAMES = 40;
+const TOTAL_FRAMES = 39; // Frames 001-039 available in public/frames/
 const FRAME_PREFIX = "/frames/frame-";
 
-// Preload all images
+// Preload all images with proper validation
 const preloadImages = (onProgress: (progress: number) => void): Promise<HTMLImageElement[]> => {
   return new Promise((resolve) => {
     const images: HTMLImageElement[] = [];
     let loadedCount = 0;
+    const validImages: Set<number> = new Set();
 
     for (let i = 1; i <= TOTAL_FRAMES; i++) {
       const img = new Image();
@@ -17,6 +18,7 @@ const preloadImages = (onProgress: (progress: number) => void): Promise<HTMLImag
       
       img.onload = () => {
         loadedCount++;
+        validImages.add(i - 1); // Track valid image indices
         onProgress((loadedCount / TOTAL_FRAMES) * 100);
         if (loadedCount === TOTAL_FRAMES) {
           resolve(images);
@@ -25,6 +27,7 @@ const preloadImages = (onProgress: (progress: number) => void): Promise<HTMLImag
       
       img.onerror = () => {
         loadedCount++;
+        console.warn(`Failed to load frame: ${frameNum}`);
         onProgress((loadedCount / TOTAL_FRAMES) * 100);
         if (loadedCount === TOTAL_FRAMES) {
           resolve(images);
@@ -62,13 +65,14 @@ export function BookScroll() {
     });
   }, []);
 
-  // Draw frame to canvas
+  // Draw frame to canvas with validation
   const drawFrame = useCallback((index: number) => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
-    const img = images[Math.round(index)];
+    const frameIndex = Math.min(Math.max(0, Math.round(index)), images.length - 1);
+    const img = images[frameIndex];
     
-    if (!canvas || !ctx || !img || !img.complete) return;
+    if (!canvas || !ctx || !img || !img.complete || img.naturalWidth === 0) return;
 
     // Set canvas size to match image aspect ratio
     const dpr = window.devicePixelRatio || 1;
