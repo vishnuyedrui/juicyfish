@@ -8,9 +8,17 @@ import logo from "@/assets/logo.png";
 export function LandingNav() {
   const [open, setOpen] = useState(false);
 
+  const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
+    e.preventDefault();
+    const element = document.getElementById(targetId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    setOpen(false);
+  };
+
   const navLinks = [
     { to: "/calculator", label: "Grade Calculator", icon: Calculator },
-    { to: "#about", label: "About", icon: Info, isAnchor: true },
   ];
 
   return (
@@ -31,28 +39,29 @@ export function LandingNav() {
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-2">
           {navLinks.map((link) => (
-            link.isAnchor ? (
-              <a key={link.to} href={link.to}>
-                <Button 
-                  variant="ghost" 
-                  className="text-white/70 hover:text-white hover:bg-white/10 font-medium rounded-full transition-all duration-200"
-                >
-                  <link.icon className="h-4 w-4 mr-2" />
-                  {link.label}
-                </Button>
-              </a>
-            ) : (
-              <Link key={link.to} to={link.to}>
-                <Button 
-                  variant="ghost" 
-                  className="text-white/70 hover:text-white hover:bg-white/10 font-medium rounded-full transition-all duration-200"
-                >
-                  <link.icon className="h-4 w-4 mr-2" />
-                  {link.label}
-                </Button>
-              </Link>
-            )
+            <Link key={link.to} to={link.to}>
+              <Button 
+                variant="ghost" 
+                className="text-white/70 hover:text-white hover:bg-white/10 font-medium rounded-full transition-all duration-200"
+              >
+                <link.icon className="h-4 w-4 mr-2" />
+                {link.label}
+              </Button>
+            </Link>
           ))}
+          
+          <a 
+            href="#about" 
+            onClick={(e) => handleSmoothScroll(e, 'about')}
+          >
+            <Button 
+              variant="ghost" 
+              className="text-white/70 hover:text-white hover:bg-white/10 font-medium rounded-full transition-all duration-200"
+            >
+              <Info className="h-4 w-4 mr-2" />
+              About
+            </Button>
+          </a>
           
           <a href="/downloads/juicyfish.apk" download="JuicyFish.apk">
             <Button 
@@ -93,28 +102,25 @@ export function LandingNav() {
             </SheetHeader>
             <nav className="flex flex-col gap-3 mt-6">
               {navLinks.map((link) => (
-                link.isAnchor ? (
-                  <a 
-                    key={link.to}
-                    href={link.to}
-                    onClick={() => setOpen(false)}
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-200"
-                  >
-                    <link.icon className="h-5 w-5 text-white/60" />
-                    <span className="font-medium text-white/80">{link.label}</span>
-                  </a>
-                ) : (
-                  <Link 
-                    key={link.to}
-                    to={link.to} 
-                    onClick={() => setOpen(false)}
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-200"
-                  >
-                    <link.icon className="h-5 w-5 text-white/60" />
-                    <span className="font-medium text-white/80">{link.label}</span>
-                  </Link>
-                )
+                <Link 
+                  key={link.to}
+                  to={link.to} 
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-200"
+                >
+                  <link.icon className="h-5 w-5 text-white/60" />
+                  <span className="font-medium text-white/80">{link.label}</span>
+                </Link>
               ))}
+              
+              <a 
+                href="#about"
+                onClick={(e) => handleSmoothScroll(e, 'about')}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-200"
+              >
+                <Info className="h-5 w-5 text-white/60" />
+                <span className="font-medium text-white/80">About</span>
+              </a>
               
               <a 
                 href="/downloads/juicyfish.apk" 
