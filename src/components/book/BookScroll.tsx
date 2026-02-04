@@ -255,6 +255,20 @@ export function BookScroll() {
             </motion.button>
           </motion.div>
         </div>
+
+        {/* Scroll Progress Indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-48 md:w-64">
+          <div className="h-1 bg-white/20 rounded-full overflow-hidden">
+            <motion.div 
+              className="h-full bg-white rounded-full origin-left"
+              style={{ scaleX: scrollYProgress }}
+            />
+          </div>
+          <div className="flex justify-between mt-2 text-white/40 text-xs tracking-wider">
+            <span>START</span>
+            <span>END</span>
+          </div>
+        </div>
       </div>
     </div>
   );
