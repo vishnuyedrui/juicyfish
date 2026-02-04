@@ -1,128 +1,97 @@
 
-# Complete Password Reset Flow Implementation
 
-This plan implements a robust, production-ready password reset system with dedicated routes for password reset and email confirmation, following best practices for authentication flows.
+## Fix Book Animation: Lag and Missing Frames
 
----
-
-## Overview
-
-The current implementation handles password recovery via an `onAuthStateChange` event listener on the `/auth` page. However, for a more reliable and user-friendly experience, we'll create dedicated pages with explicit URL handling.
-
----
-
-## What Will Be Changed
-
-### 1. Create Dedicated Reset Password Page (`/reset-password`)
-
-A new page at `/reset-password` that:
-- Automatically detects when a user arrives via a password reset link
-- Shows the password update form with validation
-- Handles the `supabase.auth.updateUser()` call
-- Shows a success message and redirects to sign in
-
-### 2. Create Email Confirmed Page (`/email-confirmed`)
-
-A new page at `/email-confirmed` that:
-- Welcomes users after email confirmation
-- Provides a clear call-to-action to sign in
-- Improves the user experience after account verification
-
-### 3. Update Redirect URLs
-
-Update all authentication redirect URLs to use the production domain:
-- Password reset: `https://juicyfish.online/reset-password`
-- Email confirmation: `https://juicyfish.online/email-confirmed`
-
-### 4. Update Routing
-
-Add new routes to `App.tsx` for the dedicated pages.
-
-### 5. Clean Up Auth Page
-
-Remove the password recovery state handling from `/auth` since it will now be handled by the dedicated page.
+### Problem Analysis
+1. **Missing Frame**: Frame 040 is not in the project but you have it - this means the animation stops early
+2. **Lag Issues**: The current implementation has several performance bottlenecks:
+   - Canvas size recalculation on every frame draw
+   - No use of `requestAnimationFrame` for smooth rendering
+   - Redundant state updates triggering React re-renders
+   - No frame interpolation for smoother transitions
 
 ---
 
-## Files to Create
+### Solution
 
-| File | Purpose |
-|------|---------|
-| `src/pages/ResetPassword.tsx` | Dedicated password reset form page |
-| `src/pages/EmailConfirmed.tsx` | Email confirmation landing page |
+#### Step 1: Add Missing Frame
+Copy `ezgif-frame-039-2.jpg` and `ezgif-frame-040-2.jpg` from your uploads to complete the 40-frame sequence:
+- Copy to `public/frames/frame-039.jpg` (replace existing)
+- Copy to `public/frames/frame-040.jpg` (new file)
+- Update `TOTAL_FRAMES` from 39 to 40
 
-## Files to Modify
+#### Step 2: Performance Optimizations
 
-| File | Changes |
-|------|---------|
-| `src/App.tsx` | Add routes for `/reset-password` and `/email-confirmed` |
-| `src/pages/Auth.tsx` | Update redirect URL in forgot password handler, remove password recovery state |
-| `src/hooks/useAuth.tsx` | Update email redirect URL for signup |
-
----
-
-## Technical Details
-
-### Reset Password Page Logic
-
+**A. Use requestAnimationFrame for Smooth Rendering**
 ```text
-User clicks reset link in email
-        ↓
-Arrives at /reset-password with hash tokens
-        ↓
-Supabase automatically handles session from URL hash
-        ↓
-PASSWORD_RECOVERY event detected → Show password form
-        ↓
-User submits new password
-        ↓
-supabase.auth.updateUser({ password }) called
-        ↓
-Success → Show confirmation → Link to sign in
+Replace direct drawFrame calls with RAF-throttled rendering:
+- Store pending frame index in a ref
+- Only call drawFrame inside requestAnimationFrame callback
+- Prevents multiple draws per browser frame
 ```
 
-### Email Confirmed Page Logic
-
+**B. Cache Canvas Dimensions**
 ```text
-User clicks confirmation link in email
-        ↓
-Supabase verifies email and redirects to /email-confirmed
-        ↓
-User sees welcome message
-        ↓
-User clicks "Continue to Sign In"
-        ↓
-Redirected to /auth
+Instead of recalculating dimensions on every draw:
+- Cache container dimensions on mount and resize only
+- Use cached values in drawFrame function
+- Reduces layout thrashing
+```
+
+**C. Optimize State Updates**
+```text
+Remove unnecessary state updates:
+- Remove setCurrentFrame from scroll handler (causes re-renders)
+- Use ref to track current frame instead
+- Only use state for loading progress
+```
+
+**D. Add will-change CSS Hint**
+```text
+Add will-change: transform to canvas for GPU acceleration
 ```
 
 ---
 
-## URL Configuration Reminder
+### Technical Implementation
 
-After implementation, you'll need to ensure your backend has the following redirect URLs configured:
+#### Modified BookScroll.tsx Structure
 
-- **Site URL**: `https://juicyfish.online`
-- **Allowed Redirect URLs**:
-  - `https://juicyfish.online`
-  - `https://juicyfish.online/*`
+```text
+Key changes:
+1. TOTAL_FRAMES = 40
 
-This can be done in the Lovable Cloud dashboard under auth settings.
+2. New refs for performance:
+   - pendingFrame = useRef<number>(0)
+   - rafId = useRef<number | null>(null)
+   - cachedDimensions = useRef({ width: 0, height: 0 })
+
+3. Optimized drawFrame:
+   - Uses cached dimensions
+   - Only recomputes dimensions on resize
+   - Removes redundant clearRect (just draw over)
+
+4. RAF-based scroll handler:
+   - useMotionValueEvent stores frame in ref
+   - Schedules single RAF for rendering
+   - Cancels pending RAF if new scroll occurs
+
+5. Resize handler:
+   - Updates cached dimensions
+   - Triggers single redraw
+```
 
 ---
 
-## Testing Checklist
+### Expected Results
+- Smooth 60fps animation across all 40 frames
+- All book explosion frames visible through full scroll
+- No visible lag or stuttering
+- Lower CPU/GPU usage
 
-After implementation:
-1. Delete old password reset emails from your inbox
-2. Go to `/auth` and click "Forgot password?"
-3. Enter your email and request a reset
-4. Open the reset link in an incognito window
-5. Verify you're taken to `/reset-password`
-6. Set a new password
-7. Verify you can sign in with the new password
+---
 
-For email confirmation:
-1. Create a new account
-2. Check your email for the confirmation link
-3. Click the link and verify you land on `/email-confirmed`
-4. Click to continue to sign in
+### Files to Modify
+1. `public/frames/frame-040.jpg` - Add new frame
+2. `src/components/book/BookScroll.tsx` - Performance optimizations
+
