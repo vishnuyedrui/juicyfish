@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState, useCallback } from "react";
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 
-const TOTAL_FRAMES = 39; // Frames 001-039 available in public/frames/
+const TOTAL_FRAMES = 40; // Frames 001-040 available in public/frames/
 const FRAME_PREFIX = "/frames/frame-";
 
 // Preload all images with proper validation
@@ -9,7 +9,6 @@ const preloadImages = (onProgress: (progress: number) => void): Promise<HTMLImag
   return new Promise((resolve) => {
     const images: HTMLImageElement[] = [];
     let loadedCount = 0;
-    const validImages: Set<number> = new Set();
 
     for (let i = 1; i <= TOTAL_FRAMES; i++) {
       const img = new Image();
@@ -18,7 +17,6 @@ const preloadImages = (onProgress: (progress: number) => void): Promise<HTMLImag
       
       img.onload = () => {
         loadedCount++;
-        validImages.add(i - 1); // Track valid image indices
         onProgress((loadedCount / TOTAL_FRAMES) * 100);
         if (loadedCount === TOTAL_FRAMES) {
           resolve(images);
@@ -45,7 +43,11 @@ export function BookScroll() {
   const [images, setImages] = useState<HTMLImageElement[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadProgress, setLoadProgress] = useState(0);
-  const [currentFrame, setCurrentFrame] = useState(0);
+  
+  // Performance refs - avoid state updates during scroll
+  const pendingFrame = useRef<number>(0);
+  const rafId = useRef<number | null>(null);
+  const cachedDimensions = useRef({ width: 0, height: 0, dpr: 1 });
   
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -54,6 +56,24 @@ export function BookScroll() {
 
   // Transform scroll progress to frame index
   const frameIndex = useTransform(scrollYProgress, [0, 1], [0, TOTAL_FRAMES - 1]);
+
+  // Cache dimensions on mount and resize
+  const updateDimensions = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas?.parentElement) return;
+    
+    const dpr = window.devicePixelRatio || 1;
+    const width = canvas.parentElement.clientWidth || window.innerWidth;
+    const height = canvas.parentElement.clientHeight || window.innerHeight;
+    
+    cachedDimensions.current = { width, height, dpr };
+    
+    // Update canvas size
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+  }, []);
 
   // Preload images on mount
   useEffect(() => {
@@ -65,67 +85,77 @@ export function BookScroll() {
     });
   }, []);
 
-  // Draw frame to canvas with validation
+  // Optimized draw frame - uses cached dimensions
   const drawFrame = useCallback((index: number) => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
-    const frameIndex = Math.min(Math.max(0, Math.round(index)), images.length - 1);
-    const img = images[frameIndex];
+    const frameIdx = Math.min(Math.max(0, Math.round(index)), images.length - 1);
+    const img = images[frameIdx];
     
     if (!canvas || !ctx || !img || !img.complete || img.naturalWidth === 0) return;
 
-    // Set canvas size to match image aspect ratio
-    const dpr = window.devicePixelRatio || 1;
-    const containerWidth = canvas.parentElement?.clientWidth || window.innerWidth;
-    const containerHeight = canvas.parentElement?.clientHeight || window.innerHeight;
+    const { width, height, dpr } = cachedDimensions.current;
+    if (width === 0 || height === 0) return;
     
     // Calculate dimensions to contain the image
-    const imgAspect = img.width / img.height;
-    const containerAspect = containerWidth / containerHeight;
+    const imgAspect = img.naturalWidth / img.naturalHeight;
+    const containerAspect = width / height;
     
     let drawWidth, drawHeight, offsetX, offsetY;
     
     if (imgAspect > containerAspect) {
-      // Image is wider - fit to width
-      drawWidth = containerWidth;
-      drawHeight = containerWidth / imgAspect;
+      drawWidth = width;
+      drawHeight = width / imgAspect;
       offsetX = 0;
-      offsetY = (containerHeight - drawHeight) / 2;
+      offsetY = (height - drawHeight) / 2;
     } else {
-      // Image is taller - fit to height
-      drawHeight = containerHeight;
-      drawWidth = containerHeight * imgAspect;
-      offsetX = (containerWidth - drawWidth) / 2;
+      drawHeight = height;
+      drawWidth = height * imgAspect;
+      offsetX = (width - drawWidth) / 2;
       offsetY = 0;
     }
     
-    canvas.width = containerWidth * dpr;
-    canvas.height = containerHeight * dpr;
-    canvas.style.width = `${containerWidth}px`;
-    canvas.style.height = `${containerHeight}px`;
-    
-    ctx.scale(dpr, dpr);
-    ctx.clearRect(0, 0, containerWidth, containerHeight);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
   }, [images]);
 
-  // Update canvas on scroll
+  // RAF-throttled scroll handler
   useMotionValueEvent(frameIndex, "change", (latest) => {
-    const roundedFrame = Math.round(latest);
-    setCurrentFrame(roundedFrame);
-    drawFrame(roundedFrame);
+    pendingFrame.current = latest;
+    
+    // Cancel any pending RAF to avoid multiple draws per frame
+    if (rafId.current !== null) {
+      cancelAnimationFrame(rafId.current);
+    }
+    
+    // Schedule single draw for next frame
+    rafId.current = requestAnimationFrame(() => {
+      drawFrame(pendingFrame.current);
+      rafId.current = null;
+    });
   });
 
-  // Initial draw and resize handling
+  // Initial setup and resize handling
   useEffect(() => {
-    if (images.length > 0) {
-      drawFrame(0);
-      
-      const handleResize = () => drawFrame(currentFrame);
-      window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
-    }
-  }, [images, currentFrame, drawFrame]);
+    if (images.length === 0) return;
+    
+    // Initial dimension calculation and draw
+    updateDimensions();
+    drawFrame(0);
+    
+    const handleResize = () => {
+      updateDimensions();
+      drawFrame(pendingFrame.current);
+    };
+    
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      if (rafId.current !== null) {
+        cancelAnimationFrame(rafId.current);
+      }
+    };
+  }, [images, updateDimensions, drawFrame]);
 
   // Text overlay opacity transforms based on scroll position
   const heroOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
@@ -179,6 +209,7 @@ export function BookScroll() {
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full"
+          style={{ willChange: "transform" }}
         />
         
         {/* Text Overlays */}
