@@ -1,40 +1,108 @@
 import { useRef, useEffect, useState, useCallback } from "react";
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 
-const TOTAL_FRAMES = 40; // Frames 001-040 available in public/frames/
+const TOTAL_FRAMES = 40;
+const PRIORITY_FRAMES = 5; // Load first 5 frames immediately
+const BATCH_SIZE = 5; // Load remaining frames in batches
 const FRAME_PREFIX = "/frames/frame-";
 
-// Preload all images with proper validation
-const preloadImages = (onProgress: (progress: number) => void): Promise<HTMLImageElement[]> => {
-  return new Promise((resolve) => {
-    const images: HTMLImageElement[] = [];
-    let loadedCount = 0;
+// Persistent image cache to avoid reloading
+const imageCache = new Map<number, HTMLImageElement>();
 
-    for (let i = 1; i <= TOTAL_FRAMES; i++) {
+// Load a single image with caching
+const loadImage = (index: number): Promise<HTMLImageElement> => {
+  return new Promise((resolve) => {
+    if (imageCache.has(index)) {
+      resolve(imageCache.get(index)!);
+      return;
+    }
+    
+    const img = new Image();
+    const frameNum = index.toString().padStart(3, "0");
+    img.src = `${FRAME_PREFIX}${frameNum}.jpg`;
+    
+    img.onload = () => {
+      imageCache.set(index, img);
+      resolve(img);
+    };
+    
+    img.onerror = () => {
+      console.warn(`Failed to load frame: ${frameNum}`);
+      imageCache.set(index, img); // Cache even failed ones to avoid retries
+      resolve(img);
+    };
+  });
+};
+
+// Load priority frames immediately
+const loadPriorityFrames = async (onProgress: (progress: number) => void): Promise<HTMLImageElement[]> => {
+  const images: HTMLImageElement[] = [];
+  
+  for (let i = 1; i <= PRIORITY_FRAMES; i++) {
+    const img = await loadImage(i);
+    images.push(img);
+    onProgress((i / PRIORITY_FRAMES) * 100);
+  }
+  
+  return images;
+};
+
+// Load remaining frames in background batches using requestIdleCallback
+const loadRemainingFrames = (
+  onFrameLoaded: (index: number, img: HTMLImageElement) => void
+) => {
+  const remainingIndices: number[] = [];
+  for (let i = PRIORITY_FRAMES + 1; i <= TOTAL_FRAMES; i++) {
+    remainingIndices.push(i);
+  }
+  
+  const loadBatch = (startIdx: number) => {
+    const endIdx = Math.min(startIdx + BATCH_SIZE, remainingIndices.length);
+    const batchPromises: Promise<void>[] = [];
+    
+    for (let i = startIdx; i < endIdx; i++) {
+      const frameIndex = remainingIndices[i];
+      batchPromises.push(
+        loadImage(frameIndex).then((img) => {
+          onFrameLoaded(frameIndex, img);
+        })
+      );
+    }
+    
+    Promise.all(batchPromises).then(() => {
+      if (endIdx < remainingIndices.length) {
+        // Schedule next batch during idle time
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(() => loadBatch(endIdx), { timeout: 100 });
+        } else {
+          setTimeout(() => loadBatch(endIdx), 16);
+        }
+      }
+    });
+  };
+  
+  // Start loading first batch
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(() => loadBatch(0), { timeout: 50 });
+  } else {
+    setTimeout(() => loadBatch(0), 0);
+  }
+};
+
+// Get all cached images as array
+const getCachedImages = (): HTMLImageElement[] => {
+  const images: HTMLImageElement[] = [];
+  for (let i = 1; i <= TOTAL_FRAMES; i++) {
+    const img = imageCache.get(i);
+    if (img) {
+      images.push(img);
+    } else {
+      // Placeholder for not-yet-loaded frames
       const img = new Image();
-      const frameNum = i.toString().padStart(3, "0");
-      img.src = `${FRAME_PREFIX}${frameNum}.jpg`;
-      
-      img.onload = () => {
-        loadedCount++;
-        onProgress((loadedCount / TOTAL_FRAMES) * 100);
-        if (loadedCount === TOTAL_FRAMES) {
-          resolve(images);
-        }
-      };
-      
-      img.onerror = () => {
-        loadedCount++;
-        console.warn(`Failed to load frame: ${frameNum}`);
-        onProgress((loadedCount / TOTAL_FRAMES) * 100);
-        if (loadedCount === TOTAL_FRAMES) {
-          resolve(images);
-        }
-      };
-      
       images.push(img);
     }
-  });
+  }
+  return images;
 };
 
 export function BookScroll() {
@@ -43,11 +111,13 @@ export function BookScroll() {
   const [images, setImages] = useState<HTMLImageElement[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadProgress, setLoadProgress] = useState(0);
+  const [backgroundLoaded, setBackgroundLoaded] = useState(0);
   
   // Performance refs - avoid state updates during scroll
   const pendingFrame = useRef<number>(0);
   const rafId = useRef<number | null>(null);
   const cachedDimensions = useRef({ width: 0, height: 0, dpr: 1 });
+  const imagesRef = useRef<HTMLImageElement[]>([]);
   
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -75,13 +145,24 @@ export function BookScroll() {
     canvas.style.height = `${height}px`;
   }, []);
 
-  // Preload images on mount
+  // Progressive loading on mount
   useEffect(() => {
-    preloadImages((progress) => {
+    // Load priority frames first
+    loadPriorityFrames((progress) => {
       setLoadProgress(progress);
     }).then((loadedImages) => {
+      // Initialize with priority frames
+      const allImages = getCachedImages();
+      imagesRef.current = allImages;
       setImages(loadedImages);
       setIsLoading(false);
+      
+      // Start background loading remaining frames
+      loadRemainingFrames((index, img) => {
+        // Update the images ref directly for immediate use
+        imagesRef.current[index - 1] = img;
+        setBackgroundLoaded((prev) => prev + 1);
+      });
     });
   }, []);
 
@@ -89,10 +170,43 @@ export function BookScroll() {
   const drawFrame = useCallback((index: number) => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
-    const frameIdx = Math.min(Math.max(0, Math.round(index)), images.length - 1);
-    const img = images[frameIdx];
+    const frameIdx = Math.min(Math.max(0, Math.round(index)), TOTAL_FRAMES - 1);
     
-    if (!canvas || !ctx || !img || !img.complete || img.naturalWidth === 0) return;
+    // Use ref for immediate access to latest images
+    const img = imagesRef.current[frameIdx] || imageCache.get(frameIdx + 1);
+    
+    if (!canvas || !ctx || !img || !img.complete || img.naturalWidth === 0) {
+      // If frame not loaded yet, try to show closest available frame
+      for (let i = frameIdx; i >= 0; i--) {
+        const fallback = imagesRef.current[i] || imageCache.get(i + 1);
+        if (fallback?.complete && fallback.naturalWidth > 0) {
+          const { width, height, dpr } = cachedDimensions.current;
+          if (width === 0 || height === 0) return;
+          
+          const imgAspect = fallback.naturalWidth / fallback.naturalHeight;
+          const containerAspect = width / height;
+          
+          let drawWidth, drawHeight, offsetX, offsetY;
+          
+          if (imgAspect > containerAspect) {
+            drawWidth = width;
+            drawHeight = width / imgAspect;
+            offsetX = 0;
+            offsetY = (height - drawHeight) / 2;
+          } else {
+            drawHeight = height;
+            drawWidth = height * imgAspect;
+            offsetX = (width - drawWidth) / 2;
+            offsetY = 0;
+          }
+          
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          ctx.drawImage(fallback, offsetX, offsetY, drawWidth, drawHeight);
+          return;
+        }
+      }
+      return;
+    }
 
     const { width, height, dpr } = cachedDimensions.current;
     if (width === 0 || height === 0) return;
@@ -117,7 +231,7 @@ export function BookScroll() {
     
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
-  }, [images]);
+  }, []);
 
   // RAF-throttled scroll handler
   useMotionValueEvent(frameIndex, "change", (latest) => {
@@ -137,11 +251,14 @@ export function BookScroll() {
 
   // Initial setup and resize handling
   useEffect(() => {
-    if (images.length === 0) return;
+    if (isLoading) return;
     
     // Initial dimension calculation and draw
     updateDimensions();
     drawFrame(0);
+    
+    // Update imagesRef when new frames load in background
+    imagesRef.current = getCachedImages();
     
     const handleResize = () => {
       updateDimensions();
@@ -155,7 +272,7 @@ export function BookScroll() {
         cancelAnimationFrame(rafId.current);
       }
     };
-  }, [images, updateDimensions, drawFrame]);
+  }, [isLoading, backgroundLoaded, updateDimensions, drawFrame]);
 
   // Text overlay opacity transforms based on scroll position
   const heroOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
