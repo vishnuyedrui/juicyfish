@@ -167,70 +167,71 @@ export function BookScroll() {
   }, []);
 
   // Optimized draw frame - uses cached dimensions
-  const drawFrame = useCallback((index: number) => {
+  const drawFrame = useCallback((index: number, interpolate: boolean = true) => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
-    const frameIdx = Math.min(Math.max(0, Math.round(index)), TOTAL_FRAMES - 1);
+    const clampedIndex = Math.min(Math.max(0, index), TOTAL_FRAMES - 1);
+    const frameIdx = Math.floor(clampedIndex);
+    const nextFrameIdx = Math.min(frameIdx + 1, TOTAL_FRAMES - 1);
+    const blendFactor = clampedIndex - frameIdx; // 0 to 1 for interpolation
     
     // Use ref for immediate access to latest images
     const img = imagesRef.current[frameIdx] || imageCache.get(frameIdx + 1);
+    const nextImg = imagesRef.current[nextFrameIdx] || imageCache.get(nextFrameIdx + 1);
     
-    if (!canvas || !ctx || !img || !img.complete || img.naturalWidth === 0) {
-      // If frame not loaded yet, try to show closest available frame
-      for (let i = frameIdx; i >= 0; i--) {
+    const { width, height, dpr } = cachedDimensions.current;
+    if (!canvas || !ctx || width === 0 || height === 0) return;
+    
+    // Helper to calculate draw dimensions for an image
+    const calcDimensions = (sourceImg: HTMLImageElement) => {
+      const imgAspect = sourceImg.naturalWidth / sourceImg.naturalHeight;
+      const containerAspect = width / height;
+      
+      let drawWidth, drawHeight, offsetX, offsetY;
+      
+      if (imgAspect > containerAspect) {
+        drawWidth = width;
+        drawHeight = width / imgAspect;
+        offsetX = 0;
+        offsetY = (height - drawHeight) / 2;
+      } else {
+        drawHeight = height;
+        drawWidth = height * imgAspect;
+        offsetX = (width - drawWidth) / 2;
+        offsetY = 0;
+      }
+      
+      return { drawWidth, drawHeight, offsetX, offsetY };
+    };
+    
+    // Find a valid frame to draw (fallback if current not loaded)
+    const findValidFrame = (startIdx: number): HTMLImageElement | null => {
+      for (let i = startIdx; i >= 0; i--) {
         const fallback = imagesRef.current[i] || imageCache.get(i + 1);
         if (fallback?.complete && fallback.naturalWidth > 0) {
-          const { width, height, dpr } = cachedDimensions.current;
-          if (width === 0 || height === 0) return;
-          
-          const imgAspect = fallback.naturalWidth / fallback.naturalHeight;
-          const containerAspect = width / height;
-          
-          let drawWidth, drawHeight, offsetX, offsetY;
-          
-          if (imgAspect > containerAspect) {
-            drawWidth = width;
-            drawHeight = width / imgAspect;
-            offsetX = 0;
-            offsetY = (height - drawHeight) / 2;
-          } else {
-            drawHeight = height;
-            drawWidth = height * imgAspect;
-            offsetX = (width - drawWidth) / 2;
-            offsetY = 0;
-          }
-          
-          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-          ctx.drawImage(fallback, offsetX, offsetY, drawWidth, drawHeight);
-          return;
+          return fallback;
         }
       }
-      return;
-    }
-
-    const { width, height, dpr } = cachedDimensions.current;
-    if (width === 0 || height === 0) return;
+      return null;
+    };
     
-    // Calculate dimensions to contain the image
-    const imgAspect = img.naturalWidth / img.naturalHeight;
-    const containerAspect = width / height;
-    
-    let drawWidth, drawHeight, offsetX, offsetY;
-    
-    if (imgAspect > containerAspect) {
-      drawWidth = width;
-      drawHeight = width / imgAspect;
-      offsetX = 0;
-      offsetY = (height - drawHeight) / 2;
-    } else {
-      drawHeight = height;
-      drawWidth = height * imgAspect;
-      offsetX = (width - drawWidth) / 2;
-      offsetY = 0;
-    }
+    const currentFrame = (img?.complete && img.naturalWidth > 0) ? img : findValidFrame(frameIdx);
+    if (!currentFrame) return;
     
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+    
+    // Draw current frame
+    const dims = calcDimensions(currentFrame);
+    ctx.globalAlpha = 1;
+    ctx.drawImage(currentFrame, dims.offsetX, dims.offsetY, dims.drawWidth, dims.drawHeight);
+    
+    // Interpolate with next frame if available and blending needed
+    if (interpolate && blendFactor > 0.01 && nextImg?.complete && nextImg.naturalWidth > 0 && frameIdx !== nextFrameIdx) {
+      const nextDims = calcDimensions(nextImg);
+      ctx.globalAlpha = blendFactor;
+      ctx.drawImage(nextImg, nextDims.offsetX, nextDims.offsetY, nextDims.drawWidth, nextDims.drawHeight);
+      ctx.globalAlpha = 1;
+    }
   }, []);
 
   // RAF-throttled scroll handler
